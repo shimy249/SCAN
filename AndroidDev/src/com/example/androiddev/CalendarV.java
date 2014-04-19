@@ -554,6 +554,8 @@ public class CalendarV extends View{
 			((CalRect)mySquares[i]).setDate(++day, month, year);
 		}
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
+		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
+
 		selectedBox-=7;
 	}
 	private void moveLayerDown()
@@ -595,6 +597,7 @@ public class CalendarV extends View{
 
 		}
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
+		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		selectedBox+=7;
 	}
 	public void addEvents(ArrayList<Event> events)
