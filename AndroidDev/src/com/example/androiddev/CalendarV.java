@@ -1,9 +1,9 @@
 package com.example.androiddev;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -32,11 +32,14 @@ public class CalendarV extends View{
 	private final float SPACING_OFFSET=20;
 	private float intervalX, intervalY;
 	private boolean showBackground;
+	private float translationFactorEvents;
 	public static final int ALIGN_TOP=0;
 	public static final int ALIGN_BOTTOM=2;
 	public static final int ALIGN_CENTER=1;
 	public static final int ALIGN_LEFT=0;
 	public static final int ALIGN_RIGHT=2;
+	public ArrayList<Integer> indexes;
+	private ArrayList<Event> mEvents;
 	protected int alignX, alignY;
 	Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
 	static int selectedBox;
@@ -61,6 +64,7 @@ public class CalendarV extends View{
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this));
 		mTap=false;
 		mCanvasOverlay=new Canvas();
+		indexes=new ArrayList<Integer>();
 	}
 	public void initCal(){
 		if(myCalendar==null)
@@ -392,6 +396,10 @@ public class CalendarV extends View{
 		{
 			moveLayerUp();
 		}
+		if(checkForEvents())
+		{
+			
+		}
 		if(this.isUpperLayerShowing())
 			moveLayerDown();
 		drawSquares(canvas);
@@ -588,5 +596,28 @@ public class CalendarV extends View{
 		}
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		selectedBox+=7;
+	}
+	public void addEvents(ArrayList<Event> events)
+	{
+		mEvents=events;
+		invalidate();
+		requestLayout();
+	}
+	@SuppressWarnings("deprecation")
+	public boolean checkForEvents()
+	{
+		indexes.clear();
+		if(mEvents!=null)
+			for(int j=0; j<mEvents.size(); j++)
+			{
+				if(mEvents.get(j).getStartDate().getDate()==((CalRect)mySquares[selectedBox]).getDay()
+				   && mEvents.get(j).getStartDate().getMonth()==((CalRect)mySquares[selectedBox]).getMonth()
+				   && mEvents.get(j).getStartDate().getYear()==((CalRect)mySquares[selectedBox]).getYear())
+				{
+					indexes.add(j);
+				}
+					
+			}
+		return indexes.size()!=0;
 	}
 }

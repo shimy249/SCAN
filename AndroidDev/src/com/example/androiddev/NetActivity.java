@@ -38,16 +38,12 @@ public class NetActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	public void netSigned(View view){
-		CheckBox myButton=(CheckBox)findViewById(R.id.netToggleButton);
+
 		SharedPreferences myPrefs=this.getSharedPreferences(MainActivity.netFile, 0);
 		SharedPreferences.Editor editor=myPrefs.edit();
-		editor.putBoolean(MainActivity.netSigned, myButton.isChecked());
+		editor.putBoolean(MainActivity.netSigned,true);
 		editor.commit();
-		if(myButton.isChecked())
-		{
-			Intent intent=new Intent(this, MainActivity.class);
-			startActivity(intent);
-		}
+		this.finish();
 	}
 
 }
