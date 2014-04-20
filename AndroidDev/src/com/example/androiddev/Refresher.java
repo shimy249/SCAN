@@ -1,99 +1,95 @@
 package com.example.androiddev;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Events;
+import com.google.api.client.json.jackson2.*;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.IBinder;
-import android.provider.CalendarContract;
+
+
+
 
 public class Refresher extends Service {
-	
-	
 
-	public static final String[] EVENT_PROJECTION = new String[]{
-        CalendarContract.Calendars._ID,
-        CalendarContract.Calendars.ACCOUNT_NAME,
-        CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
-        CalendarContract.Calendars.OWNER_ACCOUNT};
-
-    //array indexes for above array, i dont like to remember
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-    private Event[] eventArray = null;
+	private final IBinder mBinder = new MyBinder();
+	private Calendar client;
+	private Context context;
 
 
-    public final BroadcastReceiver receiver = new BroadcastReceiver(){
-        public void onReceive(Context context, Intent intent){
-            checkCalendar();
-        }
+	public final BroadcastReceiver receiver = new BroadcastReceiver(){
+		public void onReceive(Context c, Intent intent){
+			context = c;
+			HttpTransport httpTransport = new NetHttpTransport();
+			JacksonFactory jsonFactory = new JacksonFactory();
+			GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(CalendarScopes.CALENDAR));
+
+			SharedPreferences settings = context.getSharedPreferences("ServiceSettings", Context.MODE_PRIVATE);
+			String accountName = settings.getString("accountName", null);
+			if(accountName !=null){	
+				
+				credential.setSelectedAccountName(accountName);
+				client = new Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN").build();
 
 
-    };
+				checkCalendar();
+			}
+		}
 
-    private void checkCalendar() {
-        new AsyncTask<String, Void, Event[]>(){
-            public Event[] doInBackground(String... string){
 
-                ArrayList<Long> resultIDs = new ArrayList<Long>();
-                ArrayList<Event> events = new ArrayList<Event>();
+	};
 
-                //find the calendar
-                Cursor cur = null;
-                ContentResolver cr = getContentResolver();
-                Uri uri = CalendarContract.Calendars.CONTENT_URI;
-                String selection = "(("+ CalendarContract.Calendars.ACCOUNT_NAME+ " = ?) AND ("+
-                        CalendarContract.Calendars.ACCOUNT_TYPE + " =?) AND" +
-                        CalendarContract.Calendars.OWNER_ACCOUNT +" = ?)) ";
-                String[] selectionArgs = new String[]{"account name", "account type", "owner"};
-                cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+	private void checkCalendar() {
+		new AsyncTask<String, Void, Event[]>(){
 
-                long calID = 0; //the unique ID of the calendar
+			@Override
+			protected Event[] doInBackground(String... arg0) {
+				
+				ArrayList<Event> result = new ArrayList<Event>();
+				
+				for(int i = 0; i < arg0.length; i++){
+					try {
+						Events feed = client.events().list(arg0[i]).setFields(Event.FIELDS).execute();
+						 List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
+						 for(int j = 0; j < events.size(); j++){
+							 com.google.api.services.calendar.model.Event current = events.get(j);
+							 result.add(new Event(current));
+						 }
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				return null;
+			}
 
-                while(cur.moveToNext()){
-                     calID = cur.getLong(PROJECTION_ID_INDEX);
-                    String displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
-                    String accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
-                    String ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
-
-                    //find which calendar you want in here and break the loop with the correct calID
-
-                }
-
-                //look at events
-                Cursor cursor = cr.query(Uri.parse("content://calendar/events"), new String[]{"caldendar_id", "title", "description", "dtstart", "dtend", "original_id"}, null, null, null);
-                cursor.moveToFirst();
-
-                for(int i = 0; i < cursor.getCount(); i++){
-                    if (cursor.getInt(0)==calID){   //make sure it is right calendar
-                        if(cursor.getInt(4) >= Calendar.getInstance().getTimeInMillis()){   //get events that happens in future
-                            events.add(new Event(cursor.getString(1), cursor.getString(2), new Date(cursor.getLong(3)), new Date(cursor.getLong(4)), 0));//need to implement color
-                        }
-
-                    }
-                }
-
-                return (Event[]) events.toArray();
-            }
-            public void onPostExecute(Event[] result){
-                eventArray = result;
-            }
-        };
-    }
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+		}.execute("qsues94h802pe7h70ipa5dnbg0@group.calendar.google.com");//this is the list of calendars that come from somewhere
+		
+	}
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
+	public class MyBinder extends Binder {
+		Refresher getService(){
+			return Refresher.this;
+		}
+	}
 
 }

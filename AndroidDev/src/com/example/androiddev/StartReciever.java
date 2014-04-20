@@ -13,11 +13,10 @@ public class StartReciever extends BroadcastReceiver {
 	public void onReceive(Context arg0, Intent arg1) {
 
 		SharedPreferences values = arg0.getSharedPreferences("SeviceSettings", Context.MODE_PRIVATE);
-		boolean configured = values.getBoolean("firstRun", false);
-		if(configured){
+		
 			Intent timer = new Intent(arg0, Timer.class);
 			arg0.startService(timer);
-		}
+		
 
 	}
 
