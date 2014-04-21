@@ -11,12 +11,20 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	final Scroller mScroller;
 	 ValueAnimator mScrollerAnimator;
 	CalendarV myView;
+	private boolean act;
 	public GestureListener(CalendarV view)
 	{
 		super();
 		myView=view;
 		mScroller=new Scroller(view.getContext());
-		
+		act=true;
+	}
+	public GestureListener(CalendarV view, boolean on)
+	{
+		super();
+		myView=view;
+		mScroller=new Scroller(view.getContext());
+		act=on;
 	}
 	public boolean onDown(MotionEvent e)
 	{

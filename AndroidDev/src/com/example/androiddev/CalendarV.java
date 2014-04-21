@@ -17,37 +17,44 @@ import android.view.View;
 import android.widget.TextView;
 
 public class CalendarV extends View{
-	private static final String TAG = "CalendarV";
-	private final static RectF[] mySquares=new CalRect[49];
-	protected final static RectF[] myDayLabels=new CalRect[8];
-	protected final static RectF[] myWeekNumbers=new CalRect[7];
-	private final RectF bufferRect;
-	int firstDay;
-	int lastTouchEvent;
-	boolean mTap; //Used to determine tap.
-	protected RectF myMonthLabel;
-	static float translationFactor;
-	public final String[] myDayLabelsNames={"","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-	public final String[] monthNames={"January","February","March","April","May","June","July","August","September","October","November","December"};
-	private final float SPACING_OFFSET=20;
-	private float intervalX, intervalY;
-	private boolean showBackground;
-	private float translationFactorEvents;
+	//-----------------------------------Constants-----------------------------------------
+	protected int alignX, alignY;
 	public static final int ALIGN_TOP=0;
 	public static final int ALIGN_BOTTOM=2;
 	public static final int ALIGN_CENTER=1;
 	public static final int ALIGN_LEFT=0;
 	public static final int ALIGN_RIGHT=2;
+	private static final String TAG = "CalendarV";
+	public final String[] myDayLabelsNames={"","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+	public final String[] monthNames={"January","February","March","April","May","June","July","August","September","October","November","December"};
+	//-------------------------------------------------------------------------------------
+	
+	//---------------------------------Pre-Allocated_Calendar:-----------------------------
+	protected final static RectF[] mySquares=new CalRect[49];
+	protected final static RectF[] myDayLabels=new CalRect[8];
+	protected final static RectF[] myWeekNumbers=new CalRect[7];
+	protected RectF myMonthLabel;
+	private final RectF bufferRect;
+	//-------------------------------------------------------------------------------------
+	
+	//--------------------------------Pre-Allocated_Events:--------------------------------
 	public ArrayList<Integer> indexes;
 	private ArrayList<Event> mEvents;
-	protected int alignX, alignY;
-	Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
+	//-------------------------------------------------------------------------------------
+	private int firstDay;
+	
+	private float translationFactor;
+	
+	
+	private float intervalX, intervalY;
+	private boolean showBackground;
+	private float translationFactorEvents;
+	protected Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
 	static int selectedBox;
-	static Calendar myCalendar;
-	static Calendar bufferCalendar;
-	private GestureDetector mDetector;
-	private Canvas mCanvasOverlay;
-	private Bitmap overlayMap;
+	protected Calendar myCalendar;
+	private static Calendar bufferCalendar;
+	protected GestureDetector mDetector;
+	
 	public CalendarV(Context context, AttributeSet attrs){
 		super(context, attrs);
 		bufferRect=new RectF();
@@ -62,14 +69,17 @@ public class CalendarV extends View{
 		initPaint();
 		initCal();
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this));
-		mTap=false;
-		mCanvasOverlay=new Canvas();
 		indexes=new ArrayList<Integer>();
 	}
 	public void initCal(){
-		if(myCalendar==null)
+		if(bufferCalendar==null)
 		{
 			myCalendar=GregorianCalendar.getInstance();
+			selectedBox=myCalendar.get(Calendar.DAY_OF_MONTH)+1;
+		}
+		else{
+			myCalendar=new GregorianCalendar();
+			myCalendar.set(bufferCalendar.get(Calendar.YEAR), bufferCalendar.get(Calendar.MONTH), bufferCalendar.get(Calendar.DAY_OF_MONTH));
 			selectedBox=myCalendar.get(Calendar.DAY_OF_MONTH)+1;
 		}
 		bufferCalendar=new GregorianCalendar();
@@ -107,7 +117,6 @@ public class CalendarV extends View{
 		{
 			mySquares[i].set(myDayLabels[i%7+1].left, myWeekNumbers[1].top+intervalY*(i/7), myDayLabels[i%7+1].right, myWeekNumbers[1].bottom+(intervalY*(i/7)));
 		}
-		overlayMap=Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		preAllocSquares();
 	}
 	public void preAllocSquares()
@@ -187,7 +196,7 @@ public class CalendarV extends View{
 			float prevTextSize=textPainter.getTextSize();
 			textPainter.setTextSize($textSize);
 			int prevColor=textPainter.getColor();
-			textPainter.setColor(getResources().getColor(R.color.SchoolColor2));
+			textPainter.setColor(color);
 			float penX, penY;
 			penX=box.left;
 			penY=box.top;
@@ -210,7 +219,7 @@ public class CalendarV extends View{
 				penY+=(textPainter.descent()-textPainter.ascent());
 				break;
 			case ALIGN_CENTER:
-				penY+=(box.height()/2);
+				penY+=(box.height()/2)-(textPainter.ascent()+textPainter.descent())/2;				
 				break;
 			case ALIGN_BOTTOM:
 				penY+=(box.height()-3);
@@ -403,10 +412,11 @@ public class CalendarV extends View{
 		if(this.isUpperLayerShowing())
 			moveLayerDown();
 		drawSquares(canvas);
+		drawDecals(canvas);
 		drawMonthLabel(canvas);
 		drawDayLabels(canvas);
 		drawWeekLabels(canvas);
-		drawDecals(canvas);
+		
 	}
 	public void drawDecals(Canvas canvas)
 	{
@@ -422,7 +432,7 @@ public class CalendarV extends View{
 			bufferRect.set(mySquares[index].centerX()-10, mySquares[index].bottom-30, mySquares[index].centerX()+10, mySquares[index].bottom-10);
 			int prevColor=textPainter.getColor();
 			textPainter.setColor(getResources().getColor(R.color.White));
-			if(bufferRect.top>myDayLabels[0].bottom)
+			//if(bufferRect.top>myDayLabels[0].bottom)
 				canvas.drawOval(bufferRect, textPainter);
 			textPainter.setColor(prevColor);
 		}
