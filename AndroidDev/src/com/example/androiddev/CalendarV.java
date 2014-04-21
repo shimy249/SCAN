@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 public class CalendarV extends View{
 	private static final String TAG = "CalendarV";
-	private final static RectF[] mySquares=new CalRect[49];
-	protected final static RectF[] myDayLabels=new CalRect[8];
-	protected final static RectF[] myWeekNumbers=new CalRect[7];
+	private final  RectF[] mySquares=new CalRect[49];
+	protected final RectF[] myDayLabels=new CalRect[8];
+	protected final RectF[] myWeekNumbers=new CalRect[7];
 	private final RectF bufferRect;
 	int firstDay;
 	int lastTouchEvent;
@@ -422,6 +422,7 @@ public class CalendarV extends View{
 			bufferRect.set(mySquares[index].centerX()-10, mySquares[index].bottom-30, mySquares[index].centerX()+10, mySquares[index].bottom-10);
 			int prevColor=textPainter.getColor();
 			textPainter.setColor(getResources().getColor(R.color.White));
+			if(bufferRect.top>myDayLabels[0].top)
 			canvas.drawOval(bufferRect, textPainter);
 			textPainter.setColor(prevColor);
 		}
