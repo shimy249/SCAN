@@ -76,7 +76,7 @@ containing a value of this type.
         public static final int CalendarTitle=0x7f040017;
         public static final int December=0x7f04000b;
         public static final int February=0x7f040001;
-        public static final int InternetClause=0x7f040013;
+        public static final int InternetClause=0x7f040012;
         public static final int January=0x7f040000;
         public static final int July=0x7f040006;
         public static final int June=0x7f040005;
@@ -90,7 +90,7 @@ containing a value of this type.
         public static final int action_settings=0x7f040018;
         public static final int container=0x7f040014;
         public static final int myTextView=0x7f040016;
-        public static final int netToggleButton=0x7f040012;
+        public static final int netToggleButton=0x7f040013;
         public static final int newsfeed=0x7f04000f;
         public static final int textView1=0x7f040011;
         public static final int trojanGuy=0x7f04000d;
