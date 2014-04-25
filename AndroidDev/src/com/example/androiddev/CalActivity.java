@@ -9,7 +9,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.CalendarList;
+
 
 import android.os.Bundle;
 import android.accounts.AccountManager;
@@ -24,7 +24,7 @@ import android.view.Menu;
 public class CalActivity extends Activity {
 
 	protected static final int REQUEST_GOOGLE_PLAY_SERVICES = 0;
-	private static final String PREF_ACCOUNT_NAME = "accountName";
+	public static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final int REQUEST_ACCOUNT_PICKER = 152;
 	private GoogleAccountCredential credential;
 	private JacksonFactory jsonFactory = new JacksonFactory();

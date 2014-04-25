@@ -33,31 +33,30 @@ public class Refresher extends Service {
 	private final IBinder mBinder = new MyBinder();
 	private Calendar client;
 	private Context context;
+	private GoogleAccountCredential credential;
 
 
 	public final BroadcastReceiver receiver = new BroadcastReceiver(){
 		public void onReceive(Context c, Intent intent){
 			context = c;
-			HttpTransport httpTransport = new NetHttpTransport();
-			JacksonFactory jsonFactory = new JacksonFactory();
-			GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(CalendarScopes.CALENDAR));
-
-			SharedPreferences settings = context.getSharedPreferences("ServiceSettings", Context.MODE_PRIVATE);
-			String accountName = settings.getString("accountName", null);
-			if(accountName !=null){	
-				
-				credential.setSelectedAccountName(accountName);
-				client = new Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN").build();
+			
 
 
 				checkCalendar();
 			}
-		}
+		
 
 
 	};
 
 	private void checkCalendar() {
+		HttpTransport httpTransport = new NetHttpTransport();
+		JacksonFactory jsonFactory = new JacksonFactory();
+		
+		credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
+		SharedPreferences settings = context.getSharedPreferences("serviceSettings", Context.MODE_PRIVATE);
+		credential.setSelectedAccountName (settings.getString(CalActivity.PREF_ACCOUNT_NAME, null));
+		client = new Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN").build();
 		new AsyncTask<String, Void, Event[]>(){
 
 			@Override
