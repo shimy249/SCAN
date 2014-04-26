@@ -36,5 +36,10 @@ public class Year extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	protected void onStop()
+	{
+		super.onStop();
+		YearCalendar.onDestroy();
+	}
 
 }

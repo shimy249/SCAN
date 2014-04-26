@@ -28,7 +28,7 @@ public class CalendarV extends View{
 	public final String[] myDayLabelsNames={"","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 	public final String[] monthNames={"January","February","March","April","May","June","July","August","September","October","November","December"};
 	//-------------------------------------------------------------------------------------
-	
+
 	//---------------------------------Pre-Allocated_Calendar:-----------------------------
 	protected final static RectF[] mySquares=new CalRect[49];
 	protected final static RectF[] myDayLabels=new CalRect[8];
@@ -36,12 +36,12 @@ public class CalendarV extends View{
 	protected RectF myMonthLabel;
 	private final RectF bufferRect;
 	//-------------------------------------------------------------------------------------
-	
+
 	//--------------------------------Pre-Allocated_Events:--------------------------------
 	public ArrayList<Integer> indexes;
 	private ArrayList<Event> mEvents;
 	//-------------------------------------------------------------------------------------
-	
+
 	//--------------------------------Helpful Indices and Calculated Variables:------------
 	private int firstDay;
 	private float translationFactor;
@@ -50,12 +50,13 @@ public class CalendarV extends View{
 	private static int selectedBox;
 	//-------------------------------Painters:---------------------------------------------
 	protected Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
-	
+
 	//-------------------------------Calendars:--------------------------------------------
 	protected Calendar myCalendar;
-	private static Calendar bufferCalendar;
+	protected static Calendar bufferCalendar;
+	private static Calendar secondaryBuffer;
 	protected GestureDetector mDetector;
-	
+
 	public CalendarV(Context context, AttributeSet attrs){
 		super(context, attrs);
 		bufferRect=new RectF();
@@ -72,17 +73,23 @@ public class CalendarV extends View{
 		indexes=new ArrayList<Integer>();
 	}
 	public void initCal(){
-		if(bufferCalendar==null)
+		if(secondaryBuffer!=null && !(this instanceof YearCalendar)){
+			myCalendar=secondaryBuffer;
+			
+		}
+		else if(bufferCalendar==null)
 		{
 			myCalendar=GregorianCalendar.getInstance();
-			selectedBox=myCalendar.get(Calendar.DAY_OF_MONTH)+1;
 		}
 		else{
 			myCalendar=new GregorianCalendar();
 			myCalendar.set(bufferCalendar.get(Calendar.YEAR), bufferCalendar.get(Calendar.MONTH), bufferCalendar.get(Calendar.DAY_OF_MONTH));
-			selectedBox=myCalendar.get(Calendar.DAY_OF_MONTH)+1;
 		}
-		bufferCalendar=new GregorianCalendar();
+		bufferCalendar=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+		if(!(this instanceof YearCalendar))
+			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+		selectedBox=myCalendar.get(Calendar.DAY_OF_MONTH)+1;
+
 	}
 	public void setCal(Calendar c){
 		myCalendar=c;
@@ -416,7 +423,7 @@ public class CalendarV extends View{
 		drawMonthLabel(canvas);
 		drawDayLabels(canvas);
 		drawWeekLabels(canvas);
-		
+
 	}
 	public void drawDecals(Canvas canvas)
 	{
@@ -433,7 +440,7 @@ public class CalendarV extends View{
 			int prevColor=textPainter.getColor();
 			textPainter.setColor(getResources().getColor(R.color.White));
 			//if(bufferRect.top>myDayLabels[0].bottom)
-				canvas.drawOval(bufferRect, textPainter);
+			canvas.drawOval(bufferRect, textPainter);
 			textPainter.setColor(prevColor);
 		}
 	}
@@ -479,6 +486,8 @@ public class CalendarV extends View{
 	}
 	public void nextMonth(boolean prealloc){
 		myCalendar.set(Calendar.MONTH, myCalendar.get(Calendar.MONTH)+1);
+		if(!(this instanceof YearCalendar))
+			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		if(prealloc)
 			preAllocSquares();
 		invalidate();
@@ -486,6 +495,8 @@ public class CalendarV extends View{
 	}
 	public void previousMonth(boolean prealloc){
 		myCalendar.set(Calendar.MONTH, myCalendar.get(Calendar.MONTH)-1);
+		if(!(this instanceof YearCalendar))
+			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		if(prealloc)
 			preAllocSquares();
 		invalidate();
@@ -566,6 +577,9 @@ public class CalendarV extends View{
 		}
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
+		if(!(this instanceof YearCalendar))
+			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+	
 		selectedBox-=7;
 	}
 	private void moveLayerDown()
@@ -608,6 +622,8 @@ public class CalendarV extends View{
 		}
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
+		if(!(this instanceof YearCalendar))
+			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		selectedBox+=7;
 	}
 	public void addEvents(ArrayList<Event> events)

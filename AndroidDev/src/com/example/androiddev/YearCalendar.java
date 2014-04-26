@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 public class YearCalendar extends CalendarV {
 	private int month;
+	private static Calendar prevCal;
 	public YearCalendar(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a=context.getTheme().obtainStyledAttributes(attrs, R.styleable.YearCalendar, 0, 0);
@@ -24,8 +25,14 @@ public class YearCalendar extends CalendarV {
 			a.recycle();
 		}
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this,false));
+		if(bufferCalendar==null){
 		myCalendar=new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), month,1);
-		
+		prevCal=null;
+		}
+		else{
+			myCalendar=new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), month,1);
+			prevCal=bufferCalendar;
+		}
 	}
 	public float getRecommendedSize(RectF box, float factor){
 		return (float)Math.sqrt(box.height()*box.width())/2;
@@ -47,6 +54,8 @@ public class YearCalendar extends CalendarV {
 	private void drawNumbers(Canvas canvas){
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
+		myCalendar=new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), month,1);
+		super.preAllocSquares();
 		for(int i=0; i<mySquares.length; i++)
 		{
 			if(myCalendar.get(Calendar.MONTH)==((CalRect)mySquares[i]).getMonth())
@@ -62,5 +71,9 @@ public class YearCalendar extends CalendarV {
 			if(myDayLabelsNames[i].length()>0)
 				drawText(myDayLabels[i],canvas,getResources().getColor(R.color.White),myDayLabelsNames[i].substring(0,1),(3*myDayLabels[i].height()/4));
 		}
+	}
+	public static void onDestroy()
+	{
+		bufferCalendar=null;
 	}
 }
