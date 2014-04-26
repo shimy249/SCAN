@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,6 +6,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.androiddev.NetActivity$PlaceholderFragment" >
 
@@ -18,8 +19,16 @@
         android:text="@string/Attention"
         android:textColor="@color/White"
         android:textSize="25sp" />
-
-    <CheckBox
+	<TextView
+        android:id="@+id/InternetClause"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/netToggleButton"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:textColor="@color/White"
+        android:textSize="20sp" />
+    <Button
         android:id="@+id/netToggleButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,15 +39,6 @@
         android:textColor="@color/White"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/InternetClause"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/netToggleButton"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:text="@string/netAgreement"
-        android:textColor="@color/White"
-        android:textSize="20sp" />
+    
 
-</RelativeLayout>
+</LinearLayout>

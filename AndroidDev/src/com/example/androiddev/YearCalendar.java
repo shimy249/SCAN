@@ -25,6 +25,7 @@ public class YearCalendar extends CalendarV {
 		}
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this,false));
 		myCalendar=new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), month,1);
+		
 	}
 	public float getRecommendedSize(RectF box, float factor){
 		return (float)Math.sqrt(box.height()*box.width())/2;
@@ -52,9 +53,7 @@ public class YearCalendar extends CalendarV {
 				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.White),getRecommendedSize(mySquares[i],0));
 		}
 	}
-	public void drawText(RectF myRect, Canvas c, String s, int color){
-		
-	}
+
 	private void drawDayLabels(Canvas canvas){
 		for(int i=0; i<myDayLabels.length; i++)
 		{
