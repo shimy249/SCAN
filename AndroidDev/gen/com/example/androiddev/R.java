@@ -40,6 +40,7 @@ containing a value of this type.
         public static final int showBackground=0x7f010000;
     }
     public static final class color {
+        public static final int Blue_Event=0x7f050007;
         public static final int Grey=0x7f050002;
         public static final int ORHS_Blue=0x7f050006;
         public static final int SchoolColor1=0x7f050000;
@@ -72,11 +73,13 @@ containing a value of this type.
     public static final class id {
         public static final int April=0x7f040003;
         public static final int August=0x7f040007;
-        public static final int Calendar=0x7f04000e;
-        public static final int CalendarTitle=0x7f040017;
+        public static final int Calendar=0x7f040013;
+        public static final int CalendarTitle=0x7f04001b;
         public static final int December=0x7f04000b;
+        public static final int Description=0x7f040011;
+        public static final int EndTime=0x7f040010;
         public static final int February=0x7f040001;
-        public static final int InternetClause=0x7f040012;
+        public static final int InternetClause=0x7f040017;
         public static final int January=0x7f040000;
         public static final int July=0x7f040006;
         public static final int June=0x7f040005;
@@ -85,31 +88,35 @@ containing a value of this type.
         public static final int May=0x7f040004;
         public static final int November=0x7f04000a;
         public static final int October=0x7f040009;
-        public static final int SelectionView=0x7f040015;
+        public static final int SelectionView=0x7f040019;
         public static final int September=0x7f040008;
-        public static final int action_settings=0x7f040018;
-        public static final int container=0x7f040014;
-        public static final int myTextView=0x7f040016;
-        public static final int netToggleButton=0x7f040013;
-        public static final int newsfeed=0x7f04000f;
-        public static final int textView1=0x7f040011;
-        public static final int trojanGuy=0x7f04000d;
-        public static final int yearview=0x7f040010;
+        public static final int StartTime=0x7f04000f;
+        public static final int Title=0x7f04000e;
+        public static final int action_settings=0x7f04001c;
+        public static final int container=0x7f04000d;
+        public static final int myTextView=0x7f04001a;
+        public static final int netToggleButton=0x7f040018;
+        public static final int newsfeed=0x7f040014;
+        public static final int textView1=0x7f040016;
+        public static final int trojanGuy=0x7f040012;
+        public static final int yearview=0x7f040015;
     }
     public static final class layout {
         public static final int activity_cal=0x7f030000;
-        public static final int activity_main=0x7f030001;
-        public static final int activity_net=0x7f030002;
-        public static final int activity_news=0x7f030003;
-        public static final int menu_cal=0x7f030004;
-        public static final int year_layout=0x7f030005;
+        public static final int activity_event=0x7f030001;
+        public static final int activity_main=0x7f030002;
+        public static final int activity_net=0x7f030003;
+        public static final int activity_news=0x7f030004;
+        public static final int menu_cal=0x7f030005;
+        public static final int year_layout=0x7f030006;
     }
     public static final class menu {
         public static final int cal=0x7f090000;
-        public static final int main=0x7f090001;
-        public static final int net=0x7f090002;
-        public static final int news=0x7f090003;
-        public static final int year=0x7f090004;
+        public static final int event=0x7f090001;
+        public static final int main=0x7f090002;
+        public static final int net=0x7f090003;
+        public static final int news=0x7f090004;
+        public static final int year=0x7f090005;
     }
     public static final class string {
         public static final int Agreement_Text=0x7f07000d;
@@ -125,6 +132,7 @@ containing a value of this type.
         public static final int hello_world=0x7f070002;
         public static final int netAgreement=0x7f07000c;
         public static final int title_activity_cal=0x7f070003;
+        public static final int title_activity_event=0x7f070010;
         public static final int title_activity_net=0x7f07000b;
         public static final int title_activity_news=0x7f070006;
         public static final int title_activity_year=0x7f070008;

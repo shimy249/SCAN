@@ -17,6 +17,13 @@ import android.view.View;
 import android.widget.TextView;
 
 public class CalendarV extends View{
+	//-----------------------------------Constants for Calls from Events:------------------
+	public static String TITLE="com.ellume.androiddev.CalendarV.TITLE";
+	public static String DESCRIPTION="com.ellume.androiddev.CalendarV.DESCRIPTION";
+	public static String STARTDATE="com.ellume.androiddev.CalendarV.STARTDATE";
+	public static String ENDDATE="com.ellume.androiddev.CalendarV.ENDDATE";
+	public static String COLOR="com.ellume.androiddev.CalendarV.COLOR";
+
 	//-----------------------------------Constants-----------------------------------------
 	protected int alignX, alignY;
 	public static final int ALIGN_TOP=0;
