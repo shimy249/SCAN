@@ -28,9 +28,12 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	}
 	public boolean onDown(MotionEvent e)
 	{
+		if(act){
 		if(!mScroller.isFinished())
 			mScroller.forceFinished(true);
 		return true;
+		}
+		return act;
 
 	}
 	public  boolean onSingleTapConfirmed(MotionEvent e)
@@ -39,16 +42,23 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	}
 	public boolean onSingleTapUp(MotionEvent e)
 	{
+		if(act){
 		String s =e.toString();
 		Log.v(TAG, "Single Tap Confirmed");
 		myView.selectDate(e.getX(), e.getY());
 		return true;
+		}
+		return act;
 	}
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
+		if(act){
 		myView.setTranslationFactor(-distanceY);
 		return true;
+		}
+		return act;
 	}
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float dx, float dy){
+		if(act){
 		if(Math.abs(dx)>4000)
 			if(dx<0 && Math.abs(dy)<Math.abs(dx))
 			{
@@ -89,6 +99,8 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 		mScrollerAnimator.start();
 		}
 		return true;
+		}
+		return act;
 	}
 	public void onScrollFinished()
 	{

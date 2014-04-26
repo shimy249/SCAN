@@ -41,16 +41,17 @@ public class CalendarV extends View{
 	public ArrayList<Integer> indexes;
 	private ArrayList<Event> mEvents;
 	//-------------------------------------------------------------------------------------
+	
+	//--------------------------------Helpful Indices and Calculated Variables:------------
 	private int firstDay;
-	
 	private float translationFactor;
-	
-	
 	private float intervalX, intervalY;
-	private boolean showBackground;
 	private float translationFactorEvents;
+	private static int selectedBox;
+	//-------------------------------Painters:---------------------------------------------
 	protected Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
-	static int selectedBox;
+	
+	//-------------------------------Calendars:--------------------------------------------
 	protected Calendar myCalendar;
 	private static Calendar bufferCalendar;
 	protected GestureDetector mDetector;
@@ -60,7 +61,6 @@ public class CalendarV extends View{
 		bufferRect=new RectF();
 		TypedArray a=context.getTheme().obtainStyledAttributes(attrs, R.styleable.CalendarV, 0, 0);
 		try{
-			showBackground=a.getBoolean(R.styleable.CalendarV_showBackground, false);
 		}
 		finally{
 			a.recycle();
