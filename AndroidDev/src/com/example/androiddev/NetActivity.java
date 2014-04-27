@@ -19,7 +19,7 @@ public class NetActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_net);
+		setContentView(R.layout.activity_agreement_main);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		mViewPager=(ViewPager)findViewById(R.id.AgreementPage);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -98,7 +98,7 @@ public class NetActivity extends ActionBarActivity {
 			return frag;
 		}
 		public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
-			return inflator.inflate(R.layout.activity_net, container, false);
+			return inflator.inflate(R.layout.activity_rights_agreement, container, false);
 		}
 	}
 }

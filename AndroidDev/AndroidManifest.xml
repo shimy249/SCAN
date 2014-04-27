@@ -41,7 +41,8 @@
         </activity>
         <activity
             android:name="com.example.androiddev.EventActivity"
-            android:label="@string/title_activity_event" >
+            android:label="@string/title_activity_event" 
+            >
         </activity>
     </application>
 

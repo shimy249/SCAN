@@ -11,6 +11,10 @@ public class CalActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cal);
+		if(getResources().getConfiguration().orientation==getResources().getConfiguration().ORIENTATION_PORTRAIT)
+		{
+			getActionBar().hide();
+		}
 	}
 
 	@Override
