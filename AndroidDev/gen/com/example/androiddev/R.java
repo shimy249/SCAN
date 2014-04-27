@@ -71,44 +71,47 @@ containing a value of this type.
         public static final int orhs_drawable_funny=0x7f020003;
     }
     public static final class id {
+        public static final int AgreementPage=0x7f04000c;
         public static final int April=0x7f040003;
         public static final int August=0x7f040007;
-        public static final int Calendar=0x7f040013;
-        public static final int CalendarTitle=0x7f04001b;
+        public static final int Calendar=0x7f040014;
+        public static final int CalendarTitle=0x7f04001c;
         public static final int December=0x7f04000b;
-        public static final int Description=0x7f040011;
-        public static final int EndTime=0x7f040010;
+        public static final int Description=0x7f040012;
+        public static final int EndTime=0x7f040011;
         public static final int February=0x7f040001;
-        public static final int InternetClause=0x7f040017;
+        public static final int InternetClause=0x7f040018;
         public static final int January=0x7f040000;
         public static final int July=0x7f040006;
         public static final int June=0x7f040005;
-        public static final int MainCalendar=0x7f04000c;
+        public static final int MainCalendar=0x7f04000d;
         public static final int March=0x7f040002;
         public static final int May=0x7f040004;
         public static final int November=0x7f04000a;
         public static final int October=0x7f040009;
-        public static final int SelectionView=0x7f040019;
+        public static final int SelectionView=0x7f04001a;
         public static final int September=0x7f040008;
-        public static final int StartTime=0x7f04000f;
-        public static final int Title=0x7f04000e;
-        public static final int action_settings=0x7f04001c;
-        public static final int container=0x7f04000d;
-        public static final int myTextView=0x7f04001a;
-        public static final int netToggleButton=0x7f040018;
-        public static final int newsfeed=0x7f040014;
-        public static final int textView1=0x7f040016;
-        public static final int trojanGuy=0x7f040012;
-        public static final int yearview=0x7f040015;
+        public static final int StartTime=0x7f040010;
+        public static final int Title=0x7f04000f;
+        public static final int action_settings=0x7f04001d;
+        public static final int container=0x7f04000e;
+        public static final int myTextView=0x7f04001b;
+        public static final int netToggleButton=0x7f040019;
+        public static final int newsfeed=0x7f040015;
+        public static final int textView1=0x7f040017;
+        public static final int trojanGuy=0x7f040013;
+        public static final int yearview=0x7f040016;
     }
     public static final class layout {
-        public static final int activity_cal=0x7f030000;
-        public static final int activity_event=0x7f030001;
-        public static final int activity_main=0x7f030002;
-        public static final int activity_net=0x7f030003;
-        public static final int activity_news=0x7f030004;
-        public static final int menu_cal=0x7f030005;
-        public static final int year_layout=0x7f030006;
+        public static final int activity_agreement_main=0x7f030000;
+        public static final int activity_cal=0x7f030001;
+        public static final int activity_event=0x7f030002;
+        public static final int activity_main=0x7f030003;
+        public static final int activity_net=0x7f030004;
+        public static final int activity_news=0x7f030005;
+        public static final int activity_rights_agreement=0x7f030006;
+        public static final int menu_cal=0x7f030007;
+        public static final int year_layout=0x7f030008;
     }
     public static final class menu {
         public static final int cal=0x7f090000;
@@ -124,6 +127,8 @@ containing a value of this type.
         public static final int Calendar=0x7f070004;
         public static final int NewsFeed=0x7f070005;
         public static final int ORHS_Motto=0x7f070009;
+        public static final int StudentRightsBody=0x7f070012;
+        public static final int StudentRightsTitle=0x7f070011;
         public static final int TBI=0x7f07000e;
         public static final int YearView=0x7f07000a;
         public static final int action_settings=0x7f070001;

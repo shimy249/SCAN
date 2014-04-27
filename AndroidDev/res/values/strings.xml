@@ -18,5 +18,6 @@
     <string name="TBI">To Be Implemented</string>
     <string name="Attention">Attention:</string>
     <string name="title_activity_event">EventActivity</string>
-
+	<string name="StudentRightsTitle">Student Rights:</string>
+	<string name="StudentRightsBody">Blurb</string>
 </resources>

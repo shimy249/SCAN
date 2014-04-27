@@ -1,21 +1,29 @@
 package com.example.androiddev;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
+import android.view.ViewGroup;
 
-public class NetActivity extends Activity {
-
+public class NetActivity extends ActionBarActivity {
+	SectionsPagerAdapter mSectionsPagerAdapter;
+	ViewPager mViewPager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_net);
-
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mViewPager=(ViewPager)findViewById(R.id.AgreementPage);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setCurrentItem(0);
 	}
 
 	@Override
@@ -45,5 +53,52 @@ public class NetActivity extends Activity {
 		editor.commit();
 		this.finish();
 	}
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+		public SectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			if(position==0)
+				return RightsFragment.newInstance();
+			else 
+				return NetFragment.newInstance();
+
+		}
+
+		@Override
+		public int getCount() {
+			// Show 3 total pages.
+			return 2;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return null;
+		}
+	}
+	public static class NetFragment extends Fragment{
+		public NetFragment(){}
+		public static NetFragment newInstance()
+		{
+			NetFragment frag=new NetFragment();
+			return frag;
+		}
+		public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
+			return inflator.inflate(R.layout.activity_net, container, false);
+		}
+	}
+	public static class RightsFragment extends Fragment{
+		public RightsFragment(){}
+		public static RightsFragment newInstance()
+		{
+			RightsFragment frag=new RightsFragment();
+			return frag;
+		}
+		public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
+			return inflator.inflate(R.layout.activity_net, container, false);
+		}
+	}
 }
