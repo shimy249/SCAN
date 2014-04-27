@@ -3,6 +3,7 @@ package com.example.androiddev;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.view.Menu;
 
 public class CalActivity extends Activity {
@@ -11,7 +12,8 @@ public class CalActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cal);
-		if(getResources().getConfiguration().orientation==getResources().getConfiguration().ORIENTATION_PORTRAIT)
+		getResources().getConfiguration();
+		if(getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
 		{
 			getActionBar().hide();
 		}

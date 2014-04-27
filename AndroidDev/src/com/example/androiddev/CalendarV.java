@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -104,9 +103,6 @@ public class CalendarV extends View{
 		requestLayout();
 	}
 	public void onSizeChanged(int w, int h, int oldw, int oldh){
-
-		int padX=getPaddingLeft();
-		int padY=getPaddingTop();
 		float monthLabelH=h/6;
 		myMonthLabel.set(0, 0, w, monthLabelH);
 		myWeekNumbers[0]=myDayLabels[0];

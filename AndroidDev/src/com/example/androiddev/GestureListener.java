@@ -43,9 +43,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	public boolean onSingleTapUp(MotionEvent e)
 	{
 		if(act){
-		String s =e.toString();
-		Log.v(TAG, "Single Tap Confirmed");
-		myView.selectDate(e.getX(), e.getY());
+	
 		return true;
 		}
 		return act;

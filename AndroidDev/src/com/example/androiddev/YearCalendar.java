@@ -9,11 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.widget.TextView;
 
 public class YearCalendar extends CalendarV {
 	private int month;
-	private static Calendar prevCal;
 	public YearCalendar(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a=context.getTheme().obtainStyledAttributes(attrs, R.styleable.YearCalendar, 0, 0);
@@ -27,11 +25,10 @@ public class YearCalendar extends CalendarV {
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this,false));
 		if(bufferCalendar==null){
 		myCalendar=new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), month,1);
-		prevCal=null;
+		
 		}
 		else{
 			myCalendar=new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), month,1);
-			prevCal=bufferCalendar;
 		}
 	}
 	public float getRecommendedSize(RectF box, float factor){
@@ -41,7 +38,6 @@ public class YearCalendar extends CalendarV {
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
 		drawBox(myMonthLabel,c,getResources().getColor(R.color.SchoolColor2));
-		float recSize=getRecommendedSize(myMonthLabel, 0);
 		String s="" + monthNames[month];
 		drawText(myMonthLabel,c,s,getResources().getColor(R.color.White),super.getRecommendedSize(myMonthLabel));
 	}
