@@ -91,6 +91,10 @@ public class AddURL
 		{
 			e.printStackTrace();
 		}
+		/*
+		 * FileNotFoundException is from openFileOutput and openFileInput. Marked as already handled because of the
+		 * issue coming from calling this method. See comment under openFileInput or openFileOutput for more info.
+		 */
 		
 		return ret;
 		
