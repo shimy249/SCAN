@@ -24,6 +24,7 @@ public class NetActivity extends ActionBarActivity {
 		mViewPager=(ViewPager)findViewById(R.id.AgreementPage);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mViewPager.setCurrentItem(0);
+		this.getSupportActionBar().hide();
 	}
 
 	@Override
