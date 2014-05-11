@@ -600,6 +600,10 @@ public class CalendarV extends View{
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		selectedBox+=7;
 	}
+	public ArrayList sendEventList()
+	{
+		return mEvents;
+	}
 	public void addEvents(ArrayList<Event> events)
 	{
 		mEvents=events;
