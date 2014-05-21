@@ -1,4 +1,4 @@
-package com.example.androiddev;
+package com.ellume.scan;
 
 import android.app.Activity;
 import android.content.Intent;

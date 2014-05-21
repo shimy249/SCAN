@@ -1,4 +1,4 @@
-package com.example.androiddev;
+package com.ellume.scan;
 
 import android.animation.ValueAnimator;
 import android.util.Log;

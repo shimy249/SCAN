@@ -1,4 +1,4 @@
-package com.example.androiddev;
+package com.ellume.scan;
 
 import java.util.Calendar;
 

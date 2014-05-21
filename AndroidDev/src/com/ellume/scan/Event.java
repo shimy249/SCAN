@@ -1,6 +1,8 @@
-package com.example.androiddev;
+package com.ellume.scan;
 
 import java.util.Date;
+
+import android.util.Log;
 
 import com.google.api.client.util.DateTime;
 
@@ -32,6 +34,8 @@ public Event(com.google.api.services.calendar.model.Event current) {
 	startIndex +=1;
 	
 	String category = name.substring(startIndex,endIndex);
+	
+	Log.v("result", id + name + summary);
 	
 }
 
