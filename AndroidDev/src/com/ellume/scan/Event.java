@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.api.client.util.DateTime;
 
 public class Event {
-	public static final String FIELDS = "id,summary,description,start.dateTime,end.dateTime";
+	public static final String FIELDS = "items(id,summary,description,start,end)";
 	private String id;
 	private String name;
 	private String summary;
@@ -29,13 +29,13 @@ public Event(com.google.api.services.calendar.model.Event current) {
 	startDate = new Date(current.getStart().getDateTime().getValue());
 	endDate = new Date(current.getEnd().getDateTime().getValue());
 		
-	int startIndex = name.indexOf("[");
-	int endIndex = name.indexOf("]");
-	startIndex +=1;
+	//int startIndex = name.indexOf("[");
+	//int endIndex = name.indexOf("]");
+	//startIndex +=1;
 	
-	String category = name.substring(startIndex,endIndex);
+	//String category = name.substring(startIndex,endIndex);
 	
-	Log.v("result", id + name + summary);
+	
 	
 }
 

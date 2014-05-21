@@ -57,17 +57,8 @@ public class CalActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-		
-		
-		
-		
-		
-		
-		 
-		
-		
+		setContentView(R.layout.activity_cal);
+		getEvents();
 	
 	
 	}
@@ -146,12 +137,15 @@ public class CalActivity extends Activity {
 				for(int i = 0; i < arg0.length; i++){
 					try {
 						Events feed = client.events().list(arg0[i]).setFields(Event.FIELDS).execute();
-						Log.v("result", feed.toString());
+						
 						 List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
+						 Log.v("result", events.toString());
 						 for(int j = 0; j < events.size(); j++){
 							 com.google.api.services.calendar.model.Event current = events.get(j);
 							 result.add(new Event(current));
+							 
 						 }
+						 return  result.toArray(new Event[10]);
 					}catch (UserRecoverableAuthIOException e) {
 						  startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
 						} catch (IOException e) {
@@ -163,8 +157,14 @@ public class CalActivity extends Activity {
 				}
 				return null;
 			}
+			protected void onPostExecute(Event[] events){
+				for(int i =0; i < events.length; i++){
+					Log.v("resultEvents", events[i].getId()+events[i].getSummary()+events[i].getTitle());
+				}
+			}
 
 		}.execute("kevinshimy@gmail.com");//this is the list of calendars that come from somewhere
+		
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
