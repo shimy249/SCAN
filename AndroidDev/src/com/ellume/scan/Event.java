@@ -26,8 +26,8 @@ public Event(com.google.api.services.calendar.model.Event current) {
 	id = current.getId();
 	name = current.getSummary(); //title
 	summary = current.getDescription(); //description or summary whatever
-	startDate = new Date(current.getStart().getDateTime().getValue());
-	endDate = new Date(current.getEnd().getDateTime().getValue());
+	//startDate = new Date(current.getStart().getDateTime().getValue());
+	//endDate = new Date(current.getEnd().getDateTime().getValue());
 		
 	//int startIndex = name.indexOf("[");
 	//int endIndex = name.indexOf("]");
