@@ -1,17 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res/com.example.androiddev"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.view.ViewPager 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalActivity" 
-    android:background="@color/SchoolColor1"
-    >
-
-   <com.example.androiddev.CalendarV
-       android:id="@+id/MainCalendar"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       custom:showBackground="true"
-       />
-
-</RelativeLayout>
+    tools:context="com.example.androiddev.CalActivity"
+    android:id="@+id/CalendarPage"
+    />
+    

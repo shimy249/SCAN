@@ -9,7 +9,7 @@ import android.widget.Scroller;
 public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	private static String TAG="com.example.androiddev.GestureListener";
 	final Scroller mScroller;
-	 ValueAnimator mScrollerAnimator;
+	ValueAnimator mScrollerAnimator;
 	CalendarV myView;
 	private boolean act;
 	public GestureListener(CalendarV view)
@@ -29,80 +29,81 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	public boolean onDown(MotionEvent e)
 	{
 		if(act){
-		if(!mScroller.isFinished())
-			mScroller.forceFinished(true);
-		return true;
+			if(!mScroller.isFinished())
+				mScroller.forceFinished(true);
+			return true;
 		}
 		return act;
 
 	}
 	public  boolean onSingleTapConfirmed(MotionEvent e)
 	{
+	
 		return false;
 	}
 	public boolean onSingleTapUp(MotionEvent e)
 	{
 		if(act){
-	
-		return true;
+			myView.selectDate(e.getX(), e.getY());
+			return true;
 		}
 		return act;
 	}
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
 		if(act){
-		myView.setTranslationFactor(-distanceY);
-		return true;
+			myView.setTranslationFactor(-distanceY);
+			return true;
 		}
 		return act;
 	}
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float dx, float dy){
 		if(act){
-		if(Math.abs(dx)>4000)
-			if(dx<0 && Math.abs(dy)<Math.abs(dx))
-			{
-				myView.nextMonth(true);
-				return true;
-			}
-			else if(Math.abs(dy)<Math.abs(dx))
-			{
-				myView.previousMonth(true);
-				return true;
-			}
-		if(Math.abs(dy)>2000 && Math.abs(dy)>Math.abs(dx))
-		{
-			mScroller.fling(0, 0, (int)dx/4, (int)dy/2, -100, 100, -100000000, 100000000);
-			
-			myView.postInvalidate();
-		
-		mScrollerAnimator=ValueAnimator.ofFloat(dy/800,0);
-		mScrollerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-			float latestOffset=0;
-			public void onAnimationUpdate(ValueAnimator animation) {
-				if(!mScroller.isFinished()) {
-					mScroller.computeScrollOffset();
-					float f =mScroller.getCurrY();
-					Log.v(TAG, "Current Offset: "+(f-latestOffset));
-					myView.setTranslationFactor(f-latestOffset);
-					latestOffset=f;
-				}				
-				else
+			if(Math.abs(dx)>4000)
+				if(dx<0 && Math.abs(dy)<Math.abs(dx))
 				{
-					Log.v(TAG,"Scrolling Finished");
-					mScrollerAnimator.cancel();
-					onScrollFinished();
+					myView.nextMonth(true);
+					return true;
 				}
+				else if(Math.abs(dy)<Math.abs(dx))
+				{
+					myView.previousMonth(true);
+					return true;
+				}
+			if(Math.abs(dy)>2000 && Math.abs(dy)>Math.abs(dx))
+			{
+				mScroller.fling(0, 0, (int)dx/4, (int)dy/2, -100, 100, -100000000, 100000000);
+
+				myView.postInvalidate();
+
+				mScrollerAnimator=ValueAnimator.ofFloat(dy/800,0);
+				mScrollerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+					float latestOffset=0;
+					public void onAnimationUpdate(ValueAnimator animation) {
+						if(!mScroller.isFinished()) {
+							mScroller.computeScrollOffset();
+							float f =mScroller.getCurrY();
+							Log.v(TAG, "Current Offset: "+(f-latestOffset));
+							myView.setTranslationFactor(f-latestOffset);
+							latestOffset=f;
+						}				
+						else
+						{
+							Log.v(TAG,"Scrolling Finished");
+							mScrollerAnimator.cancel();
+							onScrollFinished();
+						}
+					}
+				});
+				mScrollerAnimator.setDuration(10000);
+				mScrollerAnimator.start();
 			}
-		});
-		mScrollerAnimator.setDuration(10000);
-		mScrollerAnimator.start();
-		}
-		return true;
+			return true;
 		}
 		return act;
 	}
 	public void onScrollFinished()
 	{
-			return;
+		return;
 	}
 
 }
