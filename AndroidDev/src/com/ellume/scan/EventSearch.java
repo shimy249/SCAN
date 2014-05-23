@@ -9,6 +9,8 @@ public class EventSearch
 	{
 		ArrayList<Event> query = new ArrayList();
 		
+		int x = 0;
+		
 		for(int i = 0; i<sendEventList().size();i++)
 		{
 			query.add(sendEventList().get(i));
