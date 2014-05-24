@@ -350,7 +350,7 @@ public class CalendarV extends View{
 			myText.setTextSize(10);
 			myText.setText("");
 			drawBox(myMonthLabel,c,getResources().getColor(R.color.SchoolColor1));
-			drawText(myMonthLabel, c,monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR),getResources().getColor(R.color.White));
+			drawText(myMonthLabel, c,monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR),getResources().getColor(R.color.TextColor));
 		}
 		else{
 			TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
@@ -370,7 +370,7 @@ public class CalendarV extends View{
 				drawBox(myDayLabels[i],canvas,getResources().getColor(R.color.SchoolColor2));
 			}
 			if(myDayLabelsNames[i].length()>0)
-				drawText(myDayLabels[i],canvas,getResources().getColor(R.color.White),myDayLabelsNames[i].substring(0,3),(3*myDayLabels[i].height()/4));
+				drawText(myDayLabels[i],canvas,getResources().getColor(R.color.TextColor),myDayLabelsNames[i].substring(0,3),(3*myDayLabels[i].height()/4));
 		}
 	}
 	private void drawWeekLabels(Canvas canvas){
@@ -386,7 +386,7 @@ public class CalendarV extends View{
 		bufferCalendar.set(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), 1);
 		int weekno=bufferCalendar.get(Calendar.WEEK_OF_YEAR);
 		for(int i=1; i<myWeekNumbers.length;i++)
-			drawText(myWeekNumbers[i],canvas,""+(weekno++),getResources().getColor(R.color.White));
+			drawText(myWeekNumbers[i],canvas,""+(weekno++),getResources().getColor(R.color.TextColor));
 	}
 	private void drawSquares(Canvas canvas){
 		//----Draw Backgrounds---------------------
@@ -400,11 +400,11 @@ public class CalendarV extends View{
 		for(int i=0; i<mySquares.length; i++)
 		{
 			if(myCalendar.get(Calendar.MONTH)==((CalRect)mySquares[i]).getMonth())
-				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.White));
+				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.TextColor));
 			else
-				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.Grey));
-		}
-	}
+				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.AlternateTextColor));
+		} 
+	} 
 	public void drawSelectedSquare(Canvas c){
 		if(selectedBox>=0 && selectedBox<=48)
 			drawBox(mySquares[selectedBox],c,getResources().getColor(R.color.SelectedColor),selectedBoxPainter);
@@ -441,7 +441,7 @@ public class CalendarV extends View{
 		if(index!=-1){
 			bufferRect.set(mySquares[index].centerX()-10, mySquares[index].bottom-30, mySquares[index].centerX()+10, mySquares[index].bottom-10);
 			int prevColor=textPainter.getColor();
-			textPainter.setColor(getResources().getColor(R.color.White));
+			textPainter.setColor(getResources().getColor(R.color.TextColor));
 			//if(bufferRect.top>myDayLabels[0].bottom)
 			canvas.drawOval(bufferRect, textPainter);
 			textPainter.setColor(prevColor);
@@ -628,7 +628,7 @@ public class CalendarV extends View{
 		if(!(this instanceof YearCalendar))
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		selectedBox+=7;
-	}
+	} 
 	public void addEvents(ArrayList<Event> events)
 	{
 		mEvents=events;

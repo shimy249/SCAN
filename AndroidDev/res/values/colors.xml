@@ -2,11 +2,12 @@
 <resources>
     <color name="SchoolColor1">#f0f0f0</color>
     <color name="SchoolColor2">#e6e6e6</color>
-    <color name="Grey">#a0a0a0</color>
-    <color name="White">#333333</color>
+    <color name="AlternateTextColor">#a0a0a0</color>
+    <color name="TextColor">#444444</color>
     <color name="SelectedColor">#FF6440</color>
     <color name="randomColor">#c09a4f</color>
     <color name="ORHS_Blue">#1f1f95</color>
     <color name="Blue_Event">#2A4480</color>
     <color name="Black">#111111</color>
+    <color name="White">#eeeeee</color>
 </resources>
