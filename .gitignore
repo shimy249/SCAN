@@ -1,2 +1,4 @@
 *.project
 /AndroidDev/.settings/*
+/AndroidDev/gen/*
+/AndroidDev/bin/*
