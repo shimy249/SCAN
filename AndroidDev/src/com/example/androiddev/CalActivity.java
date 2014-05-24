@@ -21,7 +21,7 @@ public class CalActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cal);
+		setContentView(R.layout.calendar);
 		//getResources().getConfiguration();
 		//if(getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
 		//{
@@ -69,7 +69,7 @@ public class CalActivity extends ActionBarActivity {
 			return frag;
 		}
 		public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
-			return inflator.inflate(R.layout.activity_cal, container, false);
+			return inflator.inflate(R.layout.calendar, container, false);
 		}
 	}
 	public static class yearCalendarFragment extends Fragment{
