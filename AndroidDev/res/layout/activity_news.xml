@@ -5,10 +5,11 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ellume.scan.NewsActivity"
+    tools:context="com.example.androiddev.NewsActivity"
     tools:ignore="MergeRootFrame" 
     >
-    <com.exacom.ellume.scan.SelectionView  android:id="@+id/SelectionView"
+    <com.example.androiddev.SelectionView
+        android:id="@+id/SelectionView"
         android:layout_width="50dp"
         android:layout_height="fill_parent"
 
