@@ -51,9 +51,6 @@ public class Refresher extends Service {
 	
 	private final IBinder mBinder = new MyBinder();
 	
-	public int onStartCommand(Intent i, int flags, int startId){
-		
-	}
 
 
 	public final BroadcastReceiver receiver = new BroadcastReceiver(){
