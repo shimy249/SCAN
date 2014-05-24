@@ -1,4 +1,4 @@
 *.project
 /AndroidDev/.settings/*
-/AndroidDev/gen/*
-/AndroidDev/bin/*
+/AndroidDev/gen/.gitignore
+/AndroidDev/bin/jarlist.cache
