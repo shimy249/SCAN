@@ -13,12 +13,17 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 
-
+//AddURL - Class detailing methods to read, write, and analyze 
 public class AddURL 
 {
+	//fileSplit - An array of strings containing one URL per cell; writes to a new cell when it encounters a new line (new URL).
 	private String[] fileSplit = this.readFromFile().split("\n");
+	
+	/*fileCheck - An array of boolean values the same length as the fileSplit array.
+	 * 			  Intended for use with the getvalidURL method to determine which cells contain a true or false value. */
 	private Boolean[] fileCheck = new Boolean[fileSplit.length];
 	
+	//getvalidURL - returns an ArrayList of strings, each of which are a URL from the list that has been written to file.
 	private ArrayList getvalidURL()
 	{
 		ArrayList<String> finalURL = new ArrayList();
@@ -31,6 +36,8 @@ public class AddURL
 		return finalURL;
 	}
 	
+	/*writeNewURL - Writes a URL and saves it to a file in the default location.
+	 * 				Each time this method is called, one URL is written to a line, then it drops down a line for the next URL. */
 	private void writeNewURL(String URL$)
 	{
 		try
@@ -51,7 +58,7 @@ public class AddURL
 		}
 	}
 	
-	
+	//readFromFile - Returns a string containing all the text content of a file.
 	private String readFromFile()
 	{
 		String ret = "";
@@ -100,6 +107,7 @@ public class AddURL
 		
 	}
 	
+	//clearURL - Deletes all the textual content of a file. Does not delete the file itself.
 	private void clearURL()
 	{
 		try {
