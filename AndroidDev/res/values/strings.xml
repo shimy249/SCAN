@@ -13,10 +13,8 @@
     <string name="ORHS_Motto">It\'s a small world after all</string>
     <string name="YearView">Year View</string>
     <string name="title_activity_net">NetActivity</string>
-    <string name="netAgreement">Yadda Yadda Yadda \nBlah Blah Blah\nSomething about Shaller&#8230;\nSign?\n..\n..\n..\n..\n..</string>
-    <string name="Agreement_Text">Press to sign agreement.</string>
-    <string name="TBI">To Be Implemented</string>
-    <string name="Attention">Attention:</string>
-    <string name="title_activity_authetication_error">AutheticationError</string>
-
+	<string name="netAgreement">Yadda Yadda Yadda \nBlah Blah Blah\nSomething about Shaller&#8230;\nSign?\n..\n..\n..\n..\n..</string>
+	<string name="Agreement_Text">Press to sign agreement.</string>
+	<string name="TBI">To Be Implemented</string>
+	<string name="Attention">Attention:</string>
 </resources>
