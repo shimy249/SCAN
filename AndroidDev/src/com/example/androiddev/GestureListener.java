@@ -82,13 +82,13 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 						if(!mScroller.isFinished()) {
 							mScroller.computeScrollOffset();
 							float f =mScroller.getCurrY();
-							Log.v(TAG, "Current Offset: "+(f-latestOffset));
+							//Log.v(TAG, "Current Offset: "+(f-latestOffset));
 							myView.setTranslationFactor(f-latestOffset);
 							latestOffset=f;
 						}				
 						else
 						{
-							Log.v(TAG,"Scrolling Finished");
+							//Log.v(TAG,"Scrolling Finished");
 							mScrollerAnimator.cancel();
 							onScrollFinished();
 						}

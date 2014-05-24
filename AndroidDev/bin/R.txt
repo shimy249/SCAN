@@ -372,10 +372,9 @@ int layout activity_main 0x7f03001b
 int layout activity_net 0x7f03001c
 int layout activity_news 0x7f03001d
 int layout activity_rights_agreement 0x7f03001e
-int layout calendar 0x7f03001f
-int layout menu_cal 0x7f030020
-int layout support_simple_spinner_dropdown_item 0x7f030021
-int layout year_layout 0x7f030022
+int layout menu_cal 0x7f03001f
+int layout support_simple_spinner_dropdown_item 0x7f030020
+int layout year_layout 0x7f030021
 int menu cal 0x7f0c0000
 int menu event 0x7f0c0001
 int menu main 0x7f0c0002
