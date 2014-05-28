@@ -6,10 +6,24 @@ import android.graphics.RectF;
 
 public class CalRect extends RectF{
 	private int day, month, year;
-	private Calendar bufferCalendar;
+	private static Calendar bufferCalendar;
 	int color;
+	private int numEvents;
 	public CalRect(){
 		super();
+		numEvents=0;
+	}
+	public void incrementEvents()
+	{
+		numEvents++;
+	}
+	public int getNumEvents()
+	{
+		return numEvents;
+	}
+	public void clearEvents()
+	{
+		numEvents=0;
 	}
 	public CalRect( float left, float top, float right, float bottom){
 		super(left,top,right,bottom);

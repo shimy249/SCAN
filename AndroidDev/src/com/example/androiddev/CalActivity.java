@@ -1,10 +1,12 @@
 package com.example.androiddev;
 
-import com.example.androiddev.NetActivity.SectionsPagerAdapter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.app.ActionBar;
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.CalendarContract.Events;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,6 +24,16 @@ public class CalActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.calendar);
+		((CalendarV)findViewById(R.id.mainCalendar)).setShowWeekNumbers(false);
+		ArrayList<Event> e=new ArrayList<Event>();
+		Date s=new Date();
+		s.setTime(Calendar.getInstance().getTimeInMillis());
+		e.add(new Event("Bobsledding","Fun",s,s, getResources().getColor(R.color.Blue_Event)));
+		e.add(new Event("Not Bobsledding","Not Fun",s,s,getResources().getColor(R.color.Blue_Event)));
+		e.add(new Event("More Bobsledding","More Fun",s,s,getResources().getColor(R.color.randomColor)));
+		e.add(new Event("Random Bobsledding","Blah",s,s,getResources().getColor(R.color.randomColor)));
+		e.add(new Event("More Bobsledding Too","Blah",s,s,0));
+		((CalendarV)findViewById(R.id.mainCalendar)).addEvents(e);
 		//getResources().getConfiguration();
 		//if(getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
 		//{

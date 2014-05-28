@@ -37,6 +37,7 @@ public class CalendarV extends View{
 
 	//---------------------------------Pre-Allocated_Calendar:-----------------------------
 	protected final static RectF[] mySquares=new CalRect[49];
+	protected final static RectF[] myDetailedEvents=new RectF[4];
 	protected final static RectF[] myDayLabels=new CalRect[8];
 	protected final static RectF[] myWeekNumbers=new CalRect[7];
 	protected RectF myMonthLabel;
@@ -53,7 +54,7 @@ public class CalendarV extends View{
 	private float translationFactor;
 	private float intervalX, intervalY;
 	private float translationFactorEvents;
-	private static int selectedBox;
+	private int selectedBox;
 	//-------------------------------Painters:---------------------------------------------
 	protected Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
 
@@ -62,12 +63,14 @@ public class CalendarV extends View{
 	protected static Calendar bufferCalendar;
 	private static Calendar secondaryBuffer;
 	protected GestureDetector mDetector;
-
+	//------------------------------Variables Manipulated in Settings----------------------
+	boolean mShowWeekNumbers;
 	public CalendarV(Context context, AttributeSet attrs){
 		super(context, attrs);
 		bufferRect=new RectF();
 		TypedArray a=context.getTheme().obtainStyledAttributes(attrs, R.styleable.CalendarV, 0, 0);
 		try{
+			mShowWeekNumbers=false;
 		}
 		finally{
 			a.recycle();
@@ -78,10 +81,16 @@ public class CalendarV extends View{
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this));
 		indexes=new ArrayList<Integer>();
 	}
+	public void setShowWeekNumbers(boolean val)
+	{
+		mShowWeekNumbers=val;
+		invalidate();
+		requestLayout();
+	}
 	public void initCal(){
 		if(secondaryBuffer!=null && !(this instanceof YearCalendar)){
 			myCalendar=secondaryBuffer;
-			
+
 		}
 		else if(bufferCalendar==null)
 		{
@@ -94,7 +103,10 @@ public class CalendarV extends View{
 		bufferCalendar=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
 		if(!(this instanceof YearCalendar))
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
-		selectedBox=myCalendar.get(Calendar.DAY_OF_MONTH)+1;
+		int day=myCalendar.get(Calendar.DAY_OF_MONTH);
+		myCalendar.set(Calendar.DAY_OF_MONTH, 1);
+		selectedBox=day+myCalendar.get(Calendar.DAY_OF_WEEK)-2;
+		myCalendar.set(Calendar.DAY_OF_MONTH, day);
 
 	}
 	public void setCal(Calendar c){
@@ -103,11 +115,15 @@ public class CalendarV extends View{
 		requestLayout();
 	}
 	public void onSizeChanged(int w, int h, int oldw, int oldh){
-		float monthLabelH=h/6;
+		float monthLabelH=0;
 		myMonthLabel.set(0, 0, w, monthLabelH);
 		myWeekNumbers[0]=myDayLabels[0];
 		float dayLabelH=40;
-		float weekLabelW=50;
+		float weekLabelW;
+		if(mShowWeekNumbers)
+			weekLabelW=50;
+		else
+			weekLabelW=0;
 		if(w>h){
 			monthLabelH=0;
 		}
@@ -178,7 +194,10 @@ public class CalendarV extends View{
 		{
 			myDayLabels[i]=new CalRect();
 		}
-
+		for(int i=0; i<myDetailedEvents.length;i++)
+		{
+			myDetailedEvents[i]=new RectF();
+		}
 		myMonthLabel=new CalRect();
 	}
 	public void initPaint(){
@@ -345,18 +364,18 @@ public class CalendarV extends View{
 	private void drawMonthLabel(Canvas c){
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
-		if(getHeight()>getWidth()){
-			TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
-			myText.setTextSize(10);
-			myText.setText("");
-			drawBox(myMonthLabel,c,getResources().getColor(R.color.SchoolColor1));
-			drawText(myMonthLabel, c,monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR),getResources().getColor(R.color.TextColor));
-		}
-		else{
-			TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
-			myText.setTextSize(30);
-			myText.setText(""+monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR));
-		}
+		//	if(getHeight()>getWidth()){
+		//		TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
+		//		myText.setTextSize(10);
+		//		myText.setText("");
+		//		drawBox(myMonthLabel,c,getResources().getColor(R.color.SchoolColor1));
+		//		drawText(myMonthLabel, c,monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR),getResources().getColor(R.color.TextColor));
+		//	}
+		//	else{
+		TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
+		myText.setTextSize(30);
+		myText.setText(""+monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR));
+		//	}
 	}
 	private void drawDayLabels(Canvas canvas){
 		for(int i=0; i<myDayLabels.length; i++)
@@ -409,23 +428,40 @@ public class CalendarV extends View{
 		if(selectedBox>=0 && selectedBox<=48)
 			drawBox(mySquares[selectedBox],c,getResources().getColor(R.color.SelectedColor),selectedBoxPainter);
 	}
+	private void reReference()
+	{
+		for(int i=7; i<mySquares.length;i++)
+		{
+			mySquares[i].offset(0, mySquares[i-7].bottom-mySquares[i].top);
+		}
+	}
 	public void onDraw(Canvas canvas){
+		reReference();
 		translate(translationFactor, 0, mySquares.length);
 		if(isFirstLayerVisible())
 		{
 			moveLayerUp();
 		}
-		if(checkForEvents())
-		{
-
-		}
 		if(this.isUpperLayerShowing())
 			moveLayerDown();
+		if(checkForEvents())
+		{
+		
+			if(indexes.size()>2)
+				translate(100,nextLine(selectedBox),mySquares.length);
+			else if(indexes.size()>0)
+				translate(50,nextLine(selectedBox),mySquares.length);
+			else
+				translate(0,nextLine(selectedBox),mySquares.length);
+			drawDetailedEvents(mySquares[selectedBox].bottom, canvas);
+		}
+
 		drawSquares(canvas);
 		drawDecals(canvas);
 		drawMonthLabel(canvas);
 		drawDayLabels(canvas);
-		drawWeekLabels(canvas);
+		if(mShowWeekNumbers)
+			drawWeekLabels(canvas);
 
 	}
 	public void drawDecals(Canvas canvas)
@@ -441,7 +477,7 @@ public class CalendarV extends View{
 		if(index!=-1){
 			bufferRect.set(mySquares[index].centerX()-10, mySquares[index].bottom-30, mySquares[index].centerX()+10, mySquares[index].bottom-10);
 			int prevColor=textPainter.getColor();
-			textPainter.setColor(getResources().getColor(R.color.TextColor));
+			textPainter.setColor(getResources().getColor(R.color.CurrentDayColor));
 			//if(bufferRect.top>myDayLabels[0].bottom)
 			canvas.drawOval(bufferRect, textPainter);
 			textPainter.setColor(prevColor);
@@ -506,23 +542,12 @@ public class CalendarV extends View{
 		requestLayout();
 	}
 	public int nextLine(int i){
-		if(i<=6)
-			return 7;
-		else if(i<=13)
-			return 14;
-		else if(i<=20)
-			return 21;
-		else if(i<=27)
-			return 28;
-		else if(i<=34)
-			return 35;
-		else
-			return 42;
+		return i/7*7+7;
 	}
 	public void translate(float distanceY, int index, int end){
 		for(int i=index; i<end; i++)
 		{
-			mySquares[i].set(mySquares[i].left, mySquares[i].top+distanceY, mySquares[i].right, mySquares[i].bottom+distanceY);
+			mySquares[i].offset(0, distanceY);;
 		}
 	}
 	public void setTranslationFactor(float f)
@@ -530,6 +555,41 @@ public class CalendarV extends View{
 		translationFactor=f;
 		invalidate();
 		requestLayout();
+	}
+	private void simpleDrawText(RectF box, Canvas c, String s, int color)
+	{
+		textPainter.setColor(color);
+		float penX, penY;
+		penX=box.left;
+		penY=box.top;
+		switch(alignX){
+		case ALIGN_LEFT:
+			penX+=3;
+			break;
+		case ALIGN_RIGHT:
+			penX+=box.width()-textPainter.measureText(s);
+			break;
+		case ALIGN_CENTER:
+			penX+=box.width()/2-textPainter.measureText(s)/2;
+			break;
+		default:
+			penX+=3;
+			break;
+		}
+		switch(alignY){
+		case ALIGN_TOP:
+			penY+=(textPainter.descent()-textPainter.ascent());
+			break;
+		case ALIGN_CENTER:
+			penY+=(box.height()/2-(textPainter.ascent()+textPainter.descent())/2);
+			break;
+		case ALIGN_BOTTOM:
+			penY+=(box.height()-3);
+			break;
+		default:
+			penY+=(textPainter.descent()-textPainter.ascent());
+		}
+		c.drawText(s, penX, penY, textPainter);
 	}
 	private boolean isFirstLayerVisible()
 	{
@@ -582,7 +642,7 @@ public class CalendarV extends View{
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		if(!(this instanceof YearCalendar))
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
-	
+
 		selectedBox-=7;
 	}
 	private void moveLayerDown()
@@ -639,17 +699,87 @@ public class CalendarV extends View{
 	public boolean checkForEvents()
 	{
 		indexes.clear();
-		if(mEvents!=null)
+		if(mEvents!=null && selectedBox<mySquares.length && selectedBox>0)
 			for(int j=0; j<mEvents.size(); j++)
 			{
-				if(mEvents.get(j).getStartDate().getDate()==((CalRect)mySquares[selectedBox]).getDay()
-						&& mEvents.get(j).getStartDate().getMonth()==((CalRect)mySquares[selectedBox]).getMonth()
-						&& mEvents.get(j).getStartDate().getYear()==((CalRect)mySquares[selectedBox]).getYear())
+				int day=((CalRect)mySquares[selectedBox]).getDay();
+				int month=((CalRect)mySquares[selectedBox]).getMonth();
+				int year=((CalRect)mySquares[selectedBox]).getYear();
+				int day2=mEvents.get(j).getStartDate().getDate();
+				int month2=mEvents.get(j).getStartDate().getMonth();
+				int year2=mEvents.get(j).getStartDate().getYear()+1900;
+				if(day2==day
+						&& month2==month
+						&& year2==year)
 				{
 					indexes.add(j);
 				}
 
 			}
 		return indexes.size()!=0;
+	}
+	public void drawDetailedEvents(float positionY, Canvas canvas){
+		//if(indexes.size()>4)
+		alignX=ALIGN_CENTER;
+		alignY=ALIGN_CENTER;
+		{
+			myDetailedEvents[0].set(myWeekNumbers[0].right, positionY, (getWidth()-myWeekNumbers[0].right)/2, positionY+50);
+			myDetailedEvents[1].set((getWidth()-myWeekNumbers[0].right)/2, positionY, getWidth(), positionY+50);
+			for(int i=2; i<myDetailedEvents.length;i++)
+			{
+				myDetailedEvents[i].set(myDetailedEvents[i%2].left, myDetailedEvents[i%2].bottom, myDetailedEvents[i%2].right, myDetailedEvents[i%2].bottom+50);
+			}
+			adjustToCorrectTextSize(myDetailedEvents[0]);
+			for(int i=0; i<myDetailedEvents.length && i<indexes.size(); i++)
+			{
+				int color=mEvents.get(indexes.get(i)).getColor();
+				boxPainter.setColor(color);
+				canvas.drawRect(myDetailedEvents[i], boxPainter);
+				String s=mEvents.get(indexes.get(i)).getTitle();
+				if(textPainter.measureText(s)>myDetailedEvents[i].width())
+					s=cutString(s, myDetailedEvents[i].width());
+				if(indexes.size()>4 && i==3)
+					simpleDrawText(myDetailedEvents[i],canvas,"More...",getResources().getColor(R.color.DetailedEventColor));
+				else
+					simpleDrawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor));
+			}
+		}
+	}
+	private void adjustToCorrectTextSize(RectF box)
+	{
+		float maxSize=box.bottom-box.top-5;
+		if(maxSize<0)
+			return;
+		else
+		{
+			while(textPainter.descent()-textPainter.ascent()>maxSize)
+			{
+				textPainter.setTextSize(textPainter.getTextSize()-1);
+			}
+			while(textPainter.descent()-textPainter.ascent()<maxSize)
+			{
+				textPainter.setTextSize(textPainter.getTextSize()+1);
+			}
+		}
+	}
+	private void translateByRef(float refY, float transDistance, int startPosition)
+	{
+		for(int i=startPosition; i<startPosition+7;i++)
+		{
+			mySquares[i].set(mySquares[i].left, refY+transDistance, mySquares[i].right, refY+transDistance+mySquares[i].height());
+		}
+		for(int i=startPosition+7; i<mySquares.length;i++)
+		{
+			mySquares[i].set(mySquares[i].left,mySquares[i-7].bottom,mySquares[i].top,mySquares[i-7].bottom+transDistance);
+		}
+	}
+	private String cutString(String s, float width)
+	{ 
+		while(textPainter.measureText(s)>width)
+		{
+			s=s.substring(0, s.length()-1);
+		}
+		s=s.substring(0, s.length()-3)+"...";
+		return s;
 	}
 }

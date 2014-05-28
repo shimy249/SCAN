@@ -4,6 +4,9 @@
     <color name="SchoolColor2">#e6e6e6</color>
     <color name="AlternateTextColor">#a0a0a0</color>
     <color name="TextColor">#444444</color>
+    <color name="FrameColor">#c8c8cd</color>
+    <color name="DetailedEventColor">#eeeeee</color>
+    <color name="CurrentDayColor">#2727a1</color>
     <color name="SelectedColor">#FF6440</color>
     <color name="randomColor">#c09a4f</color>
     <color name="ORHS_Blue">#1f1f95</color>
