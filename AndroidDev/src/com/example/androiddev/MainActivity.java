@@ -29,8 +29,8 @@ public class MainActivity extends Activity {
 		if(!netSignedBool)
 		{
 			try{
-			Intent intent=new Intent(this, NetActivity.class);
-			startActivity(intent);
+				Intent intent=new Intent(this, NetActivity.class);
+				startActivity(intent);
 			}
 			catch(Exception e){}
 		}

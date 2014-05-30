@@ -5,11 +5,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -446,14 +448,8 @@ public class CalendarV extends View{
 			moveLayerDown();
 		if(checkForEvents())
 		{
-		
-			if(indexes.size()>2)
-				translate(100,nextLine(selectedBox),mySquares.length);
-			else if(indexes.size()>0)
-				translate(50,nextLine(selectedBox),mySquares.length);
-			else
-				translate(0,nextLine(selectedBox),mySquares.length);
 			drawDetailedEvents(mySquares[selectedBox].bottom, canvas);
+			translate(8+myDetailedEvents[myDetailedEvents.length-1].bottom-myDetailedEvents[0].top,nextLine(selectedBox),mySquares.length);
 		}
 
 		drawSquares(canvas);
@@ -506,7 +502,35 @@ public class CalendarV extends View{
 				selectedBox=i;
 				invalidate();
 				requestLayout();
-
+				return;
+			}
+		}
+		for(int i=0; i<myDetailedEvents.length;i++)
+		{
+			if(myDetailedEvents[i].contains(x,y))
+			{
+				if(i==3 && mEvents.size()>4)
+				{
+					//Log.v("Button Press:","More");
+					/*
+					 * @TODO:
+					 * Add Activity to view all of the events of one day.
+					 */
+					
+					return;
+				}
+				else
+				{
+					Intent intent=new Intent(this.getContext(), EventActivity.class);
+					intent.putExtra(TITLE, mEvents.get(i).getTitle());
+					intent.putExtra(DESCRIPTION,mEvents.get(i).getSummary());
+					intent.putExtra(STARTDATE, CalendarConversion.CalendarToString(mEvents.get(i).getStartDate()));
+					intent.putExtra(ENDDATE, CalendarConversion.CalendarToString(mEvents.get(i).getEndDate()));
+					intent.putExtra(COLOR, mEvents.get(i).getColor());
+					this.getContext().startActivity(intent);
+					//Log.v("Button Press:",mEvents.get(i).getTitle());
+					return;
+				}
 			}
 		}
 	}
@@ -720,21 +744,26 @@ public class CalendarV extends View{
 	}
 	public void drawDetailedEvents(float positionY, Canvas canvas){
 		//if(indexes.size()>4)
+		int boxHeight=50;
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
 		{
-			myDetailedEvents[0].set(myWeekNumbers[0].right, positionY, (getWidth()-myWeekNumbers[0].right)/2, positionY+50);
-			myDetailedEvents[1].set((getWidth()-myWeekNumbers[0].right)/2, positionY, getWidth(), positionY+50);
+			myDetailedEvents[0].set(myWeekNumbers[0].right, positionY, (getWidth()-myWeekNumbers[0].right)/2, positionY+boxHeight);
+			myDetailedEvents[1].set((getWidth()-myWeekNumbers[0].right)/2, positionY, getWidth(), positionY+boxHeight);
 			for(int i=2; i<myDetailedEvents.length;i++)
 			{
-				myDetailedEvents[i].set(myDetailedEvents[i%2].left, myDetailedEvents[i%2].bottom, myDetailedEvents[i%2].right, myDetailedEvents[i%2].bottom+50);
+				myDetailedEvents[i].set(myDetailedEvents[i%2].left, myDetailedEvents[i%2].bottom, myDetailedEvents[i%2].right, myDetailedEvents[i%2].bottom+boxHeight);
+			}
+			for(int i=0; i<myDetailedEvents.length;i++)
+			{
+				myDetailedEvents[i].inset(2, 2);
 			}
 			adjustToCorrectTextSize(myDetailedEvents[0]);
 			for(int i=0; i<myDetailedEvents.length && i<indexes.size(); i++)
 			{
 				int color=mEvents.get(indexes.get(i)).getColor();
 				boxPainter.setColor(color);
-				canvas.drawRect(myDetailedEvents[i], boxPainter);
+				canvas.drawRoundRect(myDetailedEvents[i],15f,15f, boxPainter);
 				String s=mEvents.get(indexes.get(i)).getTitle();
 				if(textPainter.measureText(s)>myDetailedEvents[i].width())
 					s=cutString(s, myDetailedEvents[i].width());
@@ -747,7 +776,11 @@ public class CalendarV extends View{
 	}
 	private void adjustToCorrectTextSize(RectF box)
 	{
-		float maxSize=box.bottom-box.top-5;
+		float maxSize;
+		if(box.height()>60)
+		maxSize=box.bottom-box.top-15;
+		else
+			maxSize=box.bottom-box.top-5;
 		if(maxSize<0)
 			return;
 		else
