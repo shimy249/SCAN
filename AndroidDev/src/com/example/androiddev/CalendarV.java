@@ -38,7 +38,7 @@ public class CalendarV extends View{
 	//-------------------------------------------------------------------------------------
 
 	//---------------------------------Pre-Allocated_Calendar:-----------------------------
-	protected final static RectF[] mySquares=new CalRect[49];
+	protected final  RectF[] mySquares=new CalRect[49];
 	protected final static RectF[] myDetailedEvents=new RectF[4];
 	protected final static RectF[] myDayLabels=new CalRect[8];
 	protected final static RectF[] myWeekNumbers=new CalRect[7];
@@ -366,18 +366,10 @@ public class CalendarV extends View{
 	private void drawMonthLabel(Canvas c){
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
-		//	if(getHeight()>getWidth()){
-		//		TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
-		//		myText.setTextSize(10);
-		//		myText.setText("");
-		//		drawBox(myMonthLabel,c,getResources().getColor(R.color.SchoolColor1));
-		//		drawText(myMonthLabel, c,monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR),getResources().getColor(R.color.TextColor));
-		//	}
-		//	else{
 		TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
 		myText.setTextSize(30);
 		myText.setText(""+monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR));
-		//	}
+
 	}
 	private void drawDayLabels(Canvas canvas){
 		for(int i=0; i<myDayLabels.length; i++)
@@ -440,18 +432,20 @@ public class CalendarV extends View{
 	public void onDraw(Canvas canvas){
 		reReference();
 		translate(translationFactor, 0, mySquares.length);
-		if(isFirstLayerVisible())
-		{
-			moveLayerUp();
-		}
-		if(this.isUpperLayerShowing())
-			moveLayerDown();
+	
 		if(checkForEvents())
 		{
 			drawDetailedEvents(mySquares[selectedBox].bottom, canvas);
 			translate(8+myDetailedEvents[myDetailedEvents.length-1].bottom-myDetailedEvents[0].top,nextLine(selectedBox),mySquares.length);
 		}
-
+		boolean first=isFirstLayerVisible();
+		boolean second=isUpperLayerShowing();
+		if(!first)
+		{
+			moveLayerUp();
+		}
+		if(second)
+			moveLayerDown();
 		drawSquares(canvas);
 		drawDecals(canvas);
 		drawMonthLabel(canvas);
@@ -516,7 +510,7 @@ public class CalendarV extends View{
 					 * @TODO:
 					 * Add Activity to view all of the events of one day.
 					 */
-					
+
 					return;
 				}
 				else
@@ -617,7 +611,14 @@ public class CalendarV extends View{
 	}
 	private boolean isFirstLayerVisible()
 	{
-		return (mySquares[0].bottom<myDayLabels[0].bottom);
+		if(selectedBox>6 || selectedBox<0)
+			return (mySquares[0].bottom>myDayLabels[0].bottom);
+		else if(mEvents.size()>2)
+			return(myDetailedEvents[3].bottom>myDayLabels[0].bottom);
+		else if(mEvents.size()>0)
+			return(myDetailedEvents[0].bottom>myDayLabels[0].bottom);
+		else
+			return (mySquares[0].bottom>myDayLabels[0].bottom);
 	}
 	private boolean isUpperLayerShowing()
 	{
@@ -666,8 +667,16 @@ public class CalendarV extends View{
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		if(!(this instanceof YearCalendar))
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
-
 		selectedBox-=7;
+	}
+	private void compensateForShiftUp()
+	{
+		for(int i=0; i<7;i++)
+			mySquares[i].offset(0, -(mySquares[i].top-myDayLabels[0].bottom));
+		for(int i=7; i<mySquares.length; i++)
+		{
+			mySquares[i].offset(0, -(mySquares[i].top-mySquares[i-7].bottom));
+		}
 	}
 	private void moveLayerDown()
 	{
@@ -711,8 +720,14 @@ public class CalendarV extends View{
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		if(!(this instanceof YearCalendar))
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+		if(!(selectedBox>=0 && selectedBox<mySquares.length) && selectedBox+7>=0 && selectedBox+7<mySquares.length)
+			compensateForShiftDown();
 		selectedBox+=7;
 	} 
+	private void compensateForShiftDown()
+	{
+
+	}
 	public void addEvents(ArrayList<Event> events)
 	{
 		mEvents=events;
@@ -723,7 +738,7 @@ public class CalendarV extends View{
 	public boolean checkForEvents()
 	{
 		indexes.clear();
-		if(mEvents!=null && selectedBox<mySquares.length && selectedBox>0)
+		if(mEvents!=null && selectedBox<mySquares.length && selectedBox>=0)
 			for(int j=0; j<mEvents.size(); j++)
 			{
 				int day=((CalRect)mySquares[selectedBox]).getDay();
@@ -778,7 +793,7 @@ public class CalendarV extends View{
 	{
 		float maxSize;
 		if(box.height()>60)
-		maxSize=box.bottom-box.top-15;
+			maxSize=box.bottom-box.top-15;
 		else
 			maxSize=box.bottom-box.top-5;
 		if(maxSize<0)
