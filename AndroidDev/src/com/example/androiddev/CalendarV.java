@@ -432,11 +432,12 @@ public class CalendarV extends View{
 	public void onDraw(Canvas canvas){
 		reReference();
 		translate(translationFactor, 0, mySquares.length);
-	
+
 		if(checkForEvents())
 		{
-			drawDetailedEvents(mySquares[selectedBox].bottom, canvas);
-			translate(8+myDetailedEvents[myDetailedEvents.length-1].bottom-myDetailedEvents[0].top,nextLine(selectedBox),mySquares.length);
+			calcDetailedEvents(mySquares[selectedBox].bottom);
+			drawDetailedEvents(canvas);
+			translate(4+myDetailedEvents[myDetailedEvents.length-1].bottom-myDetailedEvents[0].top,nextLine(selectedBox),mySquares.length);
 		}
 		boolean first=isFirstLayerVisible();
 		boolean second=isUpperLayerShowing();
@@ -614,9 +615,9 @@ public class CalendarV extends View{
 		if(selectedBox>6 || selectedBox<0)
 			return (mySquares[0].bottom>myDayLabels[0].bottom);
 		else if(mEvents.size()>2)
-			return(myDetailedEvents[3].bottom>myDayLabels[0].bottom);
+			return(2+myDetailedEvents[2].bottom>myDayLabels[0].bottom);
 		else if(mEvents.size()>0)
-			return(myDetailedEvents[0].bottom>myDayLabels[0].bottom);
+			return(2+myDetailedEvents[0].bottom>myDayLabels[0].bottom);
 		else
 			return (mySquares[0].bottom>myDayLabels[0].bottom);
 	}
@@ -721,12 +722,25 @@ public class CalendarV extends View{
 		if(!(this instanceof YearCalendar))
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		if(!(selectedBox>=0 && selectedBox<mySquares.length) && selectedBox+7>=0 && selectedBox+7<mySquares.length)
+		{
+			selectedBox+=7;
 			compensateForShiftDown();
-		selectedBox+=7;
+		}
+		else
+			selectedBox+=7;
 	} 
 	private void compensateForShiftDown()
 	{
-
+		calcDetailedEvents(mySquares[selectedBox].bottom);
+		if(mEvents.size()>2)
+		{
+			translate(-(4+myDetailedEvents[2].bottom-myDetailedEvents[0].top),0,7);
+		}
+		else if(mEvents.size()>0)
+		{
+			translate(-(4+myDetailedEvents[0].bottom-myDetailedEvents[0].top),0,7);
+		}
+		else{}
 	}
 	public void addEvents(ArrayList<Event> events)
 	{
@@ -757,7 +771,7 @@ public class CalendarV extends View{
 			}
 		return indexes.size()!=0;
 	}
-	public void drawDetailedEvents(float positionY, Canvas canvas){
+	public void calcDetailedEvents(float positionY){
 		//if(indexes.size()>4)
 		int boxHeight=50;
 		alignX=ALIGN_CENTER;
@@ -773,6 +787,10 @@ public class CalendarV extends View{
 			{
 				myDetailedEvents[i].inset(2, 2);
 			}
+		
+		}
+	}
+		public void drawDetailedEvents(Canvas canvas){
 			adjustToCorrectTextSize(myDetailedEvents[0]);
 			for(int i=0; i<myDetailedEvents.length && i<indexes.size(); i++)
 			{
@@ -788,7 +806,6 @@ public class CalendarV extends View{
 					simpleDrawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor));
 			}
 		}
-	}
 	private void adjustToCorrectTextSize(RectF box)
 	{
 		float maxSize;
