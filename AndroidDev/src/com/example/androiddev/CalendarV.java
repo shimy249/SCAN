@@ -670,15 +670,6 @@ public class CalendarV extends View{
 			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		selectedBox-=7;
 	}
-	private void compensateForShiftUp()
-	{
-		for(int i=0; i<7;i++)
-			mySquares[i].offset(0, -(mySquares[i].top-myDayLabels[0].bottom));
-		for(int i=7; i<mySquares.length; i++)
-		{
-			mySquares[i].offset(0, -(mySquares[i].top-mySquares[i-7].bottom));
-		}
-	}
 	private void moveLayerDown()
 	{
 		for(int i=mySquares.length-1; i>=7; i--)
