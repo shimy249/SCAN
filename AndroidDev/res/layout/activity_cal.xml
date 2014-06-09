@@ -1,16 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res/com.example.androiddev"
+    xmlns:custom="http://schemas.android.com/apk/res/com.ellume.scan"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CalActivity" 
     android:background="@color/SchoolColor1">
-
-   <com.example.androiddev.CalendarV
+  
+   <com.ellume.scan.CalendarV 
        android:id="@+id/MainCalendar"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        custom:showBackground="true"
        />
+       
 
 </RelativeLayout>
