@@ -8,7 +8,8 @@
     tools:context="com.ellume.scan.NewsActivity"
     tools:ignore="MergeRootFrame" 
     >
-    <com.exacom.ellume.scan.SelectionView  android:id="@+id/SelectionView"
+    <com.exacom.ellume.scan.SelectionView 
+     android:id="@+id/SelectionView"
         android:layout_width="50dp"
         android:layout_height="fill_parent"
 

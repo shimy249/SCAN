@@ -19,17 +19,6 @@
         android:textColor="@color/White"
         android:textSize="25sp" />
 
-    <CheckBox
-        android:id="@+id/netToggleButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:onClick="netSigned"
-        android:text="@string/Agreement_Text"
-        android:textColor="@color/White"
-        android:textSize="20sp" />
-
     <TextView
         android:id="@+id/InternetClause"
         android:layout_width="fill_parent"
@@ -38,6 +27,18 @@
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
         android:text="@string/netAgreement"
+        android:textColor="@color/White"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/netToggleButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        android:onClick="netSigned"
+        android:text="@string/Agreement_Text"
         android:textColor="@color/White"
         android:textSize="20sp" />
 
