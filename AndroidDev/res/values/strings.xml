@@ -52,4 +52,6 @@
     <string name="title_activity_event">EventActivity</string>
 	<string name="StudentRightsTitle">Student Rights:</string>
 	<string name="StudentRightsBody">Blurb</string>
+	<string name="title_activity_authetication_error">Authentication Error</string>
+	
 </resources>

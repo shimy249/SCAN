@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -51,6 +51,11 @@
         <activity
             android:name="com.ellume.scan.AutheticationError"
             android:label="@string/title_activity_authetication_error" >
+            </activity>
+            <activity
+            android:name="com.ellume.scan.EventActivity"
+            android:label="@string/title_activity_event" 
+            >
         </activity>
     </application>
 

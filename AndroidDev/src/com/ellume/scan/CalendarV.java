@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.ellume.scan.R;
-import com.ellume.scan.R.color;
-import com.ellume.scan.R.id;
-import com.ellume.scan.R.styleable;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;

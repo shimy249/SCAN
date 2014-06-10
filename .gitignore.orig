@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 *.project
 /AndroidDev/.settings/*
 /AndroidDev/gen/.gitignore
-<<<<<<< HEAD
 /AndroidDev/gen/**/*
-=======
->>>>>>> calendarapi2
 /AndroidDev/bin/jarlist.cache
+=======
+*.project
+/AndroidDev/.settings/*
+/AndroidDev/gen/*
+/AndroidDev/bin/*
+>>>>>>> AIves2

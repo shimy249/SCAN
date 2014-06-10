@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res/com.example.androiddev"
+    xmlns:custom="http://schemas.android.com/apk/res/com.ellume.scan"
     
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,19 +12,19 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-  <com.example.androiddev.YearCalendar 
+  <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="January"
 	/>
-   <com.example.androiddev.YearCalendar 
+   <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="February"
 	/>
-    <com.example.androiddev.YearCalendar 
+    <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
@@ -36,19 +36,19 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-  <com.example.androiddev.YearCalendar 
+  <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="April"
 	/>
-   <com.example.androiddev.YearCalendar 
+   <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="May"
 	/>
-    <com.example.androiddev.YearCalendar 
+    <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
@@ -60,19 +60,19 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-  <com.example.androiddev.YearCalendar 
+  <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="July"
 	/>
-   <com.example.androiddev.YearCalendar 
+   <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="August"
 	/>
-    <com.example.androiddev.YearCalendar 
+    <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
@@ -84,19 +84,19 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-  <com.example.androiddev.YearCalendar 
+  <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="October"
 	/>
-   <com.example.androiddev.YearCalendar 
+   <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
       custom:month="November"
 	/>
-    <com.example.androiddev.YearCalendar 
+    <com.ellume.scan.YearCalendar 
       android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="match_parent"
