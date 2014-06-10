@@ -9,11 +9,12 @@ public class Event {
 	private Date endDate;
 	private int color; //Color corresponds to category.
 
-public Event(String n, String s, Date start, Date end,int color){
+public Event(String n, String s, Date start, Date end,int $color){
 	name = n;
 	summary = s;
 	startDate = start;
 	endDate = end;
+	color=$color;
 }
 public Date getStartDate()
 {

@@ -1,5 +1,7 @@
 package com.ellume.scan;
 
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,8 +29,8 @@ public class MainActivity extends Activity {
 		if(!netSignedBool)
 		{
 			try{
-			Intent intent=new Intent(this, NetActivity.class);
-			startActivity(intent);
+				Intent intent=new Intent(this, NetActivity.class);
+				startActivity(intent);
 			}
 			catch(Exception e){}
 		}
@@ -49,7 +51,12 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 	public void toYearView(View view){
-		Intent intent=new Intent(this, Year.class);
+		Intent intent=new Intent(this, EventActivity.class);
+		intent.putExtra(CalendarV.COLOR, getResources().getColor(R.color.Blue_Event));
+		intent.putExtra(CalendarV.DESCRIPTION, "Take your date on a romantic night to Prom. Make sure not to drink because that would be bad, and try to stay out of trouble. Oh, you kids, always so full of life.");
+		intent.putExtra(CalendarV.TITLE, "Prom");
+		intent.putExtra(CalendarV.ENDDATE, CalendarConversion.CalendarToString(Calendar.getInstance()));
+		intent.putExtra(CalendarV.STARTDATE, CalendarConversion.CalendarToString(Calendar.getInstance()));
 		startActivity(intent);
 	}
 	public void smileyCounter(View view){

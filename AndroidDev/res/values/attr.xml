@@ -18,6 +18,5 @@
 			<enum name="November" value="10"/>
 			<enum name="December" value="11"/>
         </attr>
-            
     </declare-styleable>
 </resources>

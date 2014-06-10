@@ -43,13 +43,13 @@
     <string name="colorButton">Press for selected colors</string>
     <string name="title_activity_year">Year</string>
     <string name="ORHS_Motto">It\'s a small world after all</string>
-    <string name="YearView">Year View</string>
+    <string name="YearView">Event View</string>
     <string name="title_activity_net">NetActivity</string>
-    <string name="netAgreement">Yadda Yadda Yadda \nBlah Blah Blah\nSomething about Shaller&#8230;\nSign?\n..\n..\n..\n..\n..</string>
+    <string name="netAgreement">\tThe Governing Board believes that academic honesty and personal integrity are fundamental components of a student\'s education and character development.  The Board expects that students will not cheat, lie, plagiarize, knowingly allow others to copy your work, or commit other acts of academic dishonesty.\n\n\tStudents, parents/guardians, staff, and administrators shall be responsible for creating and maintianing a positive school climate that encouragfes honesty. Students found to have committed an act of academic dishonesty shall be subject to district and school-site rules which includes failing the assignment and receiving progressive discipline consequences.</string>
     <string name="Agreement_Text">Press to sign agreement.</string>
     <string name="TBI">To Be Implemented</string>
     <string name="Attention">Attention:</string>
-    <string name="title_activity_authetication_error">AutheticationError</string>
-    
-
+    <string name="title_activity_event">EventActivity</string>
+	<string name="StudentRightsTitle">Student Rights:</string>
+	<string name="StudentRightsBody">Blurb</string>
 </resources>
