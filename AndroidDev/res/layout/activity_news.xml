@@ -1,5 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res/com.example.androiddev" 
+    xmlns:custom="http://schemas.android.com/apk/res/com.ellume.scan" 
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:orientation="horizontal"
@@ -8,8 +8,8 @@
     tools:context="com.ellume.scan.NewsActivity"
     tools:ignore="MergeRootFrame" 
     >
-    <com.exacom.ellume.scan.SelectionView 
-     android:id="@+id/SelectionView"
+    <com.ellume.scan.SelectionView
+        android:id="@+id/SelectionView"
         android:layout_width="50dp"
         android:layout_height="fill_parent"
 

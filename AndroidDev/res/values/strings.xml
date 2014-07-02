@@ -53,5 +53,6 @@
 	<string name="StudentRightsTitle">Student Rights:</string>
 	<string name="StudentRightsBody">Blurb</string>
 	<string name="title_activity_authetication_error">Authentication Error</string>
+	<string name="NewsURL">http://feeds.feedburner.com/blogspot/PaqBy?format=xml</string>
 	
 </resources>

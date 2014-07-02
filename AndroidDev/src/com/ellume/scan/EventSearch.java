@@ -11,10 +11,10 @@ public class EventSearch
 		
 		int x = 0;
 		
-		for(int i = 0; i<sendEventList().size();i++)
-		{
-			query.add(sendEventList().get(i));
-		}
+		//for(int i = 0; i<sendEventList().size();i++)
+		///{
+		//	query.add(sendEventList().get(i));
+	//	}
 		
 		return query;
 		
