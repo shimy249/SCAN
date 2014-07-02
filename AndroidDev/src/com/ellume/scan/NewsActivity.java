@@ -1,5 +1,6 @@
 package com.ellume.scan;
 
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,7 +20,10 @@ import android.widget.Toast;
 
 
 
+
 import org.xmlpull.v1.XmlPullParserException;
+
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,8 +51,9 @@ public class NewsActivity extends Activity {
 	RSSFeed feed;
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
-    private static final String URL =
-             "http://feeds.feedburner.com/blogspot/dRyPW?format=xml";
+  //  private static final String URL =
+  //           "http://feeds.feedburner.com/blogspot/dRyPW?format=xml";
+    private static String URL;
     // Whether there is a Wi-Fi connection.
     private static boolean wifiConnected = false;
     // Whether there is a mobile connection.
@@ -65,6 +70,7 @@ public class NewsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        URL = getResources().getString(R.string.NewsURL);
 
         // Register BroadcastReceiver to track connection changes.
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -137,26 +143,26 @@ public class NewsActivity extends Activity {
 
     // Displays an error if the app is unable to load content.
     private void showErrorPage() {
-        setContentView(R.layout.main);
+        //setContentView(R.layout.main);
 
         // The specified network connection is not available. Displays error message.
-        WebView myWebView = (WebView) findViewById(R.id.webview);
-        myWebView.loadData(getResources().getString(R.string.connection_error),
-                "text/html", null);
+       // WebView myWebView = (WebView) findViewById(R.id.webview);
+        //myWebView.loadData(getResources().getString(R.string.connection_error),
+          //      "text/html", null);
     }
 
     // Populates the activity's options menu.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
+       
         return true;
     }
 
     // Handles the user's menu selection.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+     /*   switch (item.getItemId()) {
         case R.id.settings:
                 Intent settingsActivity = new Intent(getBaseContext(), SettingsActivity.class);
                 startActivity(settingsActivity);
@@ -164,10 +170,10 @@ public class NewsActivity extends Activity {
         case R.id.refresh:
                 loadPage();
                 return true;
-        default:
+        default:*/
                 return super.onOptionsItemSelected(item);
         }
-    }
+    
 
     // Implementation of AsyncTask used to download XML feed from the school news feed.
     private class DownloadXmlTask extends AsyncTask<String, Void, String> {
@@ -208,7 +214,7 @@ public class NewsActivity extends Activity {
     // HTML markup. Returns HTML string.
     private RSSFeed loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
-        NewsFeedXmlParser stackOverflowXmlParser = new NewsFeedXmlParser();
+        NewsFeedXmlParser newsFeedXmlParser = new NewsFeedXmlParser();
         List<RSSItem> items = null;
         RSSFeed feed = new RSSFeed();
         String title = null;
@@ -223,7 +229,7 @@ public class NewsActivity extends Activity {
 
                 try {
             stream = downloadUrl(urlString);
-            items = stackOverflowXmlParser.parse(stream);
+            items = newsFeedXmlParser.parse(stream);
         // Makes sure that the InputStream is closed after the app is
         // finished using it.
         } finally {

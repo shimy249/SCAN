@@ -5,7 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.app.ActionBar;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.CalendarContract.Events;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +25,8 @@ import android.view.ViewGroup;
 public class CalActivity extends ActionBarActivity {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
+	private Refresher refresher;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,6 +35,7 @@ public class CalActivity extends ActionBarActivity {
 		ArrayList<Event> e=new ArrayList<Event>();
 		Date s=new Date();
 		s.setTime(Calendar.getInstance().getTimeInMillis());
+		
 		e.add(new Event("Bobsledding","Fun",s,s, getResources().getColor(R.color.Blue_Event)));
 		e.add(new Event("Not Bobsledding","Not Fun",s,s,getResources().getColor(R.color.Blue_Event)));
 		e.add(new Event("More Bobsledding","More Fun",s,s,getResources().getColor(R.color.randomColor)));
@@ -43,8 +51,31 @@ public class CalActivity extends ActionBarActivity {
 		//mViewPager=(ViewPager)findViewById(R.id.CalendarPage);
 		//mViewPager.setAdapter(mSectionsPagerAdapter);
 		//mViewPager.setCurrentItem(1);
+		
+		
+		
 	}
 	
+	protected void onResume(){
+		super.onResume();
+		Intent i = new Intent(this, Refresher.class);
+		bindService(i, conn, Context.BIND_AUTO_CREATE);
+	}
+	
+	protected void onPause(){
+		super.onPause();
+		unbindService(conn);
+	}
+	
+	private ServiceConnection conn = new ServiceConnection(){
+		public void onServiceConnected(ComponentName className, IBinder binder){
+			Refresher.MyBinder b = (Refresher.MyBinder) binder;
+			refresher = b.getService();
+		}
+		public void onServiceDisconnected(ComponentName className){
+			refresher = null;
+		}
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

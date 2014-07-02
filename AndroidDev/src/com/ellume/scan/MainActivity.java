@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 	protected void onResume(){
 		super.onResume();
 		SharedPreferences myPrefs=this.getSharedPreferences(netFile, 0);
-		boolean netSignedBool=myPrefs.getBoolean(netSigned, false);
+		boolean netSignedBool=true;
 		if(!netSignedBool)
 		{
 			try{
