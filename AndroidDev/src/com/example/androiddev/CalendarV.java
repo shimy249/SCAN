@@ -1002,6 +1002,12 @@ public class CalendarV extends View{
 			}
 		}
 	}
+	/**
+	 * Translates Boxes a set distance from a reference point, useful for translating some but not all of the boxes.
+	 * @param refY
+	 * @param transDistance
+	 * @param startPosition
+	 */
 	private void translateByRef(float refY, float transDistance, int startPosition)
 	{
 		for(int i=startPosition; i<startPosition+7;i++)
