@@ -38,7 +38,7 @@ public class CalendarV extends View{
 	//-------------------------------------------------------------------------------------
 
 	//---------------------------------Pre-Allocated_Calendar:-----------------------------
-	protected final  RectF[] mySquares=new CalRect[49];
+	protected final  CalRect[] mySquares=new CalRect[49];
 	protected final static RectF[] myDetailedEvents=new RectF[4];
 	protected final static RectF[] myDayLabels=new CalRect[8];
 	protected final static RectF[] myWeekNumbers=new CalRect[7];
@@ -47,18 +47,19 @@ public class CalendarV extends View{
 	//-------------------------------------------------------------------------------------
 
 	//--------------------------------Pre-Allocated_Events:--------------------------------
-	public ArrayList<Integer> indexes;
-	private ArrayList<Event> mEvents;
+	public ArrayList<Integer> indexes;	//Array of indexes correlating to 
+										//mEvents that point to the current Events for the selected day
+	
+	private ArrayList<Event> mEvents;	//List of the Events
 	//-------------------------------------------------------------------------------------
 
 	//--------------------------------Helpful Indices and Calculated Variables:------------
-	private int firstDay;
-	private float translationFactor;
-	private float intervalX, intervalY;
-	private float translationFactorEvents;
-	private int selectedBox;
+	private int firstDay;	//Index of the first day of the month
+	private float translationFactor;	//Used in motion of opening the DetailedDayBoxes
+	private float intervalX, intervalY;	//Height and Width of boxes, used for iteration
+	private static int selectedBox;	//The Box currently selected by the user
 	//-------------------------------Painters:---------------------------------------------
-	protected Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
+	private Paint textPainter, linePainter, boxPainter,selectedBoxPainter;
 
 	//-------------------------------Calendars:--------------------------------------------
 	protected Calendar myCalendar;
@@ -67,6 +68,11 @@ public class CalendarV extends View{
 	protected GestureDetector mDetector;
 	//------------------------------Variables Manipulated in Settings----------------------
 	boolean mShowWeekNumbers;
+	/**
+	 * @author ajive_000
+	 * @param context Populated By Android System on Instantiation. In this case Context refers to CalActivity.
+	 * @param attrs Populated By Android System on Instantiation. Contains Attributes specified in XML files.
+	 */
 	public CalendarV(Context context, AttributeSet attrs){
 		super(context, attrs);
 		bufferRect=new RectF();
@@ -75,7 +81,7 @@ public class CalendarV extends View{
 			mShowWeekNumbers=false;
 		}
 		finally{
-			a.recycle();
+			a.recycle(); 
 		}
 		initRect();
 		initPaint();
@@ -83,16 +89,24 @@ public class CalendarV extends View{
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this));
 		indexes=new ArrayList<Integer>();
 	}
+	/**
+	 * @author ajive_000
+	 * Public function that allows week numbers to be shown along the side of the Calendar
+	 * @param val
+	 */
 	public void setShowWeekNumbers(boolean val)
 	{
 		mShowWeekNumbers=val;
 		invalidate();
 		requestLayout();
 	}
+	/**
+	 * @author ajive_000
+	 * Initializes Calendar Objects and Recreates Primary Calendar.
+	 */
 	public void initCal(){
-		if(secondaryBuffer!=null && !(this instanceof YearCalendar)){
+		if(secondaryBuffer!=null){
 			myCalendar=secondaryBuffer;
-
 		}
 		else if(bufferCalendar==null)
 		{
@@ -103,19 +117,52 @@ public class CalendarV extends View{
 			myCalendar.set(bufferCalendar.get(Calendar.YEAR), bufferCalendar.get(Calendar.MONTH), bufferCalendar.get(Calendar.DAY_OF_MONTH));
 		}
 		bufferCalendar=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-		if(!(this instanceof YearCalendar))
-			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+		setCurrentDay(false);
+
+	}
+	/**
+	 * Wrapper function to be called by API
+	 */
+	public void setCurrentDay()
+	{
+		setCurrentDay(true);
+	}
+	/**
+	 * Sets the selected day to the current day. 
+	 * @param a --If true, invalidates and redraws.
+	 */
+	private void setCurrentDay(boolean a)
+	{
 		int day=myCalendar.get(Calendar.DAY_OF_MONTH);
 		myCalendar.set(Calendar.DAY_OF_MONTH, 1);
 		selectedBox=day+myCalendar.get(Calendar.DAY_OF_WEEK)-2;
 		myCalendar.set(Calendar.DAY_OF_MONTH, day);
-
+		if(a)
+		{
+			invalidate();
+			requestLayout();
+		}
 	}
+	/**
+	 * Allows the Calendar to be set to a certain date.
+	 * @param c
+	 */
 	public void setCal(Calendar c){
 		myCalendar=c;
 		invalidate();
 		requestLayout();
 	}
+	/**
+	 * Called at the beginning of creation and when the screen is rotated.
+	 * It gives the widths and heights that the view has to work with,
+	 * and fits the view to the views given size.
+	 * @param w -- the current width of the view
+	 * @param h -- the current height of the view
+	 * @param oldw -- the old width of the view (not used)
+	 * @param oldh -- the old height of the view (not used)
+	 * @note Should not be called from API, should only be used by Android system
+	 */
 	public void onSizeChanged(int w, int h, int oldw, int oldh){
 		float monthLabelH=0;
 		myMonthLabel.set(0, 0, w, monthLabelH);
@@ -147,6 +194,11 @@ public class CalendarV extends View{
 		}
 		preAllocSquares();
 	}
+	/**
+	 * Android prefers preallocation of data during the draw sequence. 
+	 * Preallocates and prepares squares for use.
+	 * 
+	 */
 	public void preAllocSquares()
 	{
 		for(int i=0; i<mySquares.length; i++)
@@ -183,6 +235,10 @@ public class CalendarV extends View{
 		}	
 		firstDay=day;
 	}
+	/**
+	 * @author ajive_000
+	 * Initializes space for Rectangle objects.
+	 */
 	public void initRect(){
 		for(int i=0; i<mySquares.length; i++)
 		{
@@ -202,6 +258,10 @@ public class CalendarV extends View{
 		}
 		myMonthLabel=new CalRect();
 	}
+	/**
+	 * @author ajive_000
+	 * Initializes multiple paint objects and populates their settings
+	 */
 	public void initPaint(){
 		textPainter=new Paint(Paint.ANTI_ALIAS_FLAG);
 		linePainter=new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -209,18 +269,42 @@ public class CalendarV extends View{
 		selectedBoxPainter=new Paint(0);
 		selectedBoxPainter.setAlpha(100);
 	}
+	/**
+	 * @author ajive_000
+	 * Wrapper function to draw a box with the selected color.
+	 * @param box
+	 * @param canvas
+	 * @param color
+	 */
 	public void drawBox(RectF box, Canvas canvas, int color){
 		int prevColor=boxPainter.getColor();
 		boxPainter.setColor(color);
 		canvas.drawRect(box, boxPainter);
 		boxPainter.setColor(prevColor);
 	}
+	/**
+	 * @author ajive_000
+	 * Wrapper function to draw a box with the selected color and the desired Paint object.
+	 * @param box -- The coordinates that will be drawn
+	 * @param canvas -- The canvas supplied by the Android system
+	 * @param color -- A color specified by the Colors.xml
+	 * @param p -- Paint object used to paint the box.
+	 */
 	public void drawBox(RectF box, Canvas canvas, int color, Paint p){
 		int prevColor=p.getColor();
 		p.setColor(color);
 		canvas.drawRect(box, p);
 		p.setColor(prevColor);
 	}
+	/**
+	 * @author ajive_000
+	 * Wrapper function used to draw text
+	 * @param box -- Coordinates that will be drawn
+	 * @param canvas -- The Canvas object supplied by the Android System
+	 * @param message -- The String message that will be drawn
+	 * @param color -- The color of the text drawn
+	 * @param $textSize -- The text size (in dp) to be drawn
+	 */
 	public void drawText(RectF box, Canvas canvas, String message, int color, float $textSize)
 	{
 		if(message.length()>0){
@@ -263,12 +347,33 @@ public class CalendarV extends View{
 			textPainter.setColor(prevColor);
 		}
 	}
+	/**
+	 * @author ajive_000
+	 * Helper function to get recommended text size for certain boxes.
+	 * @param box -- The box where the text will be drawn.
+	 * @return Returns the recommended text size
+	 */
 	public float getRecommendedSize(RectF box){
 		return ((float)(Math.sqrt(box.width()*box.height())/7)*2);
 	}
+	/**
+	 * @author ajive_000
+	 * Helper function to get recommended text size for certain boxes.
+	 * @param box -- The box where the text will be drawn.
+	 * @param factor -- A factor to multiply the text size by.
+	 * @return
+	 */
 	public float getRecommendedSize(RectF box, float factor){
 		return ((float)(Math.sqrt(box.width()*box.height()))*factor);
 	}
+	/**
+	 * @author ajive_000
+	 * Wrapper Function that automatically scales text size
+	 * @param box
+	 * @param canvas
+	 * @param message
+	 * @param color
+	 */
 	public void drawText(RectF box, Canvas canvas, String message, int color)
 	{
 		float factor=2f/7f;
@@ -320,13 +425,22 @@ public class CalendarV extends View{
 			textPainter.setColor(prevColor);
 		}
 	}
-	public void drawText(RectF box, Canvas canvas, int color, String message, double d)
+	/**
+	 * @author ajive_000
+	 * Draws text, takes a double as the text size.
+	 * @param box -- Coordinates in which the text is drawn.
+	 * @param canvas -- Canvas object supplied by the Android system.
+	 * @param color -- Color in integer format ie. 255-alpha as first byte, 255-red as second, 255-blue, 255-green
+	 * @param message -- String message to be written.
+	 * @param textSize -- Text size for drawing
+	 */
+	public void drawText(RectF box, Canvas canvas, int color, String message, double textSize)
 	{
 		if(message.length()>0){
 			float prevTextSize=textPainter.getTextSize();
 			int prevColor=textPainter.getColor();
 			textPainter.setColor(color);
-			textPainter.setTextSize((float) d);
+			textPainter.setTextSize((float) textSize);
 			float penX, penY;
 			penX=box.left;
 			penY=box.top;
@@ -363,14 +477,23 @@ public class CalendarV extends View{
 			return;
 		}
 	}
-	private void drawMonthLabel(Canvas c){
+	/**
+	 * @author ajive_000
+	 * Draws the month Label in the ActionBar
+	 * 
+	 */
+	private void drawMonthLabel(){
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
 		TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
 		myText.setTextSize(30);
 		myText.setText(""+monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR));
-
 	}
+	/**
+	 * @author ajive_000
+	 *  Draws labels for the Day titles, ie. Sun, Mon, Tue, Wed, Thurs, Fri, Sat
+	 * @param canvas -- Canvas object supplied by the Android System.
+	 */
 	private void drawDayLabels(Canvas canvas){
 		for(int i=0; i<myDayLabels.length; i++)
 		{
@@ -386,6 +509,12 @@ public class CalendarV extends View{
 				drawText(myDayLabels[i],canvas,getResources().getColor(R.color.TextColor),myDayLabelsNames[i].substring(0,3),(3*myDayLabels[i].height()/4));
 		}
 	}
+	/**
+	 * @author ajive_000
+	 * Draws the week numbers alongside the weeks in the left hand collumn.
+	 * @note -- Only called if mShowWeekLabels is set to true.
+	 * @param canvas -- Canvas object supplied by the Android System.
+	 */
 	private void drawWeekLabels(Canvas canvas){
 		for(int i=0; i<myWeekNumbers.length;i++)
 		{
@@ -401,11 +530,16 @@ public class CalendarV extends View{
 		for(int i=1; i<myWeekNumbers.length;i++)
 			drawText(myWeekNumbers[i],canvas,""+(weekno++),getResources().getColor(R.color.TextColor));
 	}
+	/**
+	 * @author ajive_000
+	 * Draws the squares as they were allocated. 
+	 * @param canvas
+	 */
 	private void drawSquares(Canvas canvas){
 		//----Draw Backgrounds---------------------
 		for(int i=0; i<mySquares.length; i++)
 		{
-			drawBox(mySquares[i],canvas, ((CalRect)(mySquares[i])).getColor());
+			drawBox(mySquares[i],canvas, mySquares[i].getColor());
 		}
 		drawSelectedSquare(canvas);
 		alignX=ALIGN_LEFT;
@@ -418,10 +552,20 @@ public class CalendarV extends View{
 				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.AlternateTextColor));
 		} 
 	} 
+	/**
+	 * @author ajive_000
+	 * Draws the square selected by the user a different color. By default it is the current day.
+	 * @param c -- Canvas supplied by the Android System.
+	 */
 	public void drawSelectedSquare(Canvas c){
 		if(selectedBox>=0 && selectedBox<=48)
 			drawBox(mySquares[selectedBox],c,getResources().getColor(R.color.SelectedColor),selectedBoxPainter);
 	}
+	/**
+	 * @author ajive_000
+	 * Used to move the squares to directly above the top row. 
+	 * All moves are then done with the assumption that the squares are directly below each other
+	 */
 	private void reReference()
 	{
 		for(int i=7; i<mySquares.length;i++)
@@ -429,6 +573,12 @@ public class CalendarV extends View{
 			mySquares[i].offset(0, mySquares[i-7].bottom-mySquares[i].top);
 		}
 	}
+	/**
+	 * @author ajive_000
+	 * Called by the Android System
+	 * @note -- This function should not be called by the API
+	 * @param canvas -- Canvas object supplied by the Android System. Used for drawing to the screen
+	 */
 	public void onDraw(Canvas canvas){
 		reReference();
 		translate(translationFactor, 0, mySquares.length);
@@ -449,16 +599,28 @@ public class CalendarV extends View{
 			moveLayerDown();
 		drawSquares(canvas);
 		drawDecals(canvas);
-		drawMonthLabel(canvas);
+		drawMonthLabel();
 		drawDayLabels(canvas);
 		if(mShowWeekNumbers)
 			drawWeekLabels(canvas);
 
 	}
+	/**
+	 * @author ajive_000
+	 * Draws certain details and handles when the details are drawn. Ex. The current day bubble.
+	 * @param canvas
+	 * 
+	 * @todo -- Need to update to draw the bubbles for all days with Events in them.
+	 */
 	public void drawDecals(Canvas canvas)
 	{
 		drawCurrentDayDecal(canvas);
 	}
+	/**
+	 * @author ajive_000
+	 * Draws the current day bubble.
+	 * @param canvas -- Canvas object as supplied by the Android System.
+	 */
 	private void drawCurrentDayDecal(Canvas canvas)
 	{
 		int index=-1;
@@ -474,6 +636,11 @@ public class CalendarV extends View{
 			textPainter.setColor(prevColor);
 		}
 	}
+	/**
+	 * @author ajive_000
+	 * Called when the screen is touched.
+	 * @deprecated Now implemented via GestureListener
+	 */
 	public boolean onTouchEvent(MotionEvent e)
 	{
 		boolean result=mDetector.onTouchEvent(e);
@@ -488,6 +655,12 @@ public class CalendarV extends View{
 		}*/
 		return result;
 	}
+	/**
+	 * @author ajive_000
+	 * Selects the box that the user touches
+	 * @param x -- the x-coordinate where the screen was touched.
+	 * @param y -- the y-coordinate where the screen was touched.
+	 */
 	public void selectDate(float x, float y)
 	{
 		for(int i=0; i<mySquares.length;i++)
@@ -529,6 +702,12 @@ public class CalendarV extends View{
 			}
 		}
 	}
+	/**
+	 * @author ajive_000
+	 * @param i
+	 * 
+	 * @todo -- Implement
+	 */
 	public void fade(int i)
 	{
 		/*	ObjectAnimator mFadeAnimator = ObjectAnimator.ofInt(this, "AlphaLevel", getResources().getColor(R.color.SelectedColor));
@@ -536,21 +715,26 @@ public class CalendarV extends View{
 		mFadeAnimator.setDuration(1000);
 		mFadeAnimator.start();*/
 	}
-	public void setAlphaLevel(int i)
-	{
-		selectedBoxPainter.setColor(i);
-		invalidate();
-		requestLayout();
-	}
+	/**
+	 * @author ajive_000
+	 * Called when the user swipes right to left -- Jumps to the next month
+	 * @param prealloc
+	 * @deprecated
+	 */
 	public void nextMonth(boolean prealloc){
 		myCalendar.set(Calendar.MONTH, myCalendar.get(Calendar.MONTH)+1);
-		if(!(this instanceof YearCalendar))
-			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		if(prealloc)
 			preAllocSquares();
 		invalidate();
 		requestLayout();
 	}
+	/**
+	 * @author ajive_000
+	 * Called when the user swipes left to right -- Jumps to the previous month
+	 * @param prealloc
+	 * @deprecated Will use Year view instead.
+	 */
 	public void previousMonth(boolean prealloc){
 		myCalendar.set(Calendar.MONTH, myCalendar.get(Calendar.MONTH)-1);
 		if(!(this instanceof YearCalendar))
@@ -560,56 +744,44 @@ public class CalendarV extends View{
 		invalidate();
 		requestLayout();
 	}
+	/**
+	 * @author ajive_000
+	 * Helper function for finding the first index of the next line
+	 * @param i
+	 * @return -- the value of the first index on the next line
+	 */
 	public int nextLine(int i){
 		return i/7*7+7;
 	}
+	/**
+	 * 
+	 * Used to move a square downwards before the draw phase.
+	 * @param distanceY -- positive distance moves the box downwards
+	 * @param index -- The starting index of the set of boxes to move -- inclusive [index, end)
+	 * @param end -- The ending index of the set of boxes to move -- exclusive
+	 */
 	public void translate(float distanceY, int index, int end){
 		for(int i=index; i<end; i++)
 		{
 			mySquares[i].offset(0, distanceY);;
 		}
 	}
+	/**
+	 * @author ajive_000
+	 * Will be used to create a smooth transition for boxes to 'pop' in and out
+	 * @param f
+	 * @todo -- Implement
+	 */
 	public void setTranslationFactor(float f)
 	{
 		translationFactor=f;
 		invalidate();
 		requestLayout();
 	}
-	private void simpleDrawText(RectF box, Canvas c, String s, int color)
-	{
-		textPainter.setColor(color);
-		float penX, penY;
-		penX=box.left;
-		penY=box.top;
-		switch(alignX){
-		case ALIGN_LEFT:
-			penX+=3;
-			break;
-		case ALIGN_RIGHT:
-			penX+=box.width()-textPainter.measureText(s);
-			break;
-		case ALIGN_CENTER:
-			penX+=box.width()/2-textPainter.measureText(s)/2;
-			break;
-		default:
-			penX+=3;
-			break;
-		}
-		switch(alignY){
-		case ALIGN_TOP:
-			penY+=(textPainter.descent()-textPainter.ascent());
-			break;
-		case ALIGN_CENTER:
-			penY+=(box.height()/2-(textPainter.ascent()+textPainter.descent())/2);
-			break;
-		case ALIGN_BOTTOM:
-			penY+=(box.height()-3);
-			break;
-		default:
-			penY+=(textPainter.descent()-textPainter.ascent());
-		}
-		c.drawText(s, penX, penY, textPainter);
-	}
+	/**
+	 * @author ajive_000
+	 * @return True if the top layer of boxes is even somewhat visible on the screen, false otherwise
+	 */
 	private boolean isFirstLayerVisible()
 	{
 		if(selectedBox>6 || selectedBox<0)
@@ -621,10 +793,17 @@ public class CalendarV extends View{
 		else
 			return (mySquares[0].bottom>myDayLabels[0].bottom);
 	}
+	/**
+	 * @author ajive_000
+	 * @return True if the top of the uppermost layer is visible
+	 */
 	private boolean isUpperLayerShowing()
 	{
 		return (mySquares[0].top>myDayLabels[0].bottom);
 	}
+	/**
+	 * 
+	 */
 	private void moveLayerUp()
 	{
 		for(int i=0; i<mySquares.length-7; i++)
@@ -740,15 +919,20 @@ public class CalendarV extends View{
 		requestLayout();
 	}
 	@SuppressWarnings("deprecation")
+	/**
+	 * @author ajive_000
+	 * Populates the index array with indexes Events in the Events array
+	 * @return True if there are Events on the current day
+	 */
 	public boolean checkForEvents()
 	{
 		indexes.clear();
 		if(mEvents!=null && selectedBox<mySquares.length && selectedBox>=0)
 			for(int j=0; j<mEvents.size(); j++)
 			{
-				int day=((CalRect)mySquares[selectedBox]).getDay();
-				int month=((CalRect)mySquares[selectedBox]).getMonth();
-				int year=((CalRect)mySquares[selectedBox]).getYear();
+				int day=mySquares[selectedBox].getDay();
+				int month=mySquares[selectedBox].getMonth();
+				int year=mySquares[selectedBox].getYear();
 				int day2=mEvents.get(j).getStartDate().getDate();
 				int month2=mEvents.get(j).getStartDate().getMonth();
 				int year2=mEvents.get(j).getStartDate().getYear()+1900;
@@ -792,9 +976,9 @@ public class CalendarV extends View{
 				if(textPainter.measureText(s)>myDetailedEvents[i].width())
 					s=cutString(s, myDetailedEvents[i].width());
 				if(indexes.size()>4 && i==3)
-					simpleDrawText(myDetailedEvents[i],canvas,"More...",getResources().getColor(R.color.DetailedEventColor));
+					drawText(myDetailedEvents[i],canvas,"More...",getResources().getColor(R.color.DetailedEventColor));
 				else
-					simpleDrawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor));
+					drawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor));
 			}
 		}
 	private void adjustToCorrectTextSize(RectF box)
