@@ -1,26 +1,27 @@
 package com.example.androiddev;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Event {
 	private String name;
 	private String summary;
-	private Date startDate;
-	private Date endDate;
+	private Calendar startDate;
+	private Calendar endDate;
 	private int color; //Color corresponds to category.
 
-public Event(String n, String s, Date start, Date end,int $color){
+public Event(String n, String s, Calendar start, Calendar end,int $color){
 	name = n;
 	summary = s;
 	startDate = start;
 	endDate = end;
 	color=$color;
 }
-public Date getStartDate()
+public Calendar getStartDate()
 {
 	return startDate;
 }
-public Date getEndDate()
+public Calendar getEndDate()
 {
 	return endDate;
 }

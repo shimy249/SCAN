@@ -31,20 +31,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="toCalendar"
-        android:text="@string/Calendar" />
+        android:text="@string/Calendar"
+        android:background="@color/Dark_Blue"
+        android:textColor="@color/White" />
 
     <Button
         android:id="@+id/newsfeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="toNewsFeed"
-        android:text="@string/NewsFeed" />
+        android:text="@string/NewsFeed" 
+        android:background="@color/Dark_Blue"
+        android:textColor="@color/White"
+        />
 
     <Button
         android:id="@+id/yearview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="toYearView"
-        android:text="@string/YearView" />
+        android:text="@string/YearView" 
+        android:background="@color/Dark_Blue"
+        android:textColor="@color/White"
+        />
 
 </LinearLayout>

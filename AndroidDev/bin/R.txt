@@ -123,9 +123,10 @@ int bool abc_config_allowActionMenuItemTextWithIcon 0x7f060004
 int bool abc_config_showMenuShortcutsWhenKeyboardPresent 0x7f060003
 int bool abc_split_action_bar_is_narrow 0x7f060002
 int color AlternateTextColor 0x7f070005
-int color Black 0x7f07000e
-int color Blue_Event 0x7f07000d
+int color Black 0x7f07000f
+int color Blue_Event 0x7f07000e
 int color CurrentDayColor 0x7f070009
+int color Dark_Blue 0x7f07000d
 int color DetailedEventColor 0x7f070008
 int color FrameColor 0x7f070007
 int color ORHS_Blue 0x7f07000c
@@ -133,8 +134,8 @@ int color SchoolColor1 0x7f070003
 int color SchoolColor2 0x7f070004
 int color SelectedColor 0x7f07000a
 int color TextColor 0x7f070006
-int color White 0x7f07000f
-int color abc_search_url_text_holo 0x7f070010
+int color White 0x7f070010
+int color abc_search_url_text_holo 0x7f070011
 int color abc_search_url_text_normal 0x7f070000
 int color abc_search_url_text_pressed 0x7f070002
 int color abc_search_url_text_selected 0x7f070001
@@ -635,7 +636,7 @@ int styleable MenuItem_android_title 7
 int styleable MenuItem_android_titleCondensed 8
 int styleable MenuItem_android_visible 4
 int styleable MenuItem_showAsAction 13
-int[] styleable MenuView { 0x010100ae, 0x0101012c, 0x0101012d, 0x0101012e, 0x0101012f, 0x01010130, 0x01010131, 0x01010435 }
+int[] styleable MenuView { 0x010100ae, 0x0101012c, 0x0101012d, 0x0101012e, 0x0101012f, 0x01010130, 0x01010131, 0x01010438 }
 int styleable MenuView_android_headerBackground 4
 int styleable MenuView_android_horizontalDivider 2
 int styleable MenuView_android_itemBackground 5

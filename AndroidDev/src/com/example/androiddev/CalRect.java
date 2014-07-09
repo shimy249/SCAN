@@ -1,12 +1,12 @@
 package com.example.androiddev;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.graphics.RectF;
 
 public class CalRect extends RectF{
-	private int day, month, year;
-	private static Calendar bufferCalendar;
+	private Calendar date;
 	int color;
 	private int numEvents;
 	public CalRect(){
@@ -37,27 +37,34 @@ public class CalRect extends RectF{
 		return color;
 	}
 	public void setDate(int $day, int $month, int $year){
-		day=$day; 
-		month=$month; 
-		year=$year;
+		date=new GregorianCalendar($year, $month, $day);
+	}
+	public void setDate(Calendar c)
+	{
+		date=c;
 	}
 	public int getDay()
 	{
-		return day;
+		return date.get(Calendar.DATE);
 	}
 	public int getMonth()
 	{
-		return month;
+		return date.get(Calendar.MONTH);
 	}
 	public int getYear()
 	{
-		return year;
+		return date.get(Calendar.YEAR);
 	}
 	public int getWeek()
 	{
-		bufferCalendar=Calendar.getInstance();
-		bufferCalendar.set(year, month,day);
-		return bufferCalendar.get(Calendar.WEEK_OF_MONTH);
+		return date.get(Calendar.WEEK_OF_MONTH);
 	}
-	
+	public Calendar getCal()
+	{
+		return date;
+	}
+	public String toString()
+	{
+		return super.toShortString()+" "+getDay()+"/"+getMonth()+"/"+getYear();
+	}
 }

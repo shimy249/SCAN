@@ -2,11 +2,9 @@ package com.example.androiddev;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import android.app.ActionBar;
 import android.os.Bundle;
-import android.provider.CalendarContract.Events;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,8 +24,7 @@ public class CalActivity extends ActionBarActivity {
 		setContentView(R.layout.calendar);
 		((CalendarV)findViewById(R.id.mainCalendar)).setShowWeekNumbers(false);
 		ArrayList<Event> e=new ArrayList<Event>();
-		Date s=new Date();
-		s.setTime(Calendar.getInstance().getTimeInMillis());
+		Calendar s=Calendar.getInstance();
 		e.add(new Event("Bobsledding","Fun",s,s, getResources().getColor(R.color.Blue_Event)));
 		e.add(new Event("Not Bobsledding","Not Fun",s,s,getResources().getColor(R.color.Blue_Event)));
 		e.add(new Event("More Bobsledding","More Fun",s,s,getResources().getColor(R.color.randomColor)));

@@ -888,9 +888,10 @@ containing a value of this type.
     }
     public static final class color {
         public static final int AlternateTextColor=0x7f070005;
-        public static final int Black=0x7f07000e;
-        public static final int Blue_Event=0x7f07000d;
+        public static final int Black=0x7f07000f;
+        public static final int Blue_Event=0x7f07000e;
         public static final int CurrentDayColor=0x7f070009;
+        public static final int Dark_Blue=0x7f07000d;
         public static final int DetailedEventColor=0x7f070008;
         public static final int FrameColor=0x7f070007;
         public static final int ORHS_Blue=0x7f07000c;
@@ -898,8 +899,8 @@ containing a value of this type.
         public static final int SchoolColor2=0x7f070004;
         public static final int SelectedColor=0x7f07000a;
         public static final int TextColor=0x7f070006;
-        public static final int White=0x7f07000f;
-        public static final int abc_search_url_text_holo=0x7f070010;
+        public static final int White=0x7f070010;
+        public static final int abc_search_url_text_holo=0x7f070011;
         public static final int abc_search_url_text_normal=0x7f070000;
         public static final int abc_search_url_text_pressed=0x7f070002;
         public static final int abc_search_url_text_selected=0x7f070001;
@@ -2757,7 +2758,7 @@ containing a value of this type.
          */
         public static final int[] MenuView = {
             0x010100ae, 0x0101012c, 0x0101012d, 0x0101012e,
-            0x0101012f, 0x01010130, 0x01010131, 0x01010435
+            0x0101012f, 0x01010130, 0x01010131, 0x01010438
         };
         /**
           <p>
