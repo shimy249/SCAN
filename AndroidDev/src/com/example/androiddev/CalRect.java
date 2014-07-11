@@ -1,5 +1,6 @@
 package com.example.androiddev;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -8,22 +9,26 @@ import android.graphics.RectF;
 public class CalRect extends RectF{
 	private Calendar date;
 	int color;
-	private int numEvents;
+	private ArrayList<Event> events;
 	public CalRect(){
 		super();
-		numEvents=0;
+		events=new ArrayList<Event>();
 	}
-	public void incrementEvents()
-	{
-		numEvents++;
-	}
+	
 	public int getNumEvents()
 	{
-		return numEvents;
+		return events.size();
 	}
 	public void clearEvents()
 	{
-		numEvents=0;
+		events.clear();
+	}
+	public void addEvent(Event e){
+		events.add(e);
+	}
+	public ArrayList<Event> getEvents()
+	{
+		return events;
 	}
 	public CalRect( float left, float top, float right, float bottom){
 		super(left,top,right,bottom);
@@ -65,6 +70,6 @@ public class CalRect extends RectF{
 	}
 	public String toString()
 	{
-		return super.toShortString()+" "+getDay()+"/"+getMonth()+"/"+getYear();
+		return super.toShortString()+" "+getDay()+"/"+getMonth()+"/"+getYear()+"-"+events.size();
 	}
 }
