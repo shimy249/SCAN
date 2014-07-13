@@ -1,7 +1,8 @@
-package com.example.androiddev;
+package com.ellume.SCAN;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
 
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -46,8 +47,8 @@ public class CalActivity extends ActionBarActivity {
 				+ "itself [...] is enough to fill a man's heart. One must imagine Sisyphus happy."
 				+ "The work can be seen in relation to other absurdist works by Camus: the novel The Stranger (1942), the plays The Misunderstanding (1942) and Caligula (1944), and especially the essay The Rebel (1951).",s,s,getResources().getColor(R.color.randomColor)));
 		e.add(new Event("Random Bobsledding","Blah",s,s,getResources().getColor(R.color.randomColor)));
-		e.add(new Event("More Bobsledding Too","Blah",s,s,0));
-		e.add(new Event("Sex on the Beach","Yum",c,c,getResources().getColor(R.color.randomColor)));
+		e.add(new Event("More Bobsledding Too","Blah",s,s,0xff000000));
+		e.add(new Event("Sex on the Beach","Yum",c,c,0xff000000));
 		((CalendarV)findViewById(R.id.mainCalendar)).addEvents(e);
 		//getResources().getConfiguration();
 		//if(getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)

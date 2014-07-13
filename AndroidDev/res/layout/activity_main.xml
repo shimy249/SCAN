@@ -18,23 +18,13 @@
         android:src="@drawable/orhs_drawable"
         android:layout_weight="7"
         android:onClick="smileyCounter" />
-	<TextView
-	    android:layout_width="match_parent"
-	    android:gravity="center"
-	    android:textSize="18sp"
-	    android:layout_height="0dp"
-	    android:layout_weight="1"
-	    android:text="@string/ORHS_Motto"
-	    android:textColor="@color/White"/>
     <Button
         android:id="@+id/Calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="toCalendar"
         android:text="@string/Calendar"
-        android:background="@color/Dark_Blue"
-        android:textColor="@color/White"
-        android:clickable="true" 
+        
          />
 
     <Button
@@ -43,9 +33,7 @@
         android:layout_height="wrap_content"
         android:onClick="toNewsFeed"
         android:text="@string/NewsFeed"
-        android:background="@color/Dark_Blue"
-        android:textColor="@color/White"
-        android:clickable="true"
+       
         />
 
     <Button
@@ -54,9 +42,6 @@
         android:layout_height="wrap_content"
         android:onClick="toYearView"
         android:text="@string/YearView" 
-        android:background="@color/Dark_Blue"
-        android:textColor="@color/White"
-        android:clickable="true"
         />
 
 </LinearLayout>

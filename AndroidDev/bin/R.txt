@@ -251,9 +251,10 @@ int drawable abc_textfield_searchview_holo_light 0x7f020054
 int drawable abc_textfield_searchview_right_holo_dark 0x7f020055
 int drawable abc_textfield_searchview_right_holo_light 0x7f020056
 int drawable ic_launcher 0x7f020057
-int drawable orhs_background 0x7f020058
-int drawable orhs_drawable 0x7f020059
-int drawable orhs_drawable_funny 0x7f02005a
+int drawable logo 0x7f020058
+int drawable orhs_background 0x7f020059
+int drawable orhs_drawable 0x7f02005a
+int drawable orhs_drawable_funny 0x7f02005b
 int id AgreementPage 0x7f050048
 int id April 0x7f05001d
 int id August 0x7f050021

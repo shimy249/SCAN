@@ -1,8 +1,9 @@
-package com.example.androiddev;
+package com.ellume.SCAN;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +58,7 @@ public class CalendarV extends View{
 	private float intervalX, intervalY;	//Height and Width of boxes, used for iteration
 	private static int selectedBox;	//The Box currently selected by the user
 	//-------------------------------Painters:---------------------------------------------
-	private Paint textPainter, linePainter, boxPainter,OvalPainter;
+	private Paint textPainter, linePainter, boxPainter,ovalPainter;
 
 	//-------------------------------Calendars:--------------------------------------------
 	protected Calendar myCalendar;
@@ -66,6 +67,7 @@ public class CalendarV extends View{
 	protected GestureDetector mDetector;
 	//------------------------------Variables Manipulated in Settings----------------------
 	boolean mShowWeekNumbers;
+	boolean mDrawSquares;
 	/**
 	 * @author ajive_000
 	 * @param context Populated By Android System on Instantiation. In this case Context refers to CalActivity.
@@ -292,7 +294,7 @@ public class CalendarV extends View{
 		textPainter=new Paint(Paint.ANTI_ALIAS_FLAG);
 		linePainter=new Paint(Paint.ANTI_ALIAS_FLAG);
 		boxPainter=new Paint(0);
-		OvalPainter=new Paint(Paint.ANTI_ALIAS_FLAG);
+		ovalPainter=new Paint(Paint.ANTI_ALIAS_FLAG);
 	}
 	/**
 	 * @author ajive_000
@@ -655,17 +657,39 @@ public class CalendarV extends View{
 		{
 			float topX=mySquares[i].right;
 			float topY=mySquares[i].top;
-			int height=(int)mySquares[i].height();
-			topX-=height/18;
-			topY+=height/18;
+			float height=mySquares[i].height();
+			topX-=height/16;
+			topY+=height/16;
 			int num=mySquares[i].getEvents().size();
 			for(int j=0; j<num && j<4; j++)
 			{
-				
-				bufferRect.set(topX-height/8, topY, topX, topY+height/8);
-				OvalPainter.setColor(mySquares[i].getEvents().get(j).getColor());
-				c.drawOval(bufferRect, OvalPainter);
-				topY+=height/7;
+				if(!(j==3 && num>4)){
+					bufferRect.set(topX-height/9, topY, topX, topY+height/9);
+					ovalPainter.setColor(mySquares[i].getEvents().get(j).getColor());
+					if(mDrawSquares)
+						c.drawRect(bufferRect, ovalPainter);
+					else
+						c.drawOval(bufferRect, ovalPainter);
+					topY+=height/8;
+				}
+			}
+			if(num>4)
+			{
+
+				topX-=height/18;
+				float factor=30;
+				for(int j=0; j<=num-4; j++){
+					float left=topX-height/factor;
+					float right=topX+height/factor;
+					bufferRect.set(left,topY,right,topY+height/(factor/2));
+					ovalPainter.setColor(mySquares[i].getEvents().get(j+3).getColor());
+					if(mDrawSquares)
+						c.drawRect(bufferRect, ovalPainter);
+					else
+						c.drawOval(bufferRect, ovalPainter);
+					topY+=height/(factor/2-3);
+					factor=factor/2*3;
+				}
 			}
 		}
 	}
