@@ -37,4 +37,8 @@ public int getColor()
 {
 	return color;
 }
+public String toString()
+{
+	return getTitle();
+}
 }

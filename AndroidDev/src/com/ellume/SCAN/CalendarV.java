@@ -678,11 +678,11 @@ public class CalendarV extends View{
  
 				topX-=height/18;
 				float factor=30;
-				for(int j=0; j<=num-4; j++){
+				for(int j=3; j<=num-1 && j<6; j++){
 					float left=topX-height/factor;
 					float right=topX+height/factor;
 					bufferRect.set(left,topY,right,topY+height/(factor/2));
-					ovalPainter.setColor(mySquares[i].getEvents().get(j+3).getColor());
+					ovalPainter.setColor(mySquares[i].getEvents().get(j).getColor());
 					if(mDrawSquares)
 						c.drawRect(bufferRect, ovalPainter);
 					else
@@ -760,13 +760,11 @@ public class CalendarV extends View{
 			{
 				if(myDetailedEvents[i].contains(x,y))
 				{
-					if(i==3 && mEvents.size()>4)
+					if(i==3 && mySquares[selectedBox].getEvents().size()>4)
 					{
-						Log.v("Button Press:","More");
-						/*
-						 * @TODO:
-						 * Add Activity to view all of the events of one day.
-						 */
+						Intent intent=new Intent(getContext(), MoreActivity.class);
+						MoreActivity.putEvents(mySquares[selectedBox].getEvents());
+						getContext().startActivity(intent);
 
 						return;
 					}

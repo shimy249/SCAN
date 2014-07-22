@@ -44,6 +44,10 @@
             android:label="@string/title_activity_event" 
             >
         </activity>
+        <activity
+            android:name="com.ellume.SCAN.MoreActivity"
+            android:label="@string/title_more_activity">
+         </activity>
     </application>
 
 </manifest>

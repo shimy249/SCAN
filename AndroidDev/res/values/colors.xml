@@ -14,4 +14,5 @@
     <color name="Blue_Event">#2A4480</color>
     <color name="Black">#111111</color>
     <color name="White">#eeeeee</color>
+    <color name="GreyedText">#ff777777</color>
 </resources>
