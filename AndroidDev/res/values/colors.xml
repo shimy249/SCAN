@@ -12,6 +12,7 @@
     <color name="ORHS_Blue">#1f1f95</color>
     <color name="Dark_Blue">#1c385D</color>
     <color name="Blue_Event">#2A4480</color>
+    <color name="SoftBlack">#484848</color>
     <color name="Black">#111111</color>
     <color name="White">#eeeeee</color>
     <color name="GreyedText">#ff777777</color>
