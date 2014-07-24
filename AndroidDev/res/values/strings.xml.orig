@@ -1,0 +1,87 @@
+<<<<<<< HEAD
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright (C) 2012 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    
+
+    <!--  Menu items -->
+    <string name="settings">Settings</string>
+    <string name="refresh">Refresh</string>
+    
+
+    <!--  NetworkActivity -->
+    <string name="page_title">Oak Ridge High School News</string>
+    <string name="updated">Last updated:</string>
+    <string name="lost_connection">Lost connection.</string>
+    <string name="wifi_connected">Wi-Fi reconnected.</string>
+    <string name="desc">some description.</string>
+    <string name="connection_error">Unable to load content. Check your network connection.</string>
+    <string name="xml_error">Error parsing XML.</string>
+    <string name="app_name">AndroidDev</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_cal">CalActivity</string>
+    <string name="Calendar">Calendar</string>
+    <string name="NewsFeed">News Feed</string>
+    <string name="title_activity_news">NewsActivity</string>
+    <string name="colorButton">Press for selected colors</string>
+    <string name="title_activity_year">Year</string>
+    <string name="ORHS_Motto">It\'s a small world after all</string>
+    <string name="YearView">Event View</string>
+    <string name="title_activity_net">NetActivity</string>
+    <string name="netAgreement">\tThe Governing Board believes that academic honesty and personal integrity are fundamental components of a student\'s education and character development.  The Board expects that students will not cheat, lie, plagiarize, knowingly allow others to copy your work, or commit other acts of academic dishonesty.\n\n\tStudents, parents/guardians, staff, and administrators shall be responsible for creating and maintianing a positive school climate that encouragfes honesty. Students found to have committed an act of academic dishonesty shall be subject to district and school-site rules which includes failing the assignment and receiving progressive discipline consequences.</string>
+    <string name="Agreement_Text">Press to sign agreement.</string>
+    <string name="TBI">To Be Implemented</string>
+    <string name="Attention">Attention:</string>
+    <string name="title_activity_event">EventActivity</string>
+	<string name="StudentRightsTitle">Student Rights:</string>
+	<string name="StudentRightsBody">Blurb</string>
+	<string name="title_activity_authetication_error">Authentication Error</string>
+	<string name="NewsURL">http://feeds.feedburner.com/blogspot/PaqBy?format=xml</string>
+	
+</resources>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SCAN</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_cal">CalActivity</string>
+    <string name="title_more_activity">MoreActivity</string>
+    <string name="Calendar">Calendar</string>
+    <string name="NewsFeed">News Feed</string>
+    <string name="title_activity_news">NewsActivity</string>
+    <string name="colorButton">Press for selected colors</string>
+    <string name="title_activity_year">Year</string>
+    <string name="ORHS_Motto">It\'s a small world after all</string>
+    <string name="YearView">Event View</string>
+    <string name="More">More\.\.\.</string>
+    <string name="Settings">Settings</string>
+    <string name="title_activity_net">NetActivity</string>
+    <string name="netAgreement">\tThe Governing Board believes that academic honesty and personal integrity are fundamental components of a student\'s education and character development.  The Board expects that students will not cheat, lie, plagiarize, knowingly allow others to copy your work, or commit other acts of academic dishonesty.\n\n\tStudents, parents/guardians, staff, and administrators shall be responsible for creating and maintianing a positive school climate that encouragfes honesty. Students found to have committed an act of academic dishonesty shall be subject to district and school-site rules which includes failing the assignment and receiving progressive discipline consequences.</string>
+    <string name="Agreement_Text">Press to sign agreement.</string>
+    <string name="TBI">To Be Implemented</string>
+    <string name="Attention">Attention:</string>
+    <string name="title_activity_event">EventActivity</string>
+	<string name="StudentRightsTitle">Student Rights:</string>
+	<string name="StudentRightsBody">Blurb</string>
+</resources>
+>>>>>>> AIves

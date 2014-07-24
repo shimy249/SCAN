@@ -1,0 +1,97 @@
+<<<<<<< HEAD
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.ellume.scan.EventActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/White"
+        android:textSize="40sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+    <TextView
+        android:id="@+id/StartTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+  
+
+    <TextView
+        android:id="@+id/EndTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+	
+        <Space
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
+ 
+    <TextView
+        android:id="@+id/Description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" />
+
+=======
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.ellume.SCAN.EventActivity"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/White"
+        android:textSize="40sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+    <TextView
+        android:id="@+id/StartTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+  
+
+    <TextView
+        android:id="@+id/EndTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+	
+        <Space
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
+ 	<ScrollView 
+ 	    android:id="@+id/Scroller"
+ 	    android:layout_width="fill_parent"
+ 	    android:layout_height="match_parent"
+ 	    >
+    <TextView
+        android:id="@+id/Description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" />
+    
+    </ScrollView>
+>>>>>>> AIves
+</LinearLayout>
