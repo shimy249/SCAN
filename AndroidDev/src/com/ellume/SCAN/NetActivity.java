@@ -1,4 +1,5 @@
-package com.ellume.scan;
+package com.ellume.SCAN;
+
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

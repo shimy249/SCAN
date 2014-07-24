@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ellume.scan"
+    package="com.ellume.SCAN"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -8,24 +8,13 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
         <activity
-            android:name="com.ellume.scan.MainActivity"
+            android:name="com.ellume.SCAN.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="nosensor" >
             <intent-filter>
@@ -35,38 +24,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ellume.scan.CalActivity"
+            android:name="com.ellume.SCAN.CalActivity"
             android:label="@string/title_activity_cal" >
         </activity>
         <activity
-            android:name="com.ellume.scan.NewsActivity"
+            android:name="com.ellume.SCAN.NewsActivity"
             android:label="@string/title_activity_news" >
         </activity>
         <activity
-            android:name="com.ellume.scan.Year"
+            android:name="com.ellume.SCAN.Year"
             android:label="@string/title_activity_year" >
         </activity>
         <activity
-            android:name="com.ellume.scan.NetActivity"
+            android:name="com.ellume.SCAN.NetActivity"
             android:label="@string/title_activity_net" >
         </activity>
         <activity
-            android:name="com.ellume.scan.AutheticationError"
-            android:label="@string/title_activity_authetication_error" >
-            </activity>
-            <activity
-            android:name="com.ellume.scan.EventActivity"
-            android:label="@string/title_activity_event">
-            </activity>
-			<activity
-				android:name="com.ellume.scan.ListActivity"
-				android:label="@string/app_name" >
-			</activity>
-			<activity
-				android:name="com.ellume.scan.DetailActivity"
-				android:label="@string/app_name" >
-			</activity>
-        
+            android:name="com.ellume.SCAN.EventActivity"
+            android:label="@string/title_activity_event" 
+            >
+        </activity>
+        <activity
+            android:name="com.ellume.SCAN.MoreActivity"
+            android:label="@string/title_more_activity">
+         </activity>
     </application>
 
 </manifest>

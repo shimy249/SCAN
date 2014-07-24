@@ -1,6 +1,7 @@
-package com.ellume.scan;
+package com.ellume.SCAN;
 
 import java.util.Calendar;
+
 
 import android.app.Activity;
 import android.content.Intent;

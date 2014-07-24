@@ -1,6 +1,7 @@
-package com.ellume.scan;
+package com.ellume.SCAN;
 
 import java.util.ArrayList;
+
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -18,7 +18,7 @@
 
 <resources>
 
-    
+    <string name="app_name">SCAN</string>
 
     <!--  Menu items -->
     <string name="settings">Settings</string>
@@ -33,10 +33,10 @@
     <string name="desc">some description.</string>
     <string name="connection_error">Unable to load content. Check your network connection.</string>
     <string name="xml_error">Error parsing XML.</string>
-    <string name="app_name">AndroidDev</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_cal">CalActivity</string>
+    <string name="title_more_activity">MoreActivity</string>
     <string name="Calendar">Calendar</string>
     <string name="NewsFeed">News Feed</string>
     <string name="title_activity_news">NewsActivity</string>
@@ -44,6 +44,8 @@
     <string name="title_activity_year">Year</string>
     <string name="ORHS_Motto">It\'s a small world after all</string>
     <string name="YearView">Event View</string>
+    <string name="More">More\.\.\.</string>
+    <string name="Settings">Settings</string>
     <string name="title_activity_net">NetActivity</string>
     <string name="netAgreement">\tThe Governing Board believes that academic honesty and personal integrity are fundamental components of a student\'s education and character development.  The Board expects that students will not cheat, lie, plagiarize, knowingly allow others to copy your work, or commit other acts of academic dishonesty.\n\n\tStudents, parents/guardians, staff, and administrators shall be responsible for creating and maintianing a positive school climate that encouragfes honesty. Students found to have committed an act of academic dishonesty shall be subject to district and school-site rules which includes failing the assignment and receiving progressive discipline consequences.</string>
     <string name="Agreement_Text">Press to sign agreement.</string>

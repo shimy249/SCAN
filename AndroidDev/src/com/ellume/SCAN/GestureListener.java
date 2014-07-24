@@ -1,4 +1,4 @@
-package com.ellume.scan;
+package com.ellume.SCAN;
 
 import android.animation.ValueAnimator;
 import android.util.Log;
@@ -58,17 +58,6 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	}
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float dx, float dy){
 		if(act){
-			if(Math.abs(dx)>4000)
-				if(dx<0 && Math.abs(dy)<Math.abs(dx))
-				{
-					myView.nextMonth(true);
-					return true;
-				}
-				else if(Math.abs(dy)<Math.abs(dx))
-				{
-					myView.previousMonth(true);
-					return true;
-				}
 			if(Math.abs(dy)>2000 && Math.abs(dy)>Math.abs(dx))
 			{
 				mScroller.fling(0, 0, (int)dx/4, (int)dy/2, -100, 100, -100000000, 100000000);
