@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Event {
+	protected static final String FIELDS = null;
 	private String name;
 	private String summary;
 	private Calendar startDate;
@@ -43,5 +44,9 @@ public int getColor()
 public String toString()
 {
 	return getTitle();
+}
+public String getId() {
+	// TODO Auto-generated method stub
+	return null;
 }
 }

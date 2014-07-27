@@ -1,5 +1,15 @@
 package com.ellume.SCAN;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.GestureDetector;
+
 public class YearCalendar extends CalendarV {
 	private int month;
 	public YearCalendar(Context context, AttributeSet attrs) {
