@@ -1,4 +1,4 @@
-package com.ellume.scan;
+package com.ellume.SCAN;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
 

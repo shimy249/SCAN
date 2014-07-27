@@ -17,6 +17,9 @@ public Event(String n, String s, Calendar start, Calendar end,int $color){
 	endDate = end;
 	color=$color;
 }
+public Event(com.google.api.services.calendar.model.Event current) {
+	// TODO Auto-generated constructor stub
+}
 public Calendar getStartDate()
 {
 	return startDate;
