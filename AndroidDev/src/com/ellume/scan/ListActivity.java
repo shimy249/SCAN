@@ -109,7 +109,7 @@ public class ListActivity extends Activity {
 			}
 
 			// Initialize the views in the layout
-			ImageView iv = (ImageView) listItem.findViewById(R.id.thumb);
+		//	ImageView iv = (ImageView) listItem.findViewById(R.id.thumb);
 			TextView tvTitle = (TextView) listItem.findViewById(R.id.title);
 			TextView tvDate = (TextView) listItem.findViewById(R.id.date);
 	//		TextView tvSummary = (TextView) listItem.findViewById(R.id.summary);

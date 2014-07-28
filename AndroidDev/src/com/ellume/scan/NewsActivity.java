@@ -289,7 +289,7 @@ public class NewsActivity extends Activity {
                 // to true. This causes the display to be refreshed when the user
                 // returns to the app.
                 refreshDisplay = true;
-                Toast.makeText(context, R.string.wifi_connected, Toast.LENGTH_SHORT).show();
+     //           Toast.makeText(context, R.string.wifi_connected, Toast.LENGTH_SHORT).show();
 
                 // If the setting is ANY network and there is a network connection
                 // (which by process of elimination would be mobile), sets refreshDisplay to true.
@@ -302,7 +302,7 @@ public class NewsActivity extends Activity {
                 // Sets refreshDisplay to false.
             } else {
                 refreshDisplay = false;
-                Toast.makeText(context, R.string.lost_connection, Toast.LENGTH_SHORT).show();
+  //              Toast.makeText(context, R.string.lost_connection, Toast.LENGTH_SHORT).show();
             }
         }
     }
