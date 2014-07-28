@@ -4,11 +4,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
+
+
+
+import java.util.Collections;
+import java.util.List;
+
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.calendar.CalendarScopes;
+
 import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.CalendarContract.Events;
@@ -17,6 +31,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -26,6 +41,16 @@ public class CalActivity extends ActionBarActivity {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	private Refresher refresher;
+	
+	//calendar ASync stuff
+	
+	private com.google.api.services.calendar.Calendar client;
+	
+	private GoogleAccountCredential credential;
+	public static final String PREF_NAME = "prefFile";
+	public static final String PREF_ACCOUNT_NAME = "accountName";
+	private HttpTransport httpTransport = new NetHttpTransport();
+	private JacksonFactory jsonFactory = new JacksonFactory();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +82,39 @@ public class CalActivity extends ActionBarActivity {
 		e.add(new Event("Random Bobsledding","Blah",s,s,getResources().getColor(R.color.randomColor)));
 		e.add(new Event("More Bobsledding Too","Blah",s,s,0xff000000));
 		e.add(new Event("Sex on the Beach","Yum",c,c,0xff000000));
+		
+		//ASyncTask
+		
+		credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
+		 
+		 SharedPreferences settings = this.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
+		 credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+		
+		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN/1.0").build();
+		
+		new AsyncTask<String, Void, ArrayList<Event>>(){
+		
+			ArrayList<Event> result = new ArrayList<Event>();
+
+			@Override
+			protected ArrayList<Event> doInBackground(String... params) {
+				for(int i = 0; i < arg0.length; i++){
+					try {
+						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).setFields(Event.FIELDS).execute();
+						
+						 List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
+						 Log.v("result", events.toString());
+						 for(int j = 0; j < events.size(); j++){
+							 com.google.api.services.calendar.model.Event current = events.get(j);
+							 result.add(new Event(current));
+							 
+						 }
+						 return  result;
+			} catch()
+					
+			
+		};
+		
 		((CalendarV)findViewById(R.id.mainCalendar)).addEvents(e);
 		//getResources().getConfiguration();
 		//if(getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
