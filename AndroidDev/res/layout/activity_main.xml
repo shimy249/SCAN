@@ -18,18 +18,21 @@
         android:src="@drawable/orhs_drawable"
         android:layout_weight="7"
         android:onClick="smileyCounter" />
-	<TextView
-	    android:layout_width="match_parent"
-	    android:gravity="center"
-	    android:textSize="18sp"
-	    android:layout_height="0dp"
-	    android:layout_weight="1"
-	    android:text="@string/ORHS_Motto"
-	    android:textColor="@color/White"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/ORHS_Motto"
+        android:textColor="#070719"
+        android:textSize="18sp" />
+
     <Button
         android:id="@+id/Calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="55dip"
         android:onClick="toCalendar"
         android:text="@string/Calendar" />
 
@@ -37,14 +40,14 @@
         android:id="@+id/newsfeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="55dip"
         android:onClick="toNewsFeed"
         android:text="@string/NewsFeed" />
 
-    <Button
-        android:id="@+id/yearview"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="toYearView"
-        android:text="@string/YearView" />
+        android:text="\u00A9 2014 Ellume Softworks" />
 
 </LinearLayout>

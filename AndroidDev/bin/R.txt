@@ -402,14 +402,14 @@ int id submit_area 0x7f050048
 int id sv 0x7f05005c
 int id tabMode 0x7f050002
 int id terrain 0x7f05001b
-int id textView1 0x7f050056
+int id textView1 0x7f050055
 int id title 0x7f05003a
 int id top_action_bar 0x7f05002f
 int id trojanGuy 0x7f050052
 int id up 0x7f050030
 int id useLogo 0x7f050003
 int id withText 0x7f05000c
-int id yearview 0x7f050055
+int id yearview 0x7f050056
 int integer abc_max_action_buttons 0x7f090000
 int integer google_play_services_version 0x7f090001
 int layout abc_action_bar_decor 0x7f030000
