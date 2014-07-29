@@ -762,10 +762,10 @@ public class CalendarV extends View{
 				{
 					if(i==3 && mySquares[selectedBox].getEvents().size()>4)
 					{
-						Intent intent=new Intent(getContext(), MoreActivity.class);
-						MoreActivity.putEvents(mySquares[selectedBox].getEvents());
-						MoreActivity.putCalendar(mySquares[selectedBox].getCal());
-						getContext().startActivity(intent);
+						//Intent intent=new Intent(getContext(), MoreActivity.class);
+						//MoreActivity.putEvents(mySquares[selectedBox].getEvents());
+						//MoreActivity.putCalendar(mySquares[selectedBox].getCal());
+						//getContext().startActivity(intent);
 
 						return;
 					}

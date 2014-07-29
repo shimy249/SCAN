@@ -1,5 +1,6 @@
 package com.ellume.SCAN;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,8 +20,29 @@ public Event(String n, String s, Calendar start, Calendar end,int $color){
 	color=$color;
 }
 public Event(com.google.api.services.calendar.model.Event current) {
-	// TODO Auto-generated constructor stub
+	name = current.getSummary();
+	summary = current.getDescription();
+	Calendar calS = Calendar.getInstance();
+	Calendar calE = Calendar.getInstance();
+	//cal.setTimeInMillis(current.getStart().getDateTime().getValue());
+	//startDate = cal;
+	try {
+		calS.setTime(RFC3339Date.parseRFC3339Date(current.getStart().getDateTime().toStringRfc3339()));
+		startDate = calS;
+		calE.setTime(RFC3339Date.parseRFC3339Date(current.getEnd().getDateTime().toStringRfc3339()));
+		startDate = calE;
+	} catch (IndexOutOfBoundsException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	//cal.setTimeInMillis(current.getEnd().getDateTime().getValue());
+	//endDate = cal;
 }
+
+
 public Calendar getStartDate()
 {
 	return startDate;
