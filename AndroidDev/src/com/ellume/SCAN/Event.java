@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.util.Log;
+
 public class Event {
 	protected static final String FIELDS = null;
 	private String name;
@@ -24,20 +26,16 @@ public Event(com.google.api.services.calendar.model.Event current) {
 	summary = current.getDescription();
 	Calendar calS = Calendar.getInstance();
 	Calendar calE = Calendar.getInstance();
+	Log.v("tag", current.getStart().getDate().toString());
 	//cal.setTimeInMillis(current.getStart().getDateTime().getValue());
 	//startDate = cal;
-	try {
-		calS.setTime(RFC3339Date.parseRFC3339Date(current.getStart().getDateTime().toStringRfc3339()));
-		startDate = calS;
-		calE.setTime(RFC3339Date.parseRFC3339Date(current.getEnd().getDateTime().toStringRfc3339()));
-		startDate = calE;
-	} catch (IndexOutOfBoundsException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (ParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	String[] date = current.getStart().getDate().toString().split("-");
+	calS.set(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
+	date = current.getEnd().getDate().toString().split("-");
+	calE.set(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
+	startDate = calS;
+	endDate = calE;
+	color = 0xff000000;
 	//cal.setTimeInMillis(current.getEnd().getDateTime().getValue());
 	//endDate = cal;
 }
