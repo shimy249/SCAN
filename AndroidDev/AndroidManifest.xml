@@ -50,10 +50,6 @@
             android:name="com.ellume.SCAN.NetActivity"
             android:label="@string/title_activity_net" >
         </activity>
-        <activity
-            android:name="com.ellume.SCAN.AutheticationError"
-            android:label="@string/title_activity_authetication_error" >
-            </activity>
             <activity
             android:name="com.ellume.SCAN.EventActivity"
             android:label="@string/title_activity_event">

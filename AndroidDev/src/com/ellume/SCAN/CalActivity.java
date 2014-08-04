@@ -24,15 +24,15 @@ import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ComponentName;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.provider.CalendarContract.Events;
+
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -47,8 +47,7 @@ import android.view.ViewGroup;
 public class CalActivity extends ActionBarActivity {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	private Refresher refresher;
-
+	
 	//calendar ASync stuff
 
 	private com.google.api.services.calendar.Calendar client;
@@ -68,7 +67,7 @@ public class CalActivity extends ActionBarActivity {
 		setContentView(R.layout.calendar);
 		((CalendarV)findViewById(R.id.mainCalendar)).setShowWeekNumbers(false);
 		ArrayList<Event> e=new ArrayList<Event>();
-		Calendar s=Calendar.getInstance();
+		/*Calendar s=Calendar.getInstance();
 		Calendar c=Calendar.getInstance();
 		c.set(Calendar.DATE, 20);
 		e.add(new Event("Bobsledding","Fun",s,s, getResources().getColor(R.color.Blue_Event)));
@@ -91,7 +90,7 @@ public class CalActivity extends ActionBarActivity {
 				+ "The work can be seen in relation to other absurdist works by Camus: the novel The Stranger (1942), the plays The Misunderstanding (1942) and Caligula (1944), and especially the essay The Rebel (1951).",s,s,getResources().getColor(R.color.randomColor)));
 		e.add(new Event("Random Bobsledding","Blah",s,s,getResources().getColor(R.color.randomColor)));
 		e.add(new Event("More Bobsledding Too","Blah",s,s,0xff000000));
-		e.add(new Event("Sex on the Beach","Yum",c,c,0xff000000));
+		e.add(new Event("Sex on the Beach","Yum",c,c,0xff000000));*/
 
 		//ASyncTask
 
@@ -141,7 +140,7 @@ public class CalActivity extends ActionBarActivity {
 				String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
 				if (accountName != null) {
 					credential.setSelectedAccountName(accountName);
-					SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+					SharedPreferences settings = getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
@@ -194,8 +193,11 @@ public class CalActivity extends ActionBarActivity {
 						Log.v("result", events.toString());
 						for(int j = 0; j < events.size(); j++){
 							com.google.api.services.calendar.model.Event current = events.get(j);
-							result.add(new Event(current));
-
+							Event event = new Event(current);
+							event.setColor(getResources().getColor(R.color.randomColor));
+							Collections.sort(result);
+							result.add(event);
+							
 						}
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
@@ -215,7 +217,7 @@ public class CalActivity extends ActionBarActivity {
 				Log.v("tag", "Events now adding to calendar");
 				((CalendarV)findViewById(R.id.mainCalendar)).addEvents(es);
 			}
-		}.execute("kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com");
+		}.execute("kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com", "ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net");
 	}
 
 	private void haveGooglePlayServices() {

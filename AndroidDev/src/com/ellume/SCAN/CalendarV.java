@@ -2,7 +2,9 @@ package com.ellume.SCAN;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+
 
 
 import android.content.Context;
@@ -992,7 +994,11 @@ public class CalendarV extends View{
 	}
 	public void addEvents(ArrayList<Event> events)
 	{
-		mEvents=events;
+		if(mEvents == null)
+			mEvents = events;
+		else
+			mEvents.addAll(events);
+		Collections.sort(mEvents);
 		invalidate();
 		requestLayout();
 	}
