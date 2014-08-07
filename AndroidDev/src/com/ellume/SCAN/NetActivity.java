@@ -1,6 +1,7 @@
 package com.ellume.SCAN;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -43,6 +44,7 @@ public class NetActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -53,7 +55,17 @@ public class NetActivity extends ActionBarActivity {
 		SharedPreferences.Editor editor=myPrefs.edit();
 		editor.putBoolean(MainActivity.netSigned,true);
 		editor.commit();
-		this.finish();
+		mViewPager.setCurrentItem(1);
+	}
+	
+	public void studentRightsOK(View v){
+		SharedPreferences myPrefs=this.getSharedPreferences(MainActivity.netFile, 0);
+		SharedPreferences.Editor editor=myPrefs.edit();
+		editor.putBoolean(MainActivity.rightSigned,true);
+		editor.commit();
+		Intent i = new Intent();
+		setResult(RESULT_OK, i);
+		finish();
 	}
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -64,9 +76,10 @@ public class NetActivity extends ActionBarActivity {
 		@Override
 		public Fragment getItem(int position) {
 			if(position==0)
-				return RightsFragment.newInstance();
-			else 
 				return NetFragment.newInstance();
+			else
+				return RightsFragment.newInstance();
+			
 
 		}
 
