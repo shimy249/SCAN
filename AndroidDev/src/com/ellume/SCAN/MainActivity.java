@@ -1,7 +1,7 @@
 package com.ellume.SCAN;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 
 public class MainActivity extends Activity {
+	public static ArrayList<Event> EVENTS=new ArrayList<Event>();
 	public static final String netFile="NET_AGREE_FILE";
 	public static final String netSigned="NET_AGREE_BOOLEAN";
 	private int smiley;

@@ -51,7 +51,7 @@ public class CalendarV extends View{
 
 	//--------------------------------Pre-Allocated_Events:--------------------------------
 
-	private ArrayList<Event> mEvents;	//List of the Events
+	private static ArrayList<Event> mEvents;	//List of the Events
 	//-------------------------------------------------------------------------------------
 
 	//--------------------------------Helpful Indices and Calculated Variables:------------
@@ -246,7 +246,7 @@ public class CalendarV extends View{
 			((CalRect)mySquares[i]).setDate(bufferCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)+i-day+1, bufferCalendar.get(Calendar.MONTH), bufferCalendar.get(Calendar.YEAR));
 		}	
 		firstDay=day;
-		addEventstoDays(0, mySquares.length);
+		addEventsToDays(0, mySquares.length);
 		calibrateSelectedDay();
 	}
 	private void calibrateSelectedDay()
@@ -256,10 +256,14 @@ public class CalendarV extends View{
 		long myDay=selectedBox.date.getTimeInMillis()/86399999;
 		selectedBox.index+=myDay-day0;
 	}
-	private void addEventstoDays(int index, int end)
+	private void addEventsToDays(int index, int end)
 	{
 		int m=0;
 		int j=0;
+		for(int i=index; i<end; i++)
+		{
+			mySquares[i].getEvents().clear();
+		}
 		for(int i=index; i<end; i++){
 
 			for(j=m; j<mEvents.size();j++)
@@ -943,7 +947,7 @@ public class CalendarV extends View{
 
 			((CalRect)mySquares[i]).setDate(++day, month, year);
 		}
-		this.addEventstoDays(42, mySquares.length);
+		this.addEventsToDays(42, mySquares.length);
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
@@ -987,7 +991,7 @@ public class CalendarV extends View{
 			((CalRect)mySquares[i]).setDate(day, bufferCalendar.get(Calendar.MONTH), bufferCalendar.get(Calendar.YEAR));
 
 		}
-		this.addEventstoDays(0, 7);
+		this.addEventsToDays(0, 7);
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
@@ -1017,7 +1021,8 @@ public class CalendarV extends View{
 			mEvents = events;
 		else
 			mEvents.addAll(events);
-		Collections.sort(mEvents);
+		MergeSort.sortEvents(mEvents);
+		addEventsToDays(0, mySquares.length);
 		invalidate();
 		requestLayout();
 	}
@@ -1066,6 +1071,10 @@ public class CalendarV extends View{
 				drawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor),textPainter.getTextSize());
 		}
 	}
+	/**
+	 * Adjusts the size of the text in the boxes to the height of the box
+	 * @param box
+	 */
 	private void adjustToCorrectTextSize(RectF box)
 	{
 		float maxSize;
@@ -1085,22 +1094,11 @@ public class CalendarV extends View{
 		}
 	}
 	/**
-	 * Translates Boxes a set distance from a reference point, useful for translating some but not all of the boxes.
-	 * @param refY
-	 * @param transDistance
-	 * @param startPosition
+	 * Cuts string to an appropriate length given the width of a box
+	 * @param s the string to cut
+	 * @param width the width of a box that the string will fit in
+	 * @return returns the cut string ready to be painted inside the box
 	 */
-	private void translateByRef(float refY, float transDistance, int startPosition)
-	{
-		for(int i=startPosition; i<startPosition+7;i++)
-		{
-			mySquares[i].set(mySquares[i].left, refY+transDistance, mySquares[i].right, refY+transDistance+mySquares[i].height());
-		}
-		for(int i=startPosition+7; i<mySquares.length;i++)
-		{
-			mySquares[i].set(mySquares[i].left,mySquares[i-7].bottom,mySquares[i].top,mySquares[i-7].bottom+transDistance);
-		}
-	}
 	private String cutString(String s, float width)
 	{ 
 		while(textPainter.measureText(s)>width)
