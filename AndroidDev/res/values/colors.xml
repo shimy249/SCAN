@@ -16,4 +16,5 @@
     <color name="Black">#111111</color>
     <color name="White">#eeeeee</color>
     <color name="GreyedText">#ff777777</color>
+    <color name="common_border">@color/SelectedColor</color>
 </resources>

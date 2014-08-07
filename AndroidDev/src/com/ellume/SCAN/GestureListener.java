@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.widget.Scroller;
 
 public class GestureListener extends GestureDetector.SimpleOnGestureListener{
-	private static String TAG="com.example.androiddev.GestureListener";
+	private static String TAG="com.ellume.SCAN.GestureListener";
 	final Scroller mScroller;
 	ValueAnimator mScrollerAnimator;
 	CalendarV myView;

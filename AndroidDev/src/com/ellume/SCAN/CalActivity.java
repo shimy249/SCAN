@@ -24,10 +24,8 @@ import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-
 import android.content.Context;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -183,6 +181,7 @@ public class CalActivity extends ActionBarActivity {
 
 			ArrayList<Event> result = new ArrayList<Event>();
 
+			@SuppressWarnings("unchecked")
 			@Override
 			protected ArrayList<Event> doInBackground(String... params) {
 				for(int i = 0; i < params.length; i++){
@@ -190,9 +189,10 @@ public class CalActivity extends ActionBarActivity {
 						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).execute();
 
 						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
-						Log.v("result", events.toString());
+						Log.v("current", events.toString());
 						for(int j = 0; j < events.size(); j++){
 							com.google.api.services.calendar.model.Event current = events.get(j);
+							Log.v("result", current.toString());
 							Event event = new Event(current);
 							event.setColor(getResources().getColor(R.color.randomColor));
 							Collections.sort(result);

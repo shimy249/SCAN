@@ -8,7 +8,7 @@ public class CalendarConversion {
 	public static String CalendarToString(Calendar cal)
 	{
 		String s="";
-		s+=cal.get(Calendar.MONTH)+"/"+cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.YEAR)+" at "+ cal.get(Calendar.HOUR)+":";
+		s+=(cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.YEAR)+" at "+ cal.get(Calendar.HOUR)+":";
 		if(cal.get(Calendar.MINUTE)<10)
 		{
 			s+="0";
@@ -30,15 +30,24 @@ public class CalendarConversion {
 		s+=months[cal.get(Calendar.MONTH)]+" "+cal.get(Calendar.DAY_OF_MONTH);
 		return s;
 	}
+	public static String MM_DD_YY(Calendar cal){
+		String s="";
+		String year=""+cal.get(Calendar.YEAR);
+		year=year.substring(2);
+		s+=(cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.DATE)+"/"+year;
+		return s;
+		
+	}
 	public static String Month__DD__YYYY(Calendar cal){
 		String s=Month__DD(cal);
 		s+=", "+cal.get(Calendar.YEAR);
 		return s;
 	}
+	@SuppressWarnings("deprecation")
 	public static String CalendarToString(Date cal)
 	{
 		String s="";
-		s+=cal.getMonth()+"/"+cal.getDate()+"/"+cal.getYear();
+		s+=(cal.getMonth()+1)+"/"+cal.getDate()+"/"+cal.getYear();
 		if(cal.getMinutes()<10)
 		{
 			s+="0";

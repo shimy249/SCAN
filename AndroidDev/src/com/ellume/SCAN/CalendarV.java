@@ -22,12 +22,12 @@ import android.widget.TextView;
 
 public class CalendarV extends View{
 	//-----------------------------------Constants for Calls from Events:------------------
-	public static String TITLE="com.ellume.androiddev.CalendarV.TITLE";
-	public static String DESCRIPTION="com.ellume.androiddev.CalendarV.DESCRIPTION";
-	public static String STARTDATE="com.ellume.androiddev.CalendarV.STARTDATE";
-	public static String ENDDATE="com.ellume.androiddev.CalendarV.ENDDATE";
-	public static String COLOR="com.ellume.androiddev.CalendarV.COLOR";
-
+	public static String TITLE="com.ellume.SCAN.CalendarV.TITLE";
+	public static String DESCRIPTION="com.ellume.SCAN.CalendarV.DESCRIPTION";
+	public static String STARTDATE="com.ellume.SCAN.CalendarV.STARTDATE";
+	public static String ENDDATE="com.ellume.SCAN.CalendarV.ENDDATE";
+	public static String COLOR="com.ellume.SCAN.CalendarV.COLOR";
+	public static int BOX_HEIGHT=60;
 	//-----------------------------------Constants-----------------------------------------
 	protected int alignX, alignY;
 	public static final int ALIGN_TOP=0;
@@ -58,7 +58,7 @@ public class CalendarV extends View{
 	private int firstDay;	//Index of the first day of the month
 	private float translationFactor;	//Used in motion of opening the DetailedDayBoxes
 	private float intervalX, intervalY;	//Height and Width of boxes, used for iteration
-	private static int selectedBox;	//The Box currently selected by the user
+	private static SelectedBox selectedBox;	//The Box currently selected by the user
 	//-------------------------------Painters:---------------------------------------------
 	private Paint textPainter, linePainter, boxPainter,ovalPainter;
 
@@ -75,6 +75,10 @@ public class CalendarV extends View{
 	 * @param context Populated By Android System on Instantiation. In this case Context refers to CalActivity.
 	 * @param attrs Populated By Android System on Instantiation. Contains Attributes specified in XML files.
 	 */
+	private class SelectedBox{
+		Calendar date;
+		int index;
+	}
 	public CalendarV(Context context, AttributeSet attrs){
 		super(context, attrs);
 		bufferRect=new RectF();
@@ -86,6 +90,7 @@ public class CalendarV extends View{
 			a.recycle(); 
 		}
 		initRect();
+		BOX_HEIGHT=55;
 		initPaint();
 		initCal();
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this));
@@ -137,7 +142,13 @@ public class CalendarV extends View{
 	{
 		int day=myCalendar.get(Calendar.DAY_OF_MONTH);
 		myCalendar.set(Calendar.DAY_OF_MONTH, 1);
-		selectedBox=day+myCalendar.get(Calendar.DAY_OF_WEEK)-2;
+		if(selectedBox==null){
+			selectedBox=new SelectedBox();
+			selectedBox.date=Calendar.getInstance();
+			selectedBox.date.setTimeInMillis((selectedBox.date.getTimeInMillis()/86400000)*86400000);
+			selectedBox.date.set(Calendar.HOUR_OF_DAY, 0);
+			selectedBox.index=day+myCalendar.get(Calendar.DAY_OF_WEEK)-2;
+		}
 		myCalendar.set(Calendar.DAY_OF_MONTH, day);
 		if(a)
 		{
@@ -236,6 +247,14 @@ public class CalendarV extends View{
 		}	
 		firstDay=day;
 		addEventstoDays(0, mySquares.length);
+		calibrateSelectedDay();
+	}
+	private void calibrateSelectedDay()
+	{
+		selectedBox.index=0;
+		long day0=mySquares[0].getCal().getTimeInMillis()/86399999;
+		long myDay=selectedBox.date.getTimeInMillis()/86399999;
+		selectedBox.index+=myDay-day0;
 	}
 	private void addEventstoDays(int index, int end)
 	{
@@ -587,8 +606,8 @@ public class CalendarV extends View{
 	 * @param c -- Canvas supplied by the Android System.
 	 */
 	public void drawSelectedSquare(Canvas c){
-		if(selectedBox>=0 && selectedBox<=48)
-			drawBox(mySquares[selectedBox],c,getResources().getColor(R.color.SelectedColor),boxPainter);
+		if(selectedBox.index>=0 && selectedBox.index<=48)
+			drawBox(mySquares[selectedBox.index],c,getResources().getColor(R.color.SelectedColor),boxPainter);
 	}
 	/**
 	 * @author ajive_000
@@ -614,9 +633,9 @@ public class CalendarV extends View{
 
 		if(checkForEvents())
 		{
-			calcDetailedEvents(mySquares[selectedBox].bottom);
+			calcDetailedEvents(mySquares[selectedBox.index].bottom);
 			drawDetailedEvents(canvas);
-			translate(calcTransDistance(),nextLine(selectedBox),mySquares.length);
+			translate(calcTransDistance(),nextLine(selectedBox.index),mySquares.length);
 		}
 		boolean first=isFirstLayerVisible();
 		boolean second=isUpperLayerShowing();
@@ -636,10 +655,10 @@ public class CalendarV extends View{
 	}
 	private int calcTransDistance()
 	{
-		int boxHeight=50;
-		int transDistance=mySquares[selectedBox].getEvents().size();
+		
+		int transDistance=mySquares[selectedBox.index].getEvents().size();
 		if(transDistance>4) transDistance=4;
-		return ((transDistance+1)/2)*boxHeight;
+		return ((transDistance+1)/2)*BOX_HEIGHT;
 	}
 	/**
 	 * @author ajive_000
@@ -677,7 +696,7 @@ public class CalendarV extends View{
 			}
 			if(num>4)
 			{
- 
+
 				topX-=height/18;
 				float factor=30;
 				for(int j=3; j<=num-1 && j<6; j++){
@@ -709,7 +728,7 @@ public class CalendarV extends View{
 		if(index!=-1){
 			bufferRect.set(mySquares[index].centerX()-10, mySquares[index].bottom-30, mySquares[index].centerX()+10, mySquares[index].bottom-10);
 			int prevColor=textPainter.getColor();
-			if(selectedBox!=index)
+			if(selectedBox.index!=index)
 				textPainter.setColor(getResources().getColor(R.color.CurrentDayColor));
 			else
 				textPainter.setColor(getResources().getColor(R.color.White));
@@ -750,24 +769,25 @@ public class CalendarV extends View{
 		{
 			if(mySquares[i].contains(x, y))
 			{
-				selectedBox=i;
+				selectedBox.index=i;
+				selectedBox.date=mySquares[selectedBox.index].getCal();
 				invalidate();
 				requestLayout();
 				return;
 			}
 		}
 		if(checkForEvents()){
-			ArrayList<Event> events=mySquares[selectedBox].getEvents();
-			for(int i=0; i<mySquares[selectedBox].getEvents().size() && i<myDetailedEvents.length;i++)
+			ArrayList<Event> events=mySquares[selectedBox.index].getEvents();
+			for(int i=0; i<mySquares[selectedBox.index].getEvents().size() && i<myDetailedEvents.length;i++)
 			{
 				if(myDetailedEvents[i].contains(x,y))
 				{
-					if(i==3 && mySquares[selectedBox].getEvents().size()>4)
+					if(i==3 && mySquares[selectedBox.index].getEvents().size()>4)
 					{
-						//Intent intent=new Intent(getContext(), MoreActivity.class);
-						//MoreActivity.putEvents(mySquares[selectedBox].getEvents());
-						//MoreActivity.putCalendar(mySquares[selectedBox].getCal());
-						//getContext().startActivity(intent);
+						Intent intent=new Intent(getContext(), ListEventsActivity.class);
+						ListEventsActivity.putEvents(mySquares[selectedBox.index].getEvents());
+						ListEventsActivity.putCalendar(mySquares[selectedBox.index].getCal());
+						getContext().startActivity(intent);
 
 						return;
 					}
@@ -822,8 +842,7 @@ public class CalendarV extends View{
 	 */
 	public void previousMonth(boolean prealloc){
 		myCalendar.set(Calendar.MONTH, myCalendar.get(Calendar.MONTH)-1);
-		if(!(this instanceof YearCalendar))
-			secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
 		if(prealloc)
 			preAllocSquares();
 		invalidate();
@@ -869,7 +888,7 @@ public class CalendarV extends View{
 	 */
 	private boolean isFirstLayerVisible()
 	{
-		if(checkForEvents() && selectedBox>=0 && selectedBox<7)
+		if(checkForEvents() && selectedBox.index>=0 && selectedBox.index<7)
 			return myDetailedEvents[myDetailedEvents.length-1].bottom>myDayLabels[0].bottom;
 			else
 				return mySquares[0].bottom>myDayLabels[0].bottom;
@@ -928,7 +947,7 @@ public class CalendarV extends View{
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
-		selectedBox-=7;
+		selectedBox.index-=7;
 	}
 	private void moveLayerDown()
 	{
@@ -972,8 +991,8 @@ public class CalendarV extends View{
 		myCalendar.set(Calendar.MONTH, ((CalRect)mySquares[20]).getMonth());
 		myCalendar.set(Calendar.YEAR, ((CalRect)mySquares[20]).getYear());
 		secondaryBuffer=new GregorianCalendar(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
-		selectedBox+=7;
-		if(checkForEvents() &&selectedBox<7 && selectedBox>=0)
+		selectedBox.index+=7;
+		if(checkForEvents() &&selectedBox.index<7 && selectedBox.index>=0)
 		{
 
 			compensateForShiftDown();
@@ -981,7 +1000,7 @@ public class CalendarV extends View{
 	} 
 	private void compensateForShiftDown()
 	{
-		calcDetailedEvents(mySquares[selectedBox].bottom);
+		calcDetailedEvents(mySquares[selectedBox.index].bottom);
 		if(mEvents.size()>2)
 		{
 			translate(-(4+myDetailedEvents[2].bottom-myDetailedEvents[0].top),0,7);
@@ -1009,16 +1028,16 @@ public class CalendarV extends View{
 	 */
 	public boolean checkForEvents()
 	{
-		return selectedBox<mySquares.length && selectedBox>=0 && mySquares[selectedBox].getEvents().size()>0;
+		return selectedBox.index<mySquares.length && selectedBox.index>=0 && mySquares[selectedBox.index].getEvents().size()>0;
 	}
 	public void calcDetailedEvents(float positionY){
-		int boxHeight=50;
+		int boxHeight=BOX_HEIGHT;
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
-		ArrayList<Event> events=mySquares[selectedBox].getEvents();
+		ArrayList<Event> events=mySquares[selectedBox.index].getEvents();
 		for(int i=0; i<events.size() && i<4; i++)
 		{
-			myDetailedEvents[i].set((i%2)*getWidth()/2, mySquares[selectedBox].bottom+(i/2)*boxHeight, (1+(i%2))*getWidth()/2, mySquares[selectedBox].bottom+(1+(i/2))*boxHeight);
+			myDetailedEvents[i].set((i%2)*getWidth()/2, mySquares[selectedBox.index].bottom+(i/2)*boxHeight, (1+(i%2))*getWidth()/2, mySquares[selectedBox.index].bottom+(1+(i/2))*boxHeight);
 		}
 		if(events.size()<3)
 		{
@@ -1032,28 +1051,25 @@ public class CalendarV extends View{
 	}
 	public void drawDetailedEvents(Canvas canvas){
 		adjustToCorrectTextSize(myDetailedEvents[0]);
-		ArrayList<Event> events=mySquares[selectedBox].getEvents();
+		ArrayList<Event> events=mySquares[selectedBox.index].getEvents();
 		for(int i=0; i<myDetailedEvents.length && i<events.size(); i++)
 		{
 			int color=events.get(i).getColor();
 			boxPainter.setColor(color);
-			canvas.drawRoundRect(myDetailedEvents[i],15f,15f, boxPainter);
+			canvas.drawRect(myDetailedEvents[i], boxPainter);
 			String s=events.get(i).getTitle();
-			if(textPainter.measureText(s)>myDetailedEvents[i].width())
+			if(textPainter.measureText(s)>myDetailedEvents[i].width()-70)
 				s=cutString(s, myDetailedEvents[i].width());
 			if(events.size()>4 && i==3)
-				drawText(myDetailedEvents[i],canvas,"More...",getResources().getColor(R.color.DetailedEventColor));
+				drawText(myDetailedEvents[i],canvas,"More...",getResources().getColor(R.color.DetailedEventColor),textPainter.getTextSize());
 			else
-				drawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor));
+				drawText(myDetailedEvents[i],canvas,s,getResources().getColor(R.color.DetailedEventColor),textPainter.getTextSize());
 		}
 	}
 	private void adjustToCorrectTextSize(RectF box)
 	{
 		float maxSize;
-		if(box.height()>60)
-			maxSize=box.bottom-box.top-15;
-		else
-			maxSize=box.bottom-box.top-5;
+		maxSize=box.bottom-box.top-10;
 		if(maxSize<0)
 			return;
 		else

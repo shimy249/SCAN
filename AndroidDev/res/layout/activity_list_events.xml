@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ellume.SCAN.ListEventsActivity" >
+
+    <ListView
+        android:id="@+id/activity_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:dividerHeight="2dp"
+         />
+    <TextView 
+        android:id="@+id/noEventNotify"
+        android:background="@drawable/roundcorners"
+        android:textColor="@color/White"
+        android:layout_width="fill_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_height="fill_parent" 
+        android:text="blah"
+        android:textSize="24sp"/>
+
+</RelativeLayout>
