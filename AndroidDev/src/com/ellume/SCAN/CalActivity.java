@@ -36,7 +36,7 @@ import com.google.api.services.calendar.CalendarScopes;
 public class CalActivity extends ActionBarActivity {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-
+	private String[] calendarNames={"ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net"};
 	//calendar ASync stuff
 
 	private com.google.api.services.calendar.Calendar client;
@@ -65,7 +65,8 @@ public class CalActivity extends ActionBarActivity {
 		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));	
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN/1.0").build();
 		calendarView=((CalendarV)findViewById(R.id.mainCalendar));
-		calendarView.addEvents(MainActivity.EVENTS);
+		if(calendarView.getEvents()==null || calendarView.getEvents().size()==0)
+			calendarView.addEvents(MainActivity.EVENTS);
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -136,6 +137,8 @@ public class CalActivity extends ActionBarActivity {
 	}
 
 	public void getEvents(){
+		if(MainActivity.EVENTS==null || MainActivity.EVENTS.size()==0)
+			this.setContentView(R.layout.progress_layout);
 		AsyncTask<String, Void, Void> task=new AsyncTask<String, Void, Void>(){
 			@Override
 			protected Void doInBackground(String... params) {
@@ -147,12 +150,12 @@ public class CalActivity extends ActionBarActivity {
 						int r=(int)(Math.random()*256);
 						int g=(int)(Math.random()*256);
 						int b=(int)(Math.random()*256);
-						
+
 						for(int j = 0; j < events.size(); j++){
 							com.google.api.services.calendar.model.Event current = events.get(j);
-						//	Log.v("result", current.toString());
+							//	Log.v("result", current.toString());
 							Event event = new Event(current);
-							event.setColor(Color.argb(255, r, g, b));
+							event.setColor(Color.argb(170, r, g, b));
 							MergeSort.sortEvents(MainActivity.EVENTS);
 							MainActivity.EVENTS.add(event);
 							this.onProgressUpdate();
@@ -167,7 +170,7 @@ public class CalActivity extends ActionBarActivity {
 						mEventFlag=!mEventFlag;
 						CalActivity.this.startActivityForResult(
 								userRecoverableException.getIntent(), CalActivity.REQUEST_AUTHORIZATION);
-						
+
 						break;
 					} catch (IOException e) {
 						if(e!=null)
@@ -180,15 +183,17 @@ public class CalActivity extends ActionBarActivity {
 			}
 			protected void onProgressUpdate(Void... e)
 			{
-				calendarView.reDrawEvents();
+
 
 			}
 			protected void onPostExecute(Void e)
 			{
+				CalActivity.this.setContentView(R.layout.calendar);
+				calendarView.reDrawEvents();
 				calendarView.invalidate();
 			}
 		};
-		task.execute("ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net");
+		task.execute(calendarNames);
 
 
 	}
@@ -204,7 +209,7 @@ public class CalActivity extends ActionBarActivity {
 			if(!mEventFlag){
 				mEventFlag=!mEventFlag;
 				getEvents();
-				
+
 			}
 		}
 

@@ -2,7 +2,9 @@
 
 <resources>
 
-    
+	<!--  Progress Items-->
+	<string name="retrieving">The calendar is loading new events.
+	    \nThis may take a few seconds.</string>      
 
     <!--  Menu items -->
     <string name="settings">Settings</string>

@@ -22,7 +22,6 @@ public class EventActivity extends Activity {
 		setVariables();
 		setTextValues();
 		setColorValues();
-		setAppropriateSizes();
 	}
 	public void setVariables()
 	{
@@ -37,24 +36,10 @@ public class EventActivity extends Activity {
 		end=intent.getStringExtra(CalendarV.ENDDATE);
 		color=intent.getIntExtra(CalendarV.COLOR, -1);
 	}
-	private void setAppropriateSizes()
-	{
-		//if(33f*titleString.length()<getResources().getDisplayMetrics().widthPixels*2-20){
-		title.setLines(1);
-		float f=title.getTextSize();
-		float w=this.getResources().getDisplayMetrics().widthPixels;
-		while(f*titleString.length()>w-20)
-			f-=1;
-		title.setTextSize(f);
-		Log.v("", ""+f);
-	//	}
-	}
 	public void setTextValues()
 	{
 
 		startTime.setText("Start Date: "+start);
-		if(start.equals(end))
-			startTime.setVisibility(TextView.GONE);
 		endTime.setText("End Date: "+end);
 		title.setText(titleString);
 		description.setText(desc);

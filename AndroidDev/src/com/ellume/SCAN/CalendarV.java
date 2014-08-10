@@ -263,6 +263,7 @@ public class CalendarV extends View{
 	 */
 	private void addEventsToDays(int index, int end)
 	{
+		
 		int m=0;
 		int j=0;
 		for(int i=index; i<end; i++)
@@ -592,7 +593,7 @@ public class CalendarV extends View{
 	 */
 	public void reDrawEvents()
 	{
-		this.addEventsToDays(0, mySquares.length);
+		this.preAllocSquares();
 	}
 	/**
 	 * @author ajive_000
@@ -671,7 +672,7 @@ public class CalendarV extends View{
 	}
 	private int calcTransDistance()
 	{
-		
+
 		int transDistance=mySquares[selectedBox.index].getEvents().size();
 		if(transDistance>4) transDistance=4;
 		return ((transDistance+1)/2)*BOX_HEIGHT;
@@ -904,10 +905,17 @@ public class CalendarV extends View{
 	 */
 	private boolean isFirstLayerVisible()
 	{
-		if(checkForEvents() && selectedBox.index>=0 && selectedBox.index<7)
-			return myDetailedEvents[myDetailedEvents.length-1].bottom>myDayLabels[0].bottom;
-			else
-				return mySquares[0].bottom>myDayLabels[0].bottom;
+		if(checkForEvents() && selectedBox.index>=0 && selectedBox.index<7){
+			if(mySquares[selectedBox.index].getEvents().size()<=4)
+			{
+				return myDetailedEvents[mySquares[selectedBox.index].getEvents().size()-1].bottom>myDayLabels[0].bottom;
+			}
+			else{
+				return myDetailedEvents[3].bottom>myDayLabels[0].bottom;
+			}
+		}
+		else
+			return mySquares[0].bottom>myDayLabels[0].bottom;
 	}
 	/**
 	 * @author ajive_000
@@ -1055,7 +1063,7 @@ public class CalendarV extends View{
 		addEventsToDays(0,mySquares.length);
 		invalidate();
 		requestLayout();
-		
+
 	}
 	/**
 	 * @author ajive_000

@@ -34,17 +34,17 @@ public class ListEventsActivity extends Activity {
 				int targetYear=(int)(Calendar.getInstance().getTimeInMillis()/31536000000l);
 				int eventYear=(int)(e.getStartDate().getTimeInMillis()/31536000000l);
 				if(eventYear<=targetYear+1	&& eventYear>=targetYear-1){
-				if(i==0 || !isSameDay(EVENTS.get(i-1),EVENTS.get(i)))
-				{
-					BundledEvent myLabel=new BundledEvent();
-					myLabel.event=null;
-					myLabel.calendar=EVENTS.get(i).getStartDate();
-					bundledEvents.add(myLabel);
-				}
-				BundledEvent b=new BundledEvent();
-				b.calendar=null;
-				b.event=EVENTS.get(i);
-				bundledEvents.add(b);
+					if(i==0 || !isSameDay(EVENTS.get(i-1),EVENTS.get(i)))
+					{
+						BundledEvent myLabel=new BundledEvent();
+						myLabel.event=null;
+						myLabel.calendar=EVENTS.get(i).getStartDate();
+						bundledEvents.add(myLabel);
+					}
+					BundledEvent b=new BundledEvent();
+					b.calendar=null;
+					b.event=EVENTS.get(i);
+					bundledEvents.add(b);
 				}
 			}
 			mAdapter=new EventAdapter(this,R.layout.list_item,bundledEvents);
@@ -102,37 +102,37 @@ public class ListEventsActivity extends Activity {
 		private class List_Item_Holder{
 			TextView title;
 			TextView description;
-			TextView calendar;
+			
 		}
 		public View getView(int position, View convertView, ViewGroup parent){
 			BundledEvent b=myEvents.get(position);
-				if(b.event!=null){
-					List_Item_Holder holder=new List_Item_Holder();
-					convertView=mInflate.inflate(R.layout.list_item_events, null);
-					holder.title=(TextView)convertView.findViewById(R.id.list_item_title);
-					if(holder.title!=null)
-						holder.title.setText(b.event.getTitle());
-					holder.description=(TextView)convertView.findViewById(R.id.list_item_description);
-					if(holder.description!=null)
-						if(b.event.getSummary()!=null)
+			if(b.event!=null){
+				List_Item_Holder holder=new List_Item_Holder();
+				convertView=mInflate.inflate(R.layout.list_item_events, null);
+				holder.title=(TextView)convertView.findViewById(R.id.list_item_title);
+				if(holder.title!=null)
+					holder.title.setText(b.event.getTitle());
+				holder.description=(TextView)convertView.findViewById(R.id.list_item_description);
+				if(holder.description!=null){
+					if(b.event.getSummary()!=null){
 						if(b.event.getSummary().length()>50)
-						holder.description.setText(b.event.getSummary().substring(0, 47)+"...");
+							holder.description.setText(b.event.getSummary().substring(0, 47)+"...");
 						else
-							holder.description.setText(b.event.getSummary());
-					holder.calendar=(TextView)convertView.findViewById(R.id.list_item_calendar_name);
-					if(holder.calendar!=null)
-						holder.calendar.setText(CalendarConversion.MM_DD_YY(b.event.getStartDate())+
-								" - "+CalendarConversion.MM_DD_YY(b.event.getEndDate()));
-					convertView.setBackgroundColor(b.event.getColor());
+							holder.description.setText(b.event.getSummary()+" ");
+					}
+					else
+						holder.description.setText(" ");
 				}
-				else if(b.calendar!=null)
-				{
-					convertView=mInflate.inflate(R.layout.list_header, null);
-					TextView headerDate=(TextView)convertView.findViewById(R.id.list_header_date);
-					if(headerDate!=null)
-						headerDate.setText(CalendarConversion.Month__DD__YYYY(b.calendar));
-				}
-				//DO Stuff here with the layout items.
+				convertView.setBackgroundColor(b.event.getColor());
+			}
+			else if(b.calendar!=null)
+			{
+				convertView=mInflate.inflate(R.layout.list_header, null);
+				TextView headerDate=(TextView)convertView.findViewById(R.id.list_header_date);
+				if(headerDate!=null)
+					headerDate.setText(CalendarConversion.Month__DD__YYYY(b.calendar));
+			}
+			//DO Stuff here with the layout items.
 
 			return convertView;
 		}
