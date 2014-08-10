@@ -1038,6 +1038,10 @@ public class CalendarV extends View{
 		invalidate();
 		requestLayout();
 	}
+	public ArrayList<Event> getEvents()
+	{
+		return mEvents;
+	}
 	public void addEvents(Event event)
 	{
 		if(mEvents==null)

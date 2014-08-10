@@ -3,9 +3,6 @@ package com.ellume.SCAN;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import android.accounts.AccountManager;
 import android.app.ActionBar;
@@ -14,6 +11,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,13 +19,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -56,6 +52,7 @@ public class CalActivity extends ActionBarActivity {
 	private JacksonFactory jsonFactory = new JacksonFactory();
 	boolean isAuthorized;
 	public static CalendarV calendarView;
+	private static boolean mEventFlag=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,7 +73,7 @@ public class CalActivity extends ActionBarActivity {
 		switch (requestCode) {
 		case REQUEST_GOOGLE_PLAY_SERVICES:
 			if (resultCode == Activity.RESULT_OK
-			) {
+					) {
 				haveGooglePlayServices();
 			} else {
 				checkGooglePlayServicesAvailable();
@@ -84,7 +81,10 @@ public class CalActivity extends ActionBarActivity {
 			break;
 		case REQUEST_AUTHORIZATION:
 			if (resultCode == Activity.RESULT_OK) {
-				getEvents();
+				if(!mEventFlag){
+					mEventFlag=!mEventFlag;
+					getEvents();
+				}
 			} else {
 				chooseAccount();
 			}
@@ -98,7 +98,10 @@ public class CalActivity extends ActionBarActivity {
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
-					getEvents();
+					if(!mEventFlag){
+						mEventFlag=!mEventFlag;
+						getEvents();
+					}
 				}
 			}
 			break;
@@ -140,28 +143,35 @@ public class CalActivity extends ActionBarActivity {
 					try {
 						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).execute();
 						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
-						Log.v("current", events.toString());
+						//Log.v("current", events.toString());
+						int r=(int)(Math.random()*256);
+						int g=(int)(Math.random()*256);
+						int b=(int)(Math.random()*256);
+						
 						for(int j = 0; j < events.size(); j++){
 							com.google.api.services.calendar.model.Event current = events.get(j);
-							Log.v("result", current.toString());
+						//	Log.v("result", current.toString());
 							Event event = new Event(current);
-							event.setColor(getResources().getColor(R.color.randomColor));
+							event.setColor(Color.argb(255, r, g, b));
 							MergeSort.sortEvents(MainActivity.EVENTS);
 							MainActivity.EVENTS.add(event);
 							this.onProgressUpdate();
 						}
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
+						mEventFlag=!mEventFlag;
 						CalActivity.this.showGooglePlayServicesAvailabilityErrorDialog(
 								availabilityException.getConnectionStatusCode());
 						break;
 					} catch (UserRecoverableAuthIOException userRecoverableException) {						
+						mEventFlag=!mEventFlag;
 						CalActivity.this.startActivityForResult(
 								userRecoverableException.getIntent(), CalActivity.REQUEST_AUTHORIZATION);
+						
 						break;
 					} catch (IOException e) {
 						if(e!=null)
-						e.printStackTrace();
+							e.printStackTrace();
 						break;
 					}
 				}
@@ -171,7 +181,7 @@ public class CalActivity extends ActionBarActivity {
 			protected void onProgressUpdate(Void... e)
 			{
 				calendarView.reDrawEvents();
-				
+
 			}
 			protected void onPostExecute(Void e)
 			{
@@ -179,11 +189,11 @@ public class CalActivity extends ActionBarActivity {
 			}
 		};
 		task.execute("ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net");
-		
-		
+
+
 	}
-	
-	
+
+
 
 	private void haveGooglePlayServices() {
 		if (credential.getSelectedAccountName() == null) {
@@ -191,7 +201,11 @@ public class CalActivity extends ActionBarActivity {
 			chooseAccount();
 		} else {
 			// load calendars
-			getEvents();
+			if(!mEventFlag){
+				mEventFlag=!mEventFlag;
+				getEvents();
+				
+			}
 		}
 
 	}
@@ -204,7 +218,7 @@ public class CalActivity extends ActionBarActivity {
 		super.onResume();
 		if(checkGooglePlayServicesAvailable()){
 			haveGooglePlayServices();
-			
+
 		}
 
 	}

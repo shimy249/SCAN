@@ -67,7 +67,6 @@ public class ListEventsActivity extends Activity {
 	public static void putEvents(ArrayList<Event> e)
 	{
 		EVENTS=e;
-		MergeSort.sortEvents(EVENTS);
 	}
 
 	public static void putCalendar(Calendar c)
