@@ -256,6 +256,11 @@ public class CalendarV extends View{
 		long myDay=selectedBox.date.getTimeInMillis()/86399999;
 		selectedBox.index+=myDay-day0;
 	}
+	/**
+	 * Adds events from events array into their square.
+	 * @param index
+	 * @param end
+	 */
 	private void addEventsToDays(int index, int end)
 	{
 		int m=0;
@@ -282,7 +287,7 @@ public class CalendarV extends View{
 				else if(c.get(Calendar.DATE)==mySquares[i].getDay()
 						&& c.get(Calendar.MONTH)==mySquares[i].getMonth()
 						&& c.get(Calendar.YEAR)==mySquares[i].getYear())
-					mySquares[i].addEvent(event);
+					mySquares[i].getEvents().add(event);
 
 			}
 			m=j;
@@ -583,6 +588,13 @@ public class CalendarV extends View{
 			drawText(myWeekNumbers[i],canvas,""+(weekno++),getResources().getColor(R.color.TextColor));
 	}
 	/**
+	 * 
+	 */
+	public void reDrawEvents()
+	{
+		this.addEventsToDays(0, mySquares.length);
+	}
+	/**
 	 * @author ajive_000
 	 * Draws the squares as they were allocated. 
 	 * @param canvas
@@ -744,7 +756,7 @@ public class CalendarV extends View{
 	/**
 	 * @author ajive_000
 	 * Called when the screen is touched.
-	 * @deprecated Now implemented via GestureListener
+	 *
 	 */
 	public boolean onTouchEvent(MotionEvent e)
 	{
@@ -1025,6 +1037,21 @@ public class CalendarV extends View{
 		addEventsToDays(0, mySquares.length);
 		invalidate();
 		requestLayout();
+	}
+	public void addEvents(Event event)
+	{
+		if(mEvents==null)
+		{
+			mEvents=new ArrayList<Event>();
+			mEvents.add(event);
+		}
+		else
+			mEvents.add(event);
+		MergeSort.sortEvents(mEvents);
+		addEventsToDays(0,mySquares.length);
+		invalidate();
+		requestLayout();
+		
 	}
 	/**
 	 * @author ajive_000

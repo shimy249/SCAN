@@ -1,24 +1,11 @@
 package com.ellume.SCAN;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-
-
-
-
 import java.util.Collections;
 import java.util.List;
-
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.calendar.CalendarScopes;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import android.accounts.AccountManager;
 import android.app.ActionBar;
@@ -29,8 +16,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -42,23 +27,35 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.calendar.CalendarScopes;
+
 public class CalActivity extends ActionBarActivity {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	
+
 	//calendar ASync stuff
 
 	private com.google.api.services.calendar.Calendar client;
 
 	private GoogleAccountCredential credential;
 	public static final String PREF_NAME = "prefFile";
+	public static final String AUTHORIZED_ACCOUNT="com.ellume.SCAN.IS_AUTHORIZED";
 	public static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final int REQUEST_GOOGLE_PLAY_SERVICES = 10;
 	private static final int REQUEST_AUTHORIZATION = 100;
 	private static final int REQUEST_ACCOUNT_PICKER = 120;
 	private HttpTransport httpTransport = new NetHttpTransport();
 	private JacksonFactory jsonFactory = new JacksonFactory();
-
+	boolean isAuthorized;
+	public static CalendarV calendarView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,27 +63,20 @@ public class CalActivity extends ActionBarActivity {
 		((CalendarV)findViewById(R.id.mainCalendar)).setShowWeekNumbers(false);
 
 		//ASyncTask
-
-		credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
-
 		SharedPreferences settings = this.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
-		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
-
+		credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
+		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));	
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN/1.0").build();
-
-
-
-		((CalendarV)findViewById(R.id.mainCalendar)).addEvents(MainActivity.EVENTS);
-
-
-
+		calendarView=((CalendarV)findViewById(R.id.mainCalendar));
+		calendarView.addEvents(MainActivity.EVENTS);
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 		case REQUEST_GOOGLE_PLAY_SERVICES:
-			if (resultCode == Activity.RESULT_OK) {
+			if (resultCode == Activity.RESULT_OK
+			) {
 				haveGooglePlayServices();
 			} else {
 				checkGooglePlayServicesAvailable();
@@ -143,15 +133,12 @@ public class CalActivity extends ActionBarActivity {
 	}
 
 	public void getEvents(){
-		new AsyncTask<String, Void, ArrayList<Event>>(){
-
-			@SuppressWarnings("unchecked")
+		AsyncTask<String, Void, Void> task=new AsyncTask<String, Void, Void>(){
 			@Override
-			protected ArrayList<Event> doInBackground(String... params) {
+			protected Void doInBackground(String... params) {
 				for(int i = 0; i < params.length; i++){
 					try {
 						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).execute();
-
 						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
 						Log.v("current", events.toString());
 						for(int j = 0; j < events.size(); j++){
@@ -159,30 +146,44 @@ public class CalActivity extends ActionBarActivity {
 							Log.v("result", current.toString());
 							Event event = new Event(current);
 							event.setColor(getResources().getColor(R.color.randomColor));
-							Collections.sort(MainActivity.EVENTS);
+							MergeSort.sortEvents(MainActivity.EVENTS);
 							MainActivity.EVENTS.add(event);
-							
+							this.onProgressUpdate();
 						}
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 						CalActivity.this.showGooglePlayServicesAvailabilityErrorDialog(
 								availabilityException.getConnectionStatusCode());
-					} catch (UserRecoverableAuthIOException userRecoverableException) {
+						break;
+					} catch (UserRecoverableAuthIOException userRecoverableException) {						
 						CalActivity.this.startActivityForResult(
 								userRecoverableException.getIntent(), CalActivity.REQUEST_AUTHORIZATION);
+						break;
 					} catch (IOException e) {
+						if(e!=null)
 						e.printStackTrace();
+						break;
 					}
 				}
-				return MainActivity.EVENTS;		
+				return null;		
 
 			}
-			protected void onPostExecute(ArrayList<Event> es){	
-				Log.v("tag", "Events now adding to calendar");
-				((CalendarV)findViewById(R.id.mainCalendar)).addEvents(es);
+			protected void onProgressUpdate(Void... e)
+			{
+				calendarView.reDrawEvents();
+				
 			}
-		}.execute("kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com", "ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net");
+			protected void onPostExecute(Void e)
+			{
+				calendarView.invalidate();
+			}
+		};
+		task.execute("ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net");
+		
+		
 	}
+	
+	
 
 	private void haveGooglePlayServices() {
 		if (credential.getSelectedAccountName() == null) {
@@ -194,11 +195,16 @@ public class CalActivity extends ActionBarActivity {
 		}
 
 	}
+	public void addEvent(Event e)
+	{
+		calendarView.addEvents(e);
+	}
 
 	protected void onResume(){
 		super.onResume();
 		if(checkGooglePlayServicesAvailable()){
 			haveGooglePlayServices();
+			
 		}
 
 	}
