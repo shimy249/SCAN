@@ -22,11 +22,6 @@ import android.widget.TextView;
 
 public class CalendarV extends View{
 	//-----------------------------------Constants for Calls from Events:------------------
-	public static String TITLE="com.ellume.SCAN.CalendarV.TITLE";
-	public static String DESCRIPTION="com.ellume.SCAN.CalendarV.DESCRIPTION";
-	public static String STARTDATE="com.ellume.SCAN.CalendarV.STARTDATE";
-	public static String ENDDATE="com.ellume.SCAN.CalendarV.ENDDATE";
-	public static String COLOR="com.ellume.SCAN.CalendarV.COLOR";
 	public static int BOX_HEIGHT=60;
 	//-----------------------------------Constants-----------------------------------------
 	protected int alignX, alignY;
@@ -811,11 +806,11 @@ public class CalendarV extends View{
 					else
 					{
 						Intent intent=new Intent(this.getContext(), EventActivity.class);
-						intent.putExtra(TITLE, events.get(i).getTitle());
-						intent.putExtra(DESCRIPTION,events.get(i).getSummary());
-						intent.putExtra(STARTDATE, CalendarConversion.CalendarToString(events.get(i).getStartDate()));
-						intent.putExtra(ENDDATE, CalendarConversion.CalendarToString(events.get(i).getEndDate()));
-						intent.putExtra(COLOR, events.get(i).getColor());
+						intent.putExtra(EventActivity.TITLE, events.get(i).getTitle());
+						intent.putExtra(EventActivity.DESCRIPTION,events.get(i).getSummary());
+						intent.putExtra(EventActivity.STARTDATE, events.get(i).getStartDate().getTimeInMillis());
+						intent.putExtra(EventActivity.ENDDATE, events.get(i).getEndDate().getTimeInMillis());
+						intent.putExtra(EventActivity.COLOR, events.get(i).getColor());
 						this.getContext().startActivity(intent);
 						//Log.v("Button Press:",mEvents.get(i).getTitle());
 						return;

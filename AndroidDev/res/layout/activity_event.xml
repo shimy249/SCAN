@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/White"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:text="@string/TBI"
+         />
 
     <Space
         android:layout_width="match_parent"
@@ -22,7 +24,9 @@
         android:id="@+id/StartTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="16sp" 
+        android:text="@string/TBI"
+        />
 
   
 
@@ -30,7 +34,9 @@
         android:id="@+id/EndTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp" />
+        android:textSize="16sp" 
+        android:text="@string/TBI"
+        />
 	
         <Space
         android:layout_width="match_parent"
@@ -38,12 +44,20 @@
  <ScrollView
      android:id="@+id/Scroller"
      android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
+     android:layout_height="wrap_content"
      android:fillViewport="true">
     <TextView
         android:id="@+id/Description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/TBI"
         android:textSize="20sp" />
 	</ScrollView>
+	<Button 
+	    android:id="@+id/notificationButton"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:onClick="setNotification"
+	    android:text="@string/TBI"
+	    />
 </LinearLayout>

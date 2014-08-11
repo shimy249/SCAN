@@ -54,11 +54,11 @@ public class MainActivity extends Activity {
 	}
 	public void toYearView(View view){
 		Intent intent=new Intent(this, EventActivity.class);
-		intent.putExtra(CalendarV.COLOR, getResources().getColor(R.color.Blue_Event));
-		intent.putExtra(CalendarV.DESCRIPTION, "Take your date on a romantic night to Prom. Make sure not to drink because that would be bad, and try to stay out of trouble. Oh, you kids, always so full of life.");
-		intent.putExtra(CalendarV.TITLE, "Prom");
-		intent.putExtra(CalendarV.ENDDATE, CalendarConversion.CalendarToString(Calendar.getInstance()));
-		intent.putExtra(CalendarV.STARTDATE, CalendarConversion.CalendarToString(Calendar.getInstance()));
+		intent.putExtra(EventActivity.COLOR, getResources().getColor(R.color.Blue_Event));
+		intent.putExtra(EventActivity.DESCRIPTION, "Take your date on a romantic night to Prom. Make sure not to drink because that would be bad, and try to stay out of trouble. Oh, you kids, always so full of life.");
+		intent.putExtra(EventActivity.TITLE, "Prom");
+		intent.putExtra(EventActivity.ENDDATE, Calendar.getInstance().getTimeInMillis());
+		intent.putExtra(EventActivity.STARTDATE, Calendar.getInstance().getTimeInMillis());
 		startActivity(intent);
 	}
 	public void smileyCounter(View view){
