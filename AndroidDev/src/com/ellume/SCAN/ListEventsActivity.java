@@ -2,17 +2,19 @@ package com.ellume.SCAN;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Visibility;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ public class ListEventsActivity extends Activity {
 	private static Calendar CALENDAR;
 	private static ArrayList<Event> EVENTS;
 	private EventAdapter mAdapter;
+	private ArrayList<BundledEvent> myBundledEvents;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,30 @@ public class ListEventsActivity extends Activity {
 					bundledEvents.add(b);
 				}
 			}
+			myBundledEvents=bundledEvents;
 			mAdapter=new EventAdapter(this,R.layout.list_item,bundledEvents);
 			ListView l=(ListView)findViewById(R.id.activity_list);
 			l.setAdapter(mAdapter);
+			l.setOnItemClickListener(new OnItemClickListener(){
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					BundledEvent bundle=myBundledEvents.get(position);
+					if(bundle.event!=null)
+					{
+						Intent intent=new Intent(ListEventsActivity.this,EventActivity.class);
+						intent.putExtra(EventActivity.COLOR, bundle.event.getColor());
+						intent.putExtra(EventActivity.DESCRIPTION, bundle.event.getSummary());
+						intent.putExtra(EventActivity.ENDDATE, bundle.event.getEndDate().getTimeInMillis());
+						intent.putExtra(EventActivity.STARTDATE, bundle.event.getStartDate().getTimeInMillis());
+						intent.putExtra(EventActivity.TITLE, bundle.event.getTitle());
+						startActivity(intent);
+					}
+					
+				} 
+				
+			});
 			TextView noEventNotify=(TextView)findViewById(R.id.noEventNotify);
 			noEventNotify.setVisibility(TextView.GONE);
 		}
@@ -87,7 +111,9 @@ public class ListEventsActivity extends Activity {
 	public boolean isSameDay(Event a, Event b)
 	{
 		if(a!=null && b!=null)
-			return (int)(a.getStartDate().getTimeInMillis()/86400000)==(int)(b.getStartDate().getTimeInMillis()/86400000);
+			return a.getStartDate().get(Calendar.DATE)==b.getStartDate().get(Calendar.DATE)
+			&& a.getStartDate().get(Calendar.MONTH)==b.getStartDate().get(Calendar.MONTH)
+			&& a.getStartDate().get(Calendar.YEAR)==b.getStartDate().get(Calendar.YEAR);
 		else
 			return false;
 	}
