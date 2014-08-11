@@ -43,15 +43,41 @@ public Event(com.google.api.services.calendar.model.Event current) {
 	}
 	else{
 		String date = current.getStart().getDateTime().toString();
-		int index = date.indexOf("T");
-		date = date.substring(0, index);
+		
+		int dateCutoff = date.indexOf("T");
+		int timeCutoff = date.indexOf("."); //to remove nanoseconds
+		if(timeCutoff == -1)  //if nanoseconds not set remove timezone shift
+			timeCutoff = date.indexOf("-");
+		if(timeCutoff == -1) //if timezone shift not set isolate time only
+			timeCutoff= date.indexOf("Z");
+		
+		String time = date.substring(dateCutoff+1, timeCutoff);
+		String[] timeC = time.split(":");
+		
+		
+		date = date.substring(0, dateCutoff);
 		String[] dateC = date.split("-");
-		calS.set(Integer.parseInt(dateC[0]), Integer.parseInt(dateC[1])-1, Integer.parseInt(dateC[2]));
+		
+		calS.set(Integer.parseInt(dateC[0]), Integer.parseInt(dateC[1])-1, Integer.parseInt(dateC[2]), Integer.parseInt(timeC[0]), Integer.parseInt(timeC[1]), Integer.parseInt(timeC[2]));
+		
 		date = current.getEnd().getDateTime().toString();
-		index = date.indexOf("T");
-		date = date.substring(0, index);
+		timeCutoff = date.indexOf(".");
+		dateCutoff = date.indexOf("T");
+		
+		
+		 //to remove nanoseconds
+		if(timeCutoff == -1)  //if nanoseconds not set remove timezone shift
+			timeCutoff = date.indexOf("-");
+		if(timeCutoff == -1) //if timezone shift not set isolate time only
+			timeCutoff= date.indexOf("Z");
+		
+		time = date.substring(dateCutoff+1, timeCutoff);
+		String[] timeE = time.split(":");
+		
+		date = date.substring(0, dateCutoff);
 		dateC = date.split("-");
-		calE.set(Integer.parseInt(dateC[0]), Integer.parseInt(dateC[1])-1, Integer.parseInt(dateC[2]));
+		calE.set(Integer.parseInt(dateC[0]), Integer.parseInt(dateC[1])-1, Integer.parseInt(dateC[2]),Integer.parseInt(timeE[0]), Integer.parseInt(timeE[1]), Integer.parseInt(timeE[2]));
+		
 		startDate = calS;
 		endDate = calE;
 	}
