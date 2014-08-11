@@ -44,5 +44,5 @@
 	<string name="title_activity_authetication_error">Authentication Error</string>
 	<string name="NewsURL">http://feeds.feedburner.com/blogspot/PaqBy?format=xml</string>
 	<string name="title_activity_list_events">ListEventsActivity</string>
-	
+	<string name="retry">Resign</string>
 </resources>
