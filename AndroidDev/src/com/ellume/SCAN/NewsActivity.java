@@ -89,7 +89,7 @@ public class NewsActivity extends Activity {
 
         // Retrieves a string value for the preferences. The second parameter
         // is the default value to use if a preference value is not found.
-        sPref = sharedPrefs.getString("listPref", "Wi-Fi");
+        sPref = sharedPrefs.getString("listPref", "Any");
 
         updateConnectedFlags();
 
@@ -132,6 +132,7 @@ public class NewsActivity extends Activity {
     // causing a delay that results in a poor user experience, always perform
     // network operations on a separate thread from the UI.
     private void loadPage() {
+    	
         if (((sPref.equals(ANY)) && (wifiConnected || mobileConnected))
                 || ((sPref.equals(WIFI)) && (wifiConnected))) {
             // AsyncTask subclass

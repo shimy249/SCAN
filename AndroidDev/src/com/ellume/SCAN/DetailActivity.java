@@ -2,6 +2,7 @@ package com.ellume.SCAN;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
@@ -14,6 +15,9 @@ public class DetailActivity extends Activity {
 	TextView title;
 	WebView desc;
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,6 +34,7 @@ public class DetailActivity extends Activity {
 		// Initialize the views
 		title = (TextView) findViewById(R.id.title);
 		desc = (WebView) findViewById(R.id.desc);
+		desc.setWebChromeClient(new WebChromeClient());
 
 		// set webview properties
 		WebSettings ws = desc.getSettings();
