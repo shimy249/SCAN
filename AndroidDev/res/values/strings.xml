@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
 
-	<!--  Progress Items-->
-	<string name="retrieving">The calendar is loading new events.
-	    \nThis may take a few seconds.</string>      
+    <!-- Progress Items -->
+    <string name="retrieving">The calendar is loading new events.
+	    \nThis may take a few seconds.</string>
 
-    <!--  Menu items -->
+    <!-- Menu items -->
     <string name="settings">Settings</string>
     <string name="refresh">Refresh</string>
-    
 
-    <!--  NetworkActivity -->
+    <!-- NetworkActivity -->
     <string name="page_title">Oak Ridge High School News</string>
     <string name="updated">Last updated:</string>
     <string name="lost_connection">Lost connection.</string>
@@ -39,10 +37,26 @@
     <string name="TBI">To Be Implemented</string>
     <string name="Attention">Attention:</string>
     <string name="title_activity_event">EventActivity</string>
-	<string name="StudentRightsTitle">Student Rights:</string>
-	<string name="StudentRightsBody">Blurb</string>
-	<string name="title_activity_authetication_error">Authentication Error</string>
-	<string name="NewsURL">http://feeds.feedburner.com/blogspot/PaqBy?format=xml</string>
-	<string name="title_activity_list_events">ListEventsActivity</string>
-	<string name="retry">Resign</string>
+    <string name="StudentRightsTitle">Student Rights:</string>
+    <string name="StudentRightsBody">Blurb</string>
+    <string name="title_activity_authetication_error">Authentication Error</string>
+    <string name="NewsURL">http://feeds.feedburner.com/blogspot/PaqBy?format=xml</string>
+    <string name="title_activity_list_events">ListEventsActivity</string>
+    <string name="retry">Resign</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="Ellume_Copywrite">\u00A9 2014 Ellume Softworks</string>
+
+    <!-- Settings Activity -->
+    <string name="Themes">Themes</string>
+    <string name="Themes_Default_Value">The Blues</string>
+    <string name="VisualSettings">Appearance</string>
+    <string name="VisualSettingsSummary">Change the appearance of various elements in the calendar.</string>
+    <string name="Currently_Selected_Theme">com.ellume.SCAN.CURRENTLY_SELECTED_THEME</string>
+    <string name="title_activity_list_themes">ListThemesActivity</string>
+    <string name="Edit_Themes">Edit Themes</string>
+    <string name="Add_Theme">Add Theme</string>
+    <string name="title_activity_add_theme_name_dialog">AddThemeNameDialog</string>
+    <string name="Theme_Name">Theme Name: </string>
+    <string name="title_activity_theme_editor">ThemeEditorActivity</string>
+
 </resources>

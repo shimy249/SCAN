@@ -19,4 +19,8 @@
 			<enum name="December" value="11"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="IntPreference">
+        <attr name="min" format="integer"/>
+        <attr name="max" format="integer"/>
+    </declare-styleable>
 </resources>

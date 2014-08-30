@@ -6,7 +6,7 @@
     tools:context=".CalActivity" 
     android:background="@color/SchoolColor1">
 
-   <com.ellume.SCAN.CalendarV
+   <com.ellume.SCAN.Calendar.CalendarV
        android:id="@+id/MainCalendar"
        android:layout_width="match_parent"
        android:layout_height="match_parent"

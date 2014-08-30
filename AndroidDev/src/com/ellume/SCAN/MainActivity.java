@@ -1,5 +1,6 @@
 package com.ellume.SCAN;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -8,12 +9,26 @@ import java.util.Calendar;
 
 
 
+
+
+
+
+
+
+
+import com.ellume.SCAN.Calendar.CalActivity;
+import com.ellume.SCAN.Calendar.EventActivity;
+import com.ellume.SCAN.Settings.ListThemesActivity;
+import com.ellume.SCAN.Settings.SettingsActivity;
+import com.ellume.SCAN.Settings.CalendarStyles;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,8 +59,12 @@ public class MainActivity extends Activity {
 		}
 		setContentView(R.layout.activity_main);
 		smiley=0;
-		((ImageView)findViewById(R.id.trojanGuy)).setSoundEffectsEnabled(false);;
+		((ImageView)findViewById(R.id.trojanGuy)).setSoundEffectsEnabled(false);
+		ArrayList<Integer> i=new ArrayList<Integer>();
 		
+		File file=new File(this.getFilesDir(),"Styles");
+		if(!file.isDirectory())
+			file.mkdir();
 	}
 	protected void onResume(){
 		super.onResume();
@@ -89,12 +108,11 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 	public void toYearView(View view){
-		Intent intent=new Intent(this, EventActivity.class);
-		intent.putExtra(EventActivity.COLOR, getResources().getColor(R.color.Blue_Event));
-		intent.putExtra(EventActivity.DESCRIPTION, "Take your date on a romantic night to Prom. Make sure not to drink because that would be bad, and try to stay out of trouble. Oh, you kids, always so full of life.");
-		intent.putExtra(EventActivity.TITLE, "Prom");
-		intent.putExtra(EventActivity.ENDDATE, Calendar.getInstance().getTimeInMillis());
-		intent.putExtra(EventActivity.STARTDATE, Calendar.getInstance().getTimeInMillis());
+		Intent intent=new Intent(this, ListThemesActivity.class);
+		startActivity(intent);
+	}
+	public void toSettings(View view){
+		Intent intent=new Intent(this, SettingsActivity.class);
 		startActivity(intent);
 	}
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
