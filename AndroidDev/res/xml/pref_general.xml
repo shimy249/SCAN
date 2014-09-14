@@ -1,0 +1,46 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
+        xmlns:custom="http://schemas.android.com/apk/res/com.ellume.SCAN"
+    
+    >
+
+    <PreferenceScreen
+        android:id="@+id/Visual_Preferences"
+        android:title="@string/VisualSettings"
+        android:summary="@string/VisualSettingsSummary"
+        >
+        <PreferenceScreen 
+            android:id="@+id/Visual_Calendar"
+            android:title="@string/Visual_Calendar"
+            android:summary="@string/Visual_Calendar_Summary"
+            >
+        <ListPreference
+            android:id="@+id/Themes_List"
+            android:key="@string/Currently_Selected_Theme"
+            android:title="@string/Themes"
+            android:defaultValue="@string/Themes_Default_Value"
+                       />
+        <CheckBoxPreference  
+            android:key="@string/Detailed_Events_Shape"
+            android:title="@string/Detailed_Events_Shape"
+            android:summary="@string/Detailed_Events_Shape_Summary"
+            />
+        <ListPreference
+            android:id="@+id/Current_Day_Indicator_Setting"
+            android:title="@string/Current_Day_Indicator_Setting"
+            android:key="@string/Current_Day_Indicator_Setting"
+            android:summary="@string/Current_Day_Indicator_Setting_Summary"
+            />
+        <com.ellume.SCAN.IntPreference
+            android:key="@string/Current_Day_Box_Height"
+            android:title="@string/Current_Day_Box_Height"
+            android:id="@+id/Current_Day_Box_Height"
+            />
+        <ListPreference
+            android:id="@+id/Event_Indicator_Shapes"
+            android:key="@string/Event_Indicator_Shapes"
+            android:title="@string/Event_Indicator_Shapes"
+            android:summary="@string/Event_Indicator_Shapes_Summary"
+            />
+        </PreferenceScreen>
+        </PreferenceScreen> 
+</PreferenceScreen>

@@ -16,11 +16,7 @@ import java.util.Calendar;
 
 
 
-import com.ellume.SCAN.Calendar.CalActivity;
-import com.ellume.SCAN.Calendar.EventActivity;
-import com.ellume.SCAN.Settings.ListThemesActivity;
-import com.ellume.SCAN.Settings.SettingsActivity;
-import com.ellume.SCAN.Settings.CalendarStyles;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;

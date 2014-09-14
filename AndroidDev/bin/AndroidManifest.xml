@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Calendar.CalActivity"
+            android:name="com.ellume.SCAN.CalActivity"
             android:label="@string/title_activity_cal" >
         </activity>
         <activity
@@ -51,7 +51,7 @@
             android:label="@string/title_activity_net" >
         </activity>
         <activity
-            android:name=".Calendar.EventActivity"
+            android:name="com.ellume.SCAN.EventActivity"
             android:label="@string/title_activity_event" >
         </activity>
         <activity
@@ -67,28 +67,28 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".Calendar.ListEventsActivity"
+            android:name="com.ellume.SCAN.ListEventsActivity"
             android:label="@string/title_activity_list_events" >
         </activity>
         <activity
-            android:name=".Settings.SettingsFragment"
+            android:name="com.ellume.SCAN.SettingsFragment"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".Settings.SettingsActivity"
+            android:name="com.ellume.SCAN.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".Settings.ListThemesActivity"
+            android:name="com.ellume.SCAN.ListThemesActivitytivity"
             android:label="@string/title_activity_list_themes" >
         </activity>
         <activity
-            android:name=".Settings.AddThemeNameDialog"
+        android:name="com.ellume.SCAN.AddThemeNameDialogAddThemeNameDialog"
             android:label="@string/Add_Theme"
             android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>
         <activity
-            android:name="com.ellume.SCAN.Settings.ThemeEditorActivity"
+            android:name="com.ellume.SCAN.ThemeEditorActivitytivity"
             android:label="@string/title_activity_theme_editor" >
         </activity>
     </application>
