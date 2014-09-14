@@ -1,4 +1,4 @@
-package com.ellume.SCAN;
+package com.ellume.SCAN.Calendar;
 
 import java.util.Calendar;
 import java.util.Date;

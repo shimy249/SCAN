@@ -3,6 +3,10 @@ package com.ellume.SCAN;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import com.ellume.SCAN.Calendar.CalRect;
+import com.ellume.SCAN.Calendar.CalendarV;
+import com.ellume.SCAN.Calendar.GestureListener;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;

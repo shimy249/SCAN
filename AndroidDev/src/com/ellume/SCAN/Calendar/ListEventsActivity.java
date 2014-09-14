@@ -1,7 +1,13 @@
-package com.ellume.SCAN;
+package com.ellume.SCAN.Calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import com.ellume.SCAN.Event;
+import com.ellume.SCAN.R;
+import com.ellume.SCAN.R.id;
+import com.ellume.SCAN.R.layout;
+import com.ellume.SCAN.Settings.CalendarStyles;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,14 +26,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ListEventsActivity extends Activity {
-	private static Calendar CALENDAR;
 	private static ArrayList<Event> EVENTS;
 	private EventAdapter mAdapter;
 	private ArrayList<BundledEvent> myBundledEvents;
 
+	private ArrayList<Integer> colors;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		colors=CalendarStyles.getCurrentStylesArray(this);
 		setContentView(R.layout.activity_list_events);
 		this.getActionBar().setTitle("Events:");
 		if(EVENTS!=null){
@@ -63,7 +71,8 @@ public class ListEventsActivity extends Activity {
 					if(bundle.event!=null)
 					{
 						Intent intent=new Intent(ListEventsActivity.this,EventActivity.class);
-						intent.putExtra(EventActivity.COLOR, bundle.event.getColor());
+						intent.putExtra(EventActivity.COLOR, colors.get(
+								bundle.event.getColorNumber()%colors.size()));
 						intent.putExtra(EventActivity.DESCRIPTION, bundle.event.getSummary());
 						intent.putExtra(EventActivity.ENDDATE, bundle.event.getEndDate().getTimeInMillis());
 						intent.putExtra(EventActivity.STARTDATE, bundle.event.getStartDate().getTimeInMillis());
@@ -95,7 +104,6 @@ public class ListEventsActivity extends Activity {
 
 	public static void putCalendar(Calendar c)
 	{
-		CALENDAR=c;
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -149,7 +157,7 @@ public class ListEventsActivity extends Activity {
 					else
 						holder.description.setText(" ");
 				}
-				convertView.setBackgroundColor(b.event.getColor());
+				convertView.setBackgroundColor(colors.get(b.event.getColorNumber()%colors.size()));
 			}
 			else if(b.calendar!=null)
 			{

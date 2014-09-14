@@ -1,8 +1,10 @@
-package com.ellume.SCAN;
+package com.ellume.SCAN.Calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.ellume.SCAN.Event;
 
 import android.graphics.RectF;
 

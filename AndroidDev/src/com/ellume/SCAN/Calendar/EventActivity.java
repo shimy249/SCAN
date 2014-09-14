@@ -1,8 +1,14 @@
-package com.ellume.SCAN;
+package com.ellume.SCAN.Calendar;
 
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.ellume.SCAN.R;
+import com.ellume.SCAN.R.drawable;
+import com.ellume.SCAN.R.id;
+import com.ellume.SCAN.R.layout;
+import com.ellume.SCAN.R.menu;
 
 import android.app.Activity;
 import android.app.NotificationManager;

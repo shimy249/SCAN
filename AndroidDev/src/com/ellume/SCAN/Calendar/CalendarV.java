@@ -1,28 +1,35 @@
-package com.ellume.SCAN;
+package com.ellume.SCAN.Calendar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 
-
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ellume.SCAN.Event;
+import com.ellume.SCAN.MergeSort;
+import com.ellume.SCAN.R;
+import com.ellume.SCAN.Settings.CalendarStyles;
+import com.ellume.SCAN.Settings.SettingsFragment;
+
+@SuppressLint("ClickableViewAccessibility")
 public class CalendarV extends View{
 	//-----------------------------------Constants for Calls from Events:------------------
-	public static int BOX_HEIGHT=60;
+	public static float BOX_HEIGHT=60;
 	//-----------------------------------Constants-----------------------------------------
 	protected int alignX, alignY;
 	public static final int ALIGN_TOP=0;
@@ -33,6 +40,13 @@ public class CalendarV extends View{
 	private static final String TAG = "CalendarV";
 	public final String[] myDayLabelsNames={"","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 	public final String[] monthNames={"January","February","March","April","May","June","July","August","September","October","November","December"};
+	ArrayList<Integer> selected_Calendar_Colors;
+	//-------------------------------------------------------------------------------------
+
+	//------------------------------------Settings-----------------------------------------
+	private final String CURRENT_DAY_INDICATOR_SHAPE;
+	private final String EVENT_INDICATOR_SHAPE;
+	private final boolean ROUND_DETAIL_EVENT_CORNERS;
 	//-------------------------------------------------------------------------------------
 
 	//---------------------------------Pre-Allocated_Calendar:-----------------------------
@@ -50,7 +64,7 @@ public class CalendarV extends View{
 	//-------------------------------------------------------------------------------------
 
 	//--------------------------------Helpful Indices and Calculated Variables:------------
-	private int firstDay;	//Index of the first day of the month
+
 	private float translationFactor;	//Used in motion of opening the DetailedDayBoxes
 	private float intervalX, intervalY;	//Height and Width of boxes, used for iteration
 	private static SelectedBox selectedBox;	//The Box currently selected by the user
@@ -76,6 +90,21 @@ public class CalendarV extends View{
 	}
 	public CalendarV(Context context, AttributeSet attrs){
 		super(context, attrs);
+
+		SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(context);
+		this.EVENT_INDICATOR_SHAPE=pref.getString(getResources().getString(R.string.Event_Indicator_Shapes), SettingsFragment.EVENT_SHAPES_CIRCLE);
+		this.CURRENT_DAY_INDICATOR_SHAPE=pref.getString(getResources().getString(R.string.Current_Day_Indicator_Setting), SettingsFragment.CURRENT_DAY_INDICATOR_CIRCLE);
+		this.ROUND_DETAIL_EVENT_CORNERS=pref.getBoolean(getResources().getString(R.string.Detailed_Events_Shape), false);
+
+		String filename=pref.getString(getResources().getString(R.string.Currently_Selected_Theme), "");
+		File file=new File(context.getFilesDir(),"Styles");
+		this.selected_Calendar_Colors=new ArrayList<Integer>();
+		this.selected_Calendar_Colors.add(0xff000000);
+		if(file.isDirectory()){
+			File file2=new File(file, filename);
+			if(file2.isFile())
+				this.selected_Calendar_Colors=CalendarStyles.readCalendarColors(file2);
+		}
 		bufferRect=new RectF();
 		TypedArray a=context.getTheme().obtainStyledAttributes(attrs, R.styleable.CalendarV, 0, 0);
 		try{
@@ -85,7 +114,7 @@ public class CalendarV extends View{
 			a.recycle(); 
 		}
 		initRect();
-		BOX_HEIGHT=55;
+		BOX_HEIGHT=30*this.getResources().getDisplayMetrics().density;
 		initPaint();
 		initCal();
 		mDetector=new GestureDetector(this.getContext(),new GestureListener(this));
@@ -140,7 +169,6 @@ public class CalendarV extends View{
 		if(selectedBox==null){
 			selectedBox=new SelectedBox();
 			selectedBox.date=Calendar.getInstance();
-			selectedBox.date.setTimeInMillis((selectedBox.date.getTimeInMillis()/86400000)*86400000);
 			selectedBox.date.set(Calendar.HOUR_OF_DAY, 0);
 			selectedBox.index=day+myCalendar.get(Calendar.DAY_OF_WEEK)-2;
 		}
@@ -240,16 +268,15 @@ public class CalendarV extends View{
 		{
 			((CalRect)mySquares[i]).setDate(bufferCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)+i-day+1, bufferCalendar.get(Calendar.MONTH), bufferCalendar.get(Calendar.YEAR));
 		}	
-		firstDay=day;
 		addEventsToDays(0, mySquares.length);
 		calibrateSelectedDay();
 	}
 	private void calibrateSelectedDay()
 	{
 		selectedBox.index=0;
-		long day0=mySquares[0].getCal().getTimeInMillis()/86399999;
-		long myDay=selectedBox.date.getTimeInMillis()/86399999;
-		selectedBox.index+=myDay-day0;
+		long day0=mySquares[0].getCal().getTimeInMillis();
+		long myDay=selectedBox.date.getTimeInMillis();
+		selectedBox.index+=(myDay-day0)/86400000;
 	}
 	/**
 	 * Adds events from events array into their square.
@@ -258,7 +285,7 @@ public class CalendarV extends View{
 	 */
 	private void addEventsToDays(int index, int end)
 	{
-		
+
 		int m=0;
 		int j=0;
 		for(int i=index; i<end; i++)
@@ -271,7 +298,6 @@ public class CalendarV extends View{
 			{
 				Event event=mEvents.get(j);
 				Calendar c=event.getStartDate();
-				Calendar d=mySquares[i].getCal();
 				if(c.get(Calendar.YEAR)>mySquares[i].getYear() || 
 						(c.get(Calendar.YEAR)==mySquares[i].getYear() && c.get(Calendar.MONTH)>mySquares[i].getMonth()) || 
 						(c.get(Calendar.YEAR)==mySquares[i].getYear() && c.get(Calendar.MONTH)==mySquares[i].getMonth() && c.get(Calendar.DATE)>mySquares[i].getDay()))
@@ -358,6 +384,10 @@ public class CalendarV extends View{
 	 * @param color -- The color of the text drawn
 	 * @param $textSize -- The text size (in dp) to be drawn
 	 */
+	public void drawText(RectF box, Canvas canvas, int color, String message, float $textSize)
+	{
+		drawText(box,canvas,message,color,$textSize);
+	}
 	public void drawText(RectF box, Canvas canvas, String message, int color, float $textSize)
 	{
 		if(message.length()>0){
@@ -421,117 +451,6 @@ public class CalendarV extends View{
 	}
 	/**
 	 * @author ajive_000
-	 * Wrapper Function that automatically scales text size
-	 * @param box
-	 * @param canvas
-	 * @param message
-	 * @param color
-	 */
-	public void drawText(RectF box, Canvas canvas, String message, int color)
-	{
-		float factor=2f/7f;
-		float $textSize=getRecommendedSize(box,factor);
-		textPainter.setTextSize($textSize);
-		while(textPainter.measureText(message)>box.width())
-		{
-			factor-=1/28f;
-			$textSize=getRecommendedSize(box,factor);
-			textPainter.setTextSize($textSize);
-		}
-		if(message.length()>0){
-			float prevTextSize=textPainter.getTextSize();
-			textPainter.setTextSize($textSize);
-			int prevColor=textPainter.getColor();
-			textPainter.setColor(color);
-			float penX, penY;
-			penX=box.left;
-			penY=box.top;
-			switch(alignX){
-			case ALIGN_LEFT:
-				penX+=3;
-				break;
-			case ALIGN_RIGHT:
-				penX+=box.width()-textPainter.measureText(message);
-				break;
-			case ALIGN_CENTER:
-				penX+=box.width()/2-textPainter.measureText(message)/2;
-				break;
-			default:
-				penX+=3;
-				break;
-			}
-			switch(alignY){
-			case ALIGN_TOP:
-				penY+=(textPainter.descent()-textPainter.ascent());
-				break;
-			case ALIGN_CENTER:
-				penY+=(box.height()/2)-(textPainter.ascent()+textPainter.descent())/2;
-				break;
-			case ALIGN_BOTTOM:
-				penY+=(box.height()-3);
-				break;
-			default:
-				penY+=(textPainter.descent()-textPainter.ascent());
-			}
-			canvas.drawText(message, penX, penY, textPainter);
-			textPainter.setTextSize(prevTextSize);
-			textPainter.setColor(prevColor);
-		}
-	}
-	/**
-	 * @author ajive_000
-	 * Draws text, takes a double as the text size.
-	 * @param box -- Coordinates in which the text is drawn.
-	 * @param canvas -- Canvas object supplied by the Android system.
-	 * @param color -- Color in integer format ie. 255-alpha as first byte, 255-red as second, 255-blue, 255-green
-	 * @param message -- String message to be written.
-	 * @param textSize -- Text size for drawing
-	 */
-	public void drawText(RectF box, Canvas canvas, int color, String message, double textSize)
-	{
-		if(message.length()>0){
-			float prevTextSize=textPainter.getTextSize();
-			int prevColor=textPainter.getColor();
-			textPainter.setColor(color);
-			textPainter.setTextSize((float) textSize);
-			float penX, penY;
-			penX=box.left;
-			penY=box.top;
-			switch(alignX){
-			case ALIGN_LEFT:
-				penX+=3;
-				break;
-			case ALIGN_RIGHT:
-				penX+=box.width()-textPainter.measureText(message);
-				break;
-			case ALIGN_CENTER:
-				penX+=box.width()/2-textPainter.measureText(message)/2;
-				break;
-			default:
-				penX+=3;
-				break;
-			}
-			switch(alignY){
-			case ALIGN_TOP:
-				penY+=(textPainter.descent()-textPainter.ascent());
-				break;
-			case ALIGN_CENTER:
-				penY+=(box.height()/2-(textPainter.ascent()+textPainter.descent())/2);
-				break;
-			case ALIGN_BOTTOM:
-				penY+=(box.height()-3);
-				break;
-			default:
-				penY+=(textPainter.descent()-textPainter.ascent());
-			}
-			canvas.drawText(message, penX, penY, textPainter);
-			textPainter.setTextSize(prevTextSize);
-			textPainter.setColor(prevColor);
-			return;
-		}
-	}
-	/**
-	 * @author ajive_000
 	 * Draws the month Label in the ActionBar
 	 * 
 	 */
@@ -581,7 +500,7 @@ public class CalendarV extends View{
 		bufferCalendar.set(myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), 1);
 		int weekno=bufferCalendar.get(Calendar.WEEK_OF_YEAR);
 		for(int i=1; i<myWeekNumbers.length;i++)
-			drawText(myWeekNumbers[i],canvas,""+(weekno++),getResources().getColor(R.color.TextColor));
+			drawText(myWeekNumbers[i],canvas,""+(weekno++),getResources().getColor(R.color.TextColor),this.getRecommendedSize(myWeekNumbers[i], 2f/7f));
 	}
 	/**
 	 * 
@@ -607,9 +526,9 @@ public class CalendarV extends View{
 		for(int i=0; i<mySquares.length; i++)
 		{
 			if(myCalendar.get(Calendar.MONTH)==((CalRect)mySquares[i]).getMonth())
-				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.TextColor));
+				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.TextColor),this.getRecommendedSize(mySquares[i],2f/7f));
 			else
-				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.AlternateTextColor));
+				drawText(mySquares[i],canvas,""+((CalRect)(mySquares[i])).getDay(),getResources().getColor(R.color.AlternateTextColor),this.getRecommendedSize(mySquares[i], 2f/7f));
 		} 
 	} 
 	/**
@@ -665,7 +584,7 @@ public class CalendarV extends View{
 			drawWeekLabels(canvas);
 
 	}
-	private int calcTransDistance()
+	private float calcTransDistance()
 	{
 
 		int transDistance=mySquares[selectedBox.index].getEvents().size();
@@ -681,10 +600,81 @@ public class CalendarV extends View{
 	 */
 	public void drawDecals(Canvas canvas)
 	{
-		drawCurrentDayDecal(canvas);
-		drawEventCircles(canvas);
+		//-----------------------Determines which Current Day Indicator to draw, then draws it---------
+		if(this.CURRENT_DAY_INDICATOR_SHAPE.equals(SettingsFragment.CURRENT_DAY_INDICATOR_CIRCLE))
+			drawCurrentDayDecalCircle(canvas);
+		else if(this.CURRENT_DAY_INDICATOR_SHAPE.equals(SettingsFragment.CURRENT_DAY_INDICATOR_SQUARE))
+			drawCurrentDayDecalSquare(canvas);
+		else if(this.CURRENT_DAY_INDICATOR_SHAPE.equals(SettingsFragment.CURRENT_DAY_INDICATOR_BOX))
+			drawCurrentDayDecalBox(canvas);
+		else
+			drawCurrentDayDecalCircle(canvas);
+
+		//-----------------------Determines which Event shape to draw, then draws it--------------------
+		if(this.getHeight()>this.getWidth()){
+			if(this.EVENT_INDICATOR_SHAPE.equals(SettingsFragment.EVENT_SHAPES_CIRCLE))
+				drawEventCirclesVertical(canvas);
+			else if(this.EVENT_INDICATOR_SHAPE.equals(SettingsFragment.EVENT_SHAPES_SQUARE))
+				drawEventSquares(canvas);
+			else
+				drawEventCirclesVertical(canvas);
+		}
+		else
+		{
+			drawEventSquares(canvas);
+		}
+
 	}
-	private void drawEventCircles(Canvas c)
+	private void drawEventSquares(Canvas canvas)
+	{
+		for(int i=0; i<mySquares.length; i++)
+		{
+			int variance=11;
+
+			float topX=mySquares[i].right;
+			float topY=mySquares[i].top;
+			float height=mySquares[i].height();
+			topX-=2*this.getContext().getResources().getDisplayMetrics().density;
+			topY+=2*this.getContext().getResources().getDisplayMetrics().density;
+			topX-=height/variance;
+			int numMyEvents=mySquares[i].getEvents().size();
+			for(int j=0; j<numMyEvents && j<4; j++)
+			{
+				if(!(j==3 && mySquares[i].getEvents().size()>4))
+				{
+					bufferRect.set(topX,topY,topX+height/variance,topY+height/variance);
+					int color=this.selected_Calendar_Colors.get(mySquares[i].getEvents().get(j).getColorNumber()%selected_Calendar_Colors.size());
+					boxPainter.setColor(color);
+					topY+=height/variance+2;
+					canvas.drawRect(bufferRect, boxPainter);
+				}
+			}
+			if(numMyEvents>4)
+			{
+				int num=2;
+				int pow=1;
+
+				topX=bufferRect.centerX();
+				for(int j=3; j<6 && j<numMyEvents; j++)
+				{	
+
+					float offset=(height/(variance+(int)Math.pow(num, pow))/2);
+
+					bufferRect.set(topX-offset, topY, topX+offset, topY+2*offset);
+					this.boxPainter.setColor(selected_Calendar_Colors.get(mySquares[i].getEvents().get(j).getColorNumber()%selected_Calendar_Colors.size()));
+					topY+=2*offset+1;
+					pow++;
+					if(j==5 || j==numMyEvents-1){
+						ovalPainter.setColor(selected_Calendar_Colors.get(mySquares[i].getEvents().get(j).getColorNumber()%selected_Calendar_Colors.size()));
+						canvas.drawOval(bufferRect, ovalPainter);
+					}
+					else
+						canvas.drawRect(bufferRect, boxPainter);
+				}
+			}
+		}
+	}
+	private void drawEventCirclesVertical(Canvas c)
 	{
 		for(int i=0; i<mySquares.length; i++)
 		{
@@ -698,11 +688,9 @@ public class CalendarV extends View{
 			{
 				if(!(j==3 && num>4)){
 					bufferRect.set(topX-height/9, topY, topX, topY+height/9);
-					ovalPainter.setColor(mySquares[i].getEvents().get(j).getColor());
-					if(mDrawSquares)
-						c.drawRect(bufferRect, ovalPainter);
-					else
-						c.drawOval(bufferRect, ovalPainter);
+					ovalPainter.setColor(this.selected_Calendar_Colors.get(mySquares[i].getEvents().get(j).getColorNumber()%
+							this.selected_Calendar_Colors.size()));
+					c.drawOval(bufferRect, ovalPainter);
 					topY+=height/8;
 				}
 			}
@@ -715,23 +703,61 @@ public class CalendarV extends View{
 					float left=topX-height/factor;
 					float right=topX+height/factor;
 					bufferRect.set(left,topY,right,topY+height/(factor/2));
-					ovalPainter.setColor(mySquares[i].getEvents().get(j).getColor());
-					if(mDrawSquares)
-						c.drawRect(bufferRect, ovalPainter);
-					else
-						c.drawOval(bufferRect, ovalPainter);
+					ovalPainter.setColor(this.selected_Calendar_Colors.get(mySquares[i].getEvents().get(j).getColorNumber()%
+							this.selected_Calendar_Colors.size()));
+					c.drawOval(bufferRect, ovalPainter);
 					topY+=height/(factor/2-3);
 					factor=factor/2*3;
 				}
 			}
 		}
 	}
+	private void drawCurrentDayDecalBox(Canvas canvas){
+		int index=-1;
+		for(int i=0; i<mySquares.length; i++)
+			if(((CalRect)mySquares[i]).getDay()==Calendar.getInstance().get(Calendar.DAY_OF_MONTH) && ((CalRect)mySquares[i]).getMonth()==Calendar.getInstance().get(Calendar.MONTH) && ((CalRect)mySquares[i]).getYear()==Calendar.getInstance().get(Calendar.YEAR))
+				index=i;
+		if(index>=0 && index<mySquares.length)
+		{
+			CalRect rect=mySquares[index];
+			float bottom=rect.bottom;
+			float top=rect.top;
+			float left=rect.left;
+			float right=rect.right;
+			linePainter.setStyle(Paint.Style.STROKE);
+			linePainter.setColor(getResources().getColor(R.color.CurrentDayColor));
+			linePainter.setStrokeWidth(2*this.getContext().getResources().getDisplayMetrics().density);
+			canvas.drawLine(left, bottom, right, bottom, linePainter);
+			canvas.drawLine(left,top,right,top,linePainter);
+			canvas.drawLine(left, bottom, left, top, linePainter);
+			canvas.drawLine(right, bottom, right, top, linePainter);
+		}
+	}
+	private void drawCurrentDayDecalSquare(Canvas canvas)
+	{
+		int index=-1;
+		for(int i=0; i<mySquares.length; i++)
+			if(((CalRect)mySquares[i]).getDay()==Calendar.getInstance().get(Calendar.DAY_OF_MONTH) && ((CalRect)mySquares[i]).getMonth()==Calendar.getInstance().get(Calendar.MONTH) && ((CalRect)mySquares[i]).getYear()==Calendar.getInstance().get(Calendar.YEAR))
+				index=i;
+		if(index!=-1){
+			bufferRect.set(mySquares[index].centerX()-10, mySquares[index].bottom-30, mySquares[index].centerX()+10, mySquares[index].bottom-10);
+			int prevColor=textPainter.getColor();
+			if(selectedBox.index!=index)
+				textPainter.setColor(getResources().getColor(R.color.CurrentDayColor));
+			else
+				textPainter.setColor(getResources().getColor(R.color.White));
+			//if(bufferRect.top>myDayLabels[0].bottom)
+			canvas.drawRect(bufferRect, textPainter);
+			textPainter.setColor(prevColor);
+		}
+	}
+
 	/**
 	 * @author ajive_000
 	 * Draws the current day bubble.
 	 * @param canvas -- Canvas object as supplied by the Android System.
 	 */
-	private void drawCurrentDayDecal(Canvas canvas)
+	private void drawCurrentDayDecalCircle(Canvas canvas)
 	{
 		int index=-1;
 		for(int i=0; i<mySquares.length; i++)
@@ -810,7 +836,8 @@ public class CalendarV extends View{
 						intent.putExtra(EventActivity.DESCRIPTION,events.get(i).getSummary());
 						intent.putExtra(EventActivity.STARTDATE, events.get(i).getStartDate().getTimeInMillis());
 						intent.putExtra(EventActivity.ENDDATE, events.get(i).getEndDate().getTimeInMillis());
-						intent.putExtra(EventActivity.COLOR, events.get(i).getColor());
+						intent.putExtra(EventActivity.COLOR, this.selected_Calendar_Colors.get(events.get(i).getColorNumber()%
+								this.selected_Calendar_Colors.size()));
 						this.getContext().startActivity(intent);
 						//Log.v("Button Press:",mEvents.get(i).getTitle());
 						return;
@@ -1070,7 +1097,7 @@ public class CalendarV extends View{
 		return selectedBox.index<mySquares.length && selectedBox.index>=0 && mySquares[selectedBox.index].getEvents().size()>0;
 	}
 	public void calcDetailedEvents(float positionY){
-		int boxHeight=BOX_HEIGHT;
+		float boxHeight=BOX_HEIGHT;
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
 		ArrayList<Event> events=mySquares[selectedBox.index].getEvents();
@@ -1093,9 +1120,13 @@ public class CalendarV extends View{
 		ArrayList<Event> events=mySquares[selectedBox.index].getEvents();
 		for(int i=0; i<myDetailedEvents.length && i<events.size(); i++)
 		{
-			int color=events.get(i).getColor();
+			int color=this.selected_Calendar_Colors.get(events.get(i).getColorNumber()%
+					this.selected_Calendar_Colors.size());
 			boxPainter.setColor(color);
-			canvas.drawRect(myDetailedEvents[i], boxPainter);
+			if(this.ROUND_DETAIL_EVENT_CORNERS)
+				canvas.drawRoundRect(myDetailedEvents[i], 15, 15, boxPainter);
+			else
+				canvas.drawRect(myDetailedEvents[i], boxPainter);
 			String s=events.get(i).getTitle();
 			if(textPainter.measureText(s)>myDetailedEvents[i].width()-70)
 				s=cutString(s, myDetailedEvents[i].width());

@@ -13,24 +13,30 @@ public class Event implements Comparable {
 	private String summary;
 	private Calendar startDate;
 	private Calendar endDate;
-	private int color; //Color corresponds to category.
+	//Color corresponds to category.
 	private String id;
 	private String calendarName;
-
-public Event(String n, String s, Calendar start, Calendar end,int $color){
+	private int colorNumber;
+public Event(String n, String s, Calendar start, Calendar end,String $calendarName, int $colorNumber){
 	name = n;
 	summary = s;
 	startDate = start;
 	endDate = end;
 	Log.v("tag" ,end.toString());
-	color=$color;
+	
+	calendarName=$calendarName;
+	colorNumber=$colorNumber;
 }
-public Event(com.google.api.services.calendar.model.Event current) {
+public int getColorNumber()
+{
+	return colorNumber;
+}
+public Event(com.google.api.services.calendar.model.Event current, int $colorNumber) {
 	name = current.getSummary();
 	summary = current.getDescription();
 	Calendar calS = Calendar.getInstance();
 	Calendar calE = Calendar.getInstance();
-	
+	colorNumber=$colorNumber;
 	//cal.setTimeInMillis(current.getStart().getDateTime().getValue());
 	//startDate = cal;
 	if(current.getStart().getDate()!=null){
@@ -82,7 +88,7 @@ public Event(com.google.api.services.calendar.model.Event current) {
 		endDate = calE;
 	}
 	
-	color = Color.YELLOW;
+	
 	id = current.getId();
 	calendarName = current.getOrganizer().getDisplayName();
 	//cal.setTimeInMillis(current.getEnd().getDateTime().getValue());
@@ -106,22 +112,16 @@ public String getSummary()
 {
 	return summary;
 }
-public int getColor()
-{
-	return color;
-}
+
 public String toString()
 {
-	return getTitle();
+	return getTitle()+id;
 }
 public String getId() {
 	// TODO Auto-generated method stub
 	return null;
 }
-public void setColor(int color2) {
-	// TODO Auto-generated method stub
-	color = color2;
-}
+
 @Override
 
 public int compareTo(Object arg0) {

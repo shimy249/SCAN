@@ -1,4 +1,4 @@
-package com.ellume.SCAN;
+package com.ellume.SCAN.Calendar;
 
 import android.animation.ValueAnimator;
 import android.util.Log;
@@ -45,6 +45,7 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 	{
 		if(act){
 			myView.selectDate(e.getX(), e.getY());
+			myView.setTranslationFactor(0);
 			return true;
 		}
 		return act;
