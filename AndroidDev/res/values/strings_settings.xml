@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Visual_Calendar">Calendar</string>
+    <string name="Visual_Calendar_Summary">Change the appearance of elements in the calendar.</string>
+    <string name="Current_Day_Indicator_Setting">Current Day Indicator</string>
+    <string name="Current_Day_Indicator_Setting_Summary">Change how the indicator for the current day looks.</string>
+	<string name="Detailed_Events_Shape">Event Boxes Shape</string>
+	<string name="Detailed_Events_Shape_Summary">Change the shape of the boxes that show the events for the currently selected date.</string>
+	<string name="Event_Indicator_Shapes">Event Indicator Shapes</string>
+	<string name="Event_Indicator_Shapes_Summary">Change the shapes of the event indicators in the top right corner of each day.</string>
+	<string name="Current_Day_Box_Height">Change the height of the current day boxes</string>
+</resources>
