@@ -1055,10 +1055,8 @@ public class CalendarV extends View{
 	}
 	public void addEvents(ArrayList<Event> events)
 	{
-		if(mEvents == null)
-			mEvents = events;
-		else
-			mEvents.addAll(events);
+		
+			mEvents=events;
 		MergeSort.sortEvents(mEvents);
 		addEventsToDays(0, mySquares.length);
 		invalidate();

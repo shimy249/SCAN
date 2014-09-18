@@ -58,5 +58,6 @@
     <string name="title_activity_add_theme_name_dialog">AddThemeNameDialog</string>
     <string name="Theme_Name">Theme Name: </string>
     <string name="title_activity_theme_editor">ThemeEditorActivity</string>
+    <string name="title_activity_cal_list">CalListActivity</string>
 
 </resources>

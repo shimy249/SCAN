@@ -2,6 +2,7 @@ package com.ellume.SCAN;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -35,9 +36,10 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.CalendarScopes;
 
-public class CalActivity extends ActionBarActivity {
+public class CalActivity extends ActionBarActivity implements CalendarChangeListener {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	private String[] calendarNames={"ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net"};
@@ -59,6 +61,9 @@ public class CalActivity extends ActionBarActivity {
 	boolean isAuthorized;
 	public static CalendarV calendarView;
 	private static boolean mEventFlag=false;
+	
+	public LocalEventList eventList;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,10 +89,12 @@ public class CalActivity extends ActionBarActivity {
 		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));	
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN/1.0").build();
 		calendarView=((CalendarV)findViewById(R.id.mainCalendar));
-		if(calendarView.getEvents()==null || calendarView.getEvents().size()==0)
-			calendarView.addEvents(MainActivity.EVENTS);
+		
+		eventList = LocalEventList.getInstance(this,this);
 	}
-
+	
+	@Override
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
@@ -154,28 +161,39 @@ public class CalActivity extends ActionBarActivity {
 		});
 
 	}
+	
+	@Override
+	public void onCalendarChange(){
+		calendarView.addEvents(eventList.getAllEvents());
+		calendarView.reDrawEvents();
+		calendarView.invalidate();
+	}
 
 	public void getEvents(){
-		if(MainActivity.EVENTS==null || MainActivity.EVENTS.size()==0)
-			this.setContentView(R.layout.progress_layout);
+		
+		
 		AsyncTask<String, Void, Void> task=new AsyncTask<String, Void, Void>(){
+			
 			@Override
 			protected Void doInBackground(String... params) {
 				ArrayList<Integer> colors=CalendarStyles.readCalendarColors(current_calendar_color_scheme);
+				ArrayList<Event> es = new ArrayList<Event>();
 				for(int i = 0; i < params.length; i++){
 					try {
-						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).execute();
+						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).setUpdatedMin(DateTime.parseRfc3339(new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ssXXX").format(Calendar.getInstance()))).execute();
 						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
 						//Log.v("current", events.toString());
-						
+
 						for(int j = 0; j < events.size(); j++){
 							com.google.api.services.calendar.model.Event current = events.get(j);
 							//	Log.v("result", current.toString());
 							Event event = new Event(current,i);
 							MergeSort.sortEvents(MainActivity.EVENTS);
-							MainActivity.EVENTS.add(event);
-							this.onProgressUpdate();
+							es.add(event);
+							
 						}
+						
+						eventList.addEvents(es);
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 						mEventFlag=!mEventFlag;
@@ -204,9 +222,7 @@ public class CalActivity extends ActionBarActivity {
 			}
 			protected void onPostExecute(Void e)
 			{
-				CalActivity.this.setContentView(R.layout.calendar);
-				calendarView.reDrawEvents();
-				calendarView.invalidate();
+				
 			}
 		};
 		task.execute(calendarNames);
@@ -237,11 +253,11 @@ public class CalActivity extends ActionBarActivity {
 
 	protected void onResume(){
 		super.onResume();
-		debugEvents();
-	//	if(checkGooglePlayServicesAvailable()){
-		//	haveGooglePlayServices();
+		//debugEvents();
+		if(checkGooglePlayServicesAvailable()){
+			haveGooglePlayServices();
 
-		//}
+		}
 
 	}
 	private void debugEvents()

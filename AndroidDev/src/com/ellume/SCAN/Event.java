@@ -8,7 +8,7 @@ import java.util.Calendar;
 import android.graphics.Color;
 import android.util.Log;
 
-public class Event implements Comparable {
+public class Event implements Comparable<Event> {
 	private String name;
 	private String summary;
 	private Calendar startDate;
@@ -16,6 +16,7 @@ public class Event implements Comparable {
 	//Color corresponds to category.
 	private String id;
 	private String calendarName;
+	private String calId;
 	private int colorNumber;
 public Event(String n, String s, Calendar start, Calendar end,String $calendarName, int $colorNumber){
 	name = n;
@@ -86,13 +87,65 @@ public Event(com.google.api.services.calendar.model.Event current, int $colorNum
 		
 		startDate = calS;
 		endDate = calE;
+		
 	}
 	
-	
+	calId = current.getOrganizer().getEmail();
 	id = current.getId();
 	calendarName = current.getOrganizer().getDisplayName();
 	//cal.setTimeInMillis(current.getEnd().getDateTime().getValue());
 	//endDate = cal;
+}
+
+public Event(String n, String s, String start, String end, String i, String cn, String ci, String cN){
+	name = n;
+	summary = s;
+	
+	Calendar calS = Calendar.getInstance();
+	Calendar calE = Calendar.getInstance();
+	String date = start;
+	
+	int dateCutoff = date.indexOf("T");
+	int timeCutoff = date.indexOf("."); //to remove nanoseconds
+	if(timeCutoff == -1)  //if nanoseconds not set remove timezone shift
+		timeCutoff = date.indexOf("-");
+	if(timeCutoff == -1) //if timezone shift not set isolate time only
+		timeCutoff= date.indexOf("Z");
+	
+	String time = date.substring(dateCutoff+1, timeCutoff);
+	String[] timeC = time.split(":");
+	
+	
+	date = date.substring(0, dateCutoff);
+	String[] dateC = date.split("-");
+	
+	calS.set(Integer.parseInt(dateC[0]), Integer.parseInt(dateC[1])-1, Integer.parseInt(dateC[2]), Integer.parseInt(timeC[0]), Integer.parseInt(timeC[1]), Integer.parseInt(timeC[2]));
+	
+	date = end;
+	timeCutoff = date.indexOf(".");
+	dateCutoff = date.indexOf("T");
+	
+	
+	 //to remove nanoseconds
+	if(timeCutoff == -1)  //if nanoseconds not set remove timezone shift
+		timeCutoff = date.indexOf("-");
+	if(timeCutoff == -1) //if timezone shift not set isolate time only
+		timeCutoff= date.indexOf("Z");
+	
+	time = date.substring(dateCutoff+1, timeCutoff);
+	String[] timeE = time.split(":");
+	
+	date = date.substring(0, dateCutoff);
+	dateC = date.split("-");
+	calE.set(Integer.parseInt(dateC[0]), Integer.parseInt(dateC[1])-1, Integer.parseInt(dateC[2]),Integer.parseInt(timeE[0]), Integer.parseInt(timeE[1]), Integer.parseInt(timeE[2]));
+	
+	startDate = calS;
+	endDate = calE;
+	
+	id = i;
+	calendarName = cn;
+	calId = ci;
+	colorNumber = Integer.parseInt(cN);
 }
 
 
@@ -118,14 +171,19 @@ public String toString()
 	return getTitle()+id;
 }
 public String getId() {
-	// TODO Auto-generated method stub
-	return null;
+	return id;
+}
+public String getCalId(){
+	return calId;
+}
+public String getCalendarName(){
+	return calendarName;
 }
 
 @Override
 
-public int compareTo(Object arg0) {
-	Event other = (Event) arg0;
+public int compareTo(Event arg0) {
+	Event other =  arg0;
 	Calendar otherCal =Calendar.getInstance();
 	otherCal.setTimeInMillis(other.getStartDate().getTimeInMillis());
 	Calendar thisCal = Calendar.getInstance();
