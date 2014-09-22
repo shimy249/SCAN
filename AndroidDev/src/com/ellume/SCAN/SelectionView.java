@@ -103,7 +103,7 @@ public class SelectionView extends View implements OnTouchListener{
 	 }
 	public void requestChange()
 	{
-		NewsActivity host=(NewsActivity)getContext();
+		//NewsFragment host=(NewsFragment)getContext();
 		//host.getSelectedColors(null);
 	}
 	public ArrayList<Integer> getSelectedColors()

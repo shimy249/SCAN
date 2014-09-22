@@ -538,9 +538,9 @@ public class CalendarV extends View{
 	private void drawMonthLabel(){
 		alignX=ALIGN_CENTER;
 		alignY=ALIGN_CENTER;
-		TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
-		myText.setTextSize(30);
-		myText.setText(""+monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR));
+	//	TextView myText=(TextView)((CalActivity)getContext()).findViewById(R.id.CalendarTitle);
+	//	myText.setTextSize(30);
+		//myText.setText(""+monthNames[myCalendar.get(Calendar.MONTH)]+" - "+myCalendar.get(Calendar.YEAR));
 	}
 	/**
 	 * @author ajive_000

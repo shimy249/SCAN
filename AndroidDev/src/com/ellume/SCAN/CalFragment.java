@@ -8,6 +8,7 @@ import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,17 +34,20 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.CalendarScopes;
 
-public class CalActivity extends ActionBarActivity {
+public class CalFragment extends Fragment {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	private String[] calendarNames={"ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net"};
-	//calendar ASync stuff
+	private String[] calendarNames = { "ajives8208@gmail.com",
+			"kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com",
+			"ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com",
+			"lhandler@eduhsd.net" };
+	// calendar ASync stuff
 
 	private com.google.api.services.calendar.Calendar client;
 
 	private GoogleAccountCredential credential;
 	public static final String PREF_NAME = "prefFile";
-	public static final String AUTHORIZED_ACCOUNT="com.ellume.SCAN.IS_AUTHORIZED";
+	public static final String AUTHORIZED_ACCOUNT = "com.ellume.SCAN.IS_AUTHORIZED";
 	public static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final int REQUEST_GOOGLE_PLAY_SERVICES = 10;
 	private static final int REQUEST_AUTHORIZATION = 100;
@@ -52,29 +56,52 @@ public class CalActivity extends ActionBarActivity {
 	private JacksonFactory jsonFactory = new JacksonFactory();
 	boolean isAuthorized;
 	public static CalendarV calendarView;
-	private static boolean mEventFlag=false;
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.calendar);
-		((CalendarV)findViewById(R.id.mainCalendar)).setShowWeekNumbers(false);
+	private static boolean mEventFlag = false;
 
-		//ASyncTask
-		SharedPreferences settings = this.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
-		credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(CalendarScopes.CALENDAR));
-		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));	
-		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN/1.0").build();
-		calendarView=((CalendarV)findViewById(R.id.mainCalendar));
-		if(calendarView.getEvents()==null || calendarView.getEvents().size()==0)
-			calendarView.addEvents(MainActivity.EVENTS);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		// ASyncTask
+		SharedPreferences settings = this.getActivity().getSharedPreferences(PREF_NAME,
+				Context.MODE_PRIVATE);
+		credential = GoogleAccountCredential.usingOAuth2(this.getActivity(),
+				Collections.singleton(CalendarScopes.CALENDAR));
+		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME,
+				null));
+		client = new com.google.api.services.calendar.Calendar.Builder(
+				httpTransport, jsonFactory, credential).setApplicationName(
+				"SCAN/1.0").build();
+		calendarView = ((CalendarV) getView().findViewById(R.id.mainCalendar));
+		if (calendarView.getEvents() == null
+				|| calendarView.getEvents().size() == 0)
+			calendarView.addEvents(MainActivity.EVENTS);
+	}
+	
+	
+
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.calendar, container, false);
+		((CalendarV) view.findViewById(R.id.mainCalendar)).setShowWeekNumbers(false);
+		return view;
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 		case REQUEST_GOOGLE_PLAY_SERVICES:
-			if (resultCode == Activity.RESULT_OK
-					) {
+			if (resultCode == Activity.RESULT_OK) {
 				haveGooglePlayServices();
 			} else {
 				checkGooglePlayServicesAvailable();
@@ -82,8 +109,8 @@ public class CalActivity extends ActionBarActivity {
 			break;
 		case REQUEST_AUTHORIZATION:
 			if (resultCode == Activity.RESULT_OK) {
-				if(!mEventFlag){
-					mEventFlag=!mEventFlag;
+				if (!mEventFlag) {
+					mEventFlag = !mEventFlag;
 					getEvents();
 				}
 			} else {
@@ -91,16 +118,19 @@ public class CalActivity extends ActionBarActivity {
 			}
 			break;
 		case REQUEST_ACCOUNT_PICKER:
-			if (resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
-				String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
+			if (resultCode == Activity.RESULT_OK && data != null
+					&& data.getExtras() != null) {
+				String accountName = data.getExtras().getString(
+						AccountManager.KEY_ACCOUNT_NAME);
 				if (accountName != null) {
 					credential.setSelectedAccountName(accountName);
-					SharedPreferences settings = getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
+					SharedPreferences settings = this.getActivity().getSharedPreferences(
+							PREF_NAME, Context.MODE_PRIVATE);
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
-					if(!mEventFlag){
-						mEventFlag=!mEventFlag;
+					if (!mEventFlag) {
+						mEventFlag = !mEventFlag;
 						getEvents();
 					}
 				}
@@ -110,12 +140,14 @@ public class CalActivity extends ActionBarActivity {
 	}
 
 	private void chooseAccount() {
-		startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+		startActivityForResult(credential.newChooseAccountIntent(),
+				REQUEST_ACCOUNT_PICKER);
 
 	}
 
 	private boolean checkGooglePlayServicesAvailable() {
-		final int connectionStatusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		final int connectionStatusCode = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(this.getActivity());
 		if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
 			showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
 			return false;
@@ -126,34 +158,41 @@ public class CalActivity extends ActionBarActivity {
 
 	private void showGooglePlayServicesAvailabilityErrorDialog(
 			final int connectionStatusCode) {
-		runOnUiThread(new Runnable() {
+		this.getActivity().runOnUiThread(new Runnable() {
 			public void run() {
 				Dialog dialog = GooglePlayServicesUtil.getErrorDialog(
-						connectionStatusCode, CalActivity.this, REQUEST_GOOGLE_PLAY_SERVICES);
+						connectionStatusCode, CalFragment.this.getActivity(),
+						REQUEST_GOOGLE_PLAY_SERVICES);
 				dialog.show();
 			}
 		});
 
 	}
 
-	public void getEvents(){
-		if(MainActivity.EVENTS==null || MainActivity.EVENTS.size()==0)
-			this.setContentView(R.layout.progress_layout);
-		AsyncTask<String, Void, Void> task=new AsyncTask<String, Void, Void>(){
+	public void getEvents() {
+		final ProgressDialog dialog = new ProgressDialog(this.getActivity());
+		if (MainActivity.EVENTS == null || MainActivity.EVENTS.size() == 0){
+            dialog.setMessage("Loading");
+            dialog.show();
+		}
+		AsyncTask<String, Void, Void> task = new AsyncTask<String, Void, Void>() {
 			@Override
 			protected Void doInBackground(String... params) {
-				for(int i = 0; i < params.length; i++){
+				for (int i = 0; i < params.length; i++) {
 					try {
-						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).execute();
-						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
-						//Log.v("current", events.toString());
-						int r=(int)(Math.random()*256);
-						int g=(int)(Math.random()*256);
-						int b=(int)(Math.random()*256);
+						com.google.api.services.calendar.model.Events feed = client
+								.events().list(params[i]).execute();
+						List<com.google.api.services.calendar.model.Event> events = feed
+								.getItems();
+						// Log.v("current", events.toString());
+						int r = (int) (Math.random() * 256);
+						int g = (int) (Math.random() * 256);
+						int b = (int) (Math.random() * 256);
 
-						for(int j = 0; j < events.size(); j++){
-							com.google.api.services.calendar.model.Event current = events.get(j);
-							//	Log.v("result", current.toString());
+						for (int j = 0; j < events.size(); j++) {
+							com.google.api.services.calendar.model.Event current = events
+									.get(j);
+							// Log.v("result", current.toString());
 							Event event = new Event(current);
 							event.setColor(Color.argb(170, r, g, b));
 							MergeSort.sortEvents(MainActivity.EVENTS);
@@ -162,43 +201,41 @@ public class CalActivity extends ActionBarActivity {
 						}
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
-						mEventFlag=!mEventFlag;
-						CalActivity.this.showGooglePlayServicesAvailabilityErrorDialog(
-								availabilityException.getConnectionStatusCode());
+						mEventFlag = !mEventFlag;
+						CalFragment.this
+								.showGooglePlayServicesAvailabilityErrorDialog(availabilityException
+										.getConnectionStatusCode());
 						break;
-					} catch (UserRecoverableAuthIOException userRecoverableException) {						
-						mEventFlag=!mEventFlag;
-						CalActivity.this.startActivityForResult(
-								userRecoverableException.getIntent(), CalActivity.REQUEST_AUTHORIZATION);
+					} catch (UserRecoverableAuthIOException userRecoverableException) {
+						mEventFlag = !mEventFlag;
+						CalFragment.this.startActivityForResult(
+								userRecoverableException.getIntent(),
+								CalFragment.REQUEST_AUTHORIZATION);
 
 						break;
 					} catch (IOException e) {
-						if(e!=null)
+						if (e != null)
 							e.printStackTrace();
 						break;
 					}
 				}
-				return null;		
+				return null;
 
 			}
-			protected void onProgressUpdate(Void... e)
-			{
 
+			protected void onProgressUpdate(Void... e) {
 
 			}
-			protected void onPostExecute(Void e)
-			{
-				CalActivity.this.setContentView(R.layout.calendar);
+
+			protected void onPostExecute(Void e) {
 				calendarView.reDrawEvents();
 				calendarView.invalidate();
+				dialog.dismiss();
 			}
 		};
 		task.execute(calendarNames);
 
-
 	}
-
-
 
 	private void haveGooglePlayServices() {
 		if (credential.getSelectedAccountName() == null) {
@@ -206,49 +243,45 @@ public class CalActivity extends ActionBarActivity {
 			chooseAccount();
 		} else {
 			// load calendars
-			if(!mEventFlag){
-				mEventFlag=!mEventFlag;
+			if (!mEventFlag) {
+				mEventFlag = !mEventFlag;
 				getEvents();
 
 			}
 		}
 
 	}
-	public void addEvent(Event e)
-	{
+
+	public void addEvent(Event e) {
 		calendarView.addEvents(e);
 	}
 
-	protected void onResume(){
+	public void onResume() {
 		super.onResume();
-		if(checkGooglePlayServicesAvailable()){
+		if (checkGooglePlayServicesAvailable()) {
 			haveGooglePlayServices();
 
 		}
 
 	}
 
-
-
-
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		this.getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-		this.getActionBar().setCustomView(R.layout.menu_cal);
-		getMenuInflater().inflate(R.menu.cal, menu);
+		this.getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		this.getActivity().getActionBar().setCustomView(R.layout.menu_cal);
+		getActivity().getMenuInflater().inflate(R.menu.cal, menu);
 		return true;
 	}
 }
-class CalendarFragmentAdapter extends FragmentPagerAdapter{
+
+class CalendarFragmentAdapter extends FragmentPagerAdapter {
 
 	public CalendarFragmentAdapter(FragmentManager fm) {
 		super(fm);
 	}
 
 	public Fragment getItem(int arg0) {
-		if(arg0==0)
+		if (arg0 == 0)
 			return new yearCalendarFragment();
 		else
 			return monthCalendarFragment.newInstance();
@@ -261,24 +294,30 @@ class CalendarFragmentAdapter extends FragmentPagerAdapter{
 	}
 
 }
-class monthCalendarFragment extends Fragment{
-	public static monthCalendarFragment newInstance()
-	{
-		monthCalendarFragment frag=new monthCalendarFragment();
+
+class monthCalendarFragment extends Fragment {
+	public static monthCalendarFragment newInstance() {
+		monthCalendarFragment frag = new monthCalendarFragment();
 		return frag;
 	}
-	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
+
+	public View onCreateView(LayoutInflater inflator, ViewGroup container,
+			Bundle savedInstanceState) {
 		return inflator.inflate(R.layout.calendar, container, false);
 	}
 }
-class yearCalendarFragment extends Fragment{
-	public yearCalendarFragment(){}
-	public yearCalendarFragment newInstance(){
-		yearCalendarFragment myfrag=new yearCalendarFragment();
+
+class yearCalendarFragment extends Fragment {
+	public yearCalendarFragment() {
+	}
+
+	public yearCalendarFragment newInstance() {
+		yearCalendarFragment myfrag = new yearCalendarFragment();
 		return myfrag;
 	}
-	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
+
+	public View onCreateView(LayoutInflater inflator, ViewGroup container,
+			Bundle savedInstanceState) {
 		return inflator.inflate(R.layout.year_layout, container, false);
 	}
 }
-

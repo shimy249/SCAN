@@ -45,4 +45,5 @@
 	<string name="NewsURL">http://feeds.feedburner.com/blogspot/PaqBy?format=xml</string>
 	<string name="title_activity_list_events">ListEventsActivity</string>
 	<string name="retry">Resign</string>
+	<string name="main">Main</string>
 </resources>

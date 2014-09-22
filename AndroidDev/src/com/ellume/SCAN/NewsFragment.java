@@ -2,6 +2,7 @@ package com.ellume.SCAN;
 
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +22,9 @@ import android.widget.Toast;
 
 
 
+
 import org.xmlpull.v1.XmlPullParserException;
+
 
 
 
@@ -47,7 +50,7 @@ import java.util.List;
  * o Monitors preferences and the device's network connection to determine whether
  *   to refresh the WebView content.
  */
-public class NewsActivity extends Activity {
+public class NewsFragment extends Fragment {
 	RSSFeed feed;
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
@@ -70,12 +73,13 @@ public class NewsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         URL = getResources().getString(R.string.NewsURL);
 
         // Register BroadcastReceiver to track connection changes.
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         receiver = new NetworkReceiver();
-        this.registerReceiver(receiver, filter);
+        this.getActivity().registerReceiver(receiver, filter);
     }
 
     // Refreshes the display if the network connection and the
@@ -85,7 +89,7 @@ public class NewsActivity extends Activity {
         super.onStart();
 
         // Gets the user's network preference settings
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 
         // Retrieves a string value for the preferences. The second parameter
         // is the default value to use if a preference value is not found.
@@ -107,7 +111,7 @@ public class NewsActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         if (receiver != null) {
-            this.unregisterReceiver(receiver);
+            this.getActivity().unregisterReceiver(receiver);
         }
     }
 
@@ -115,7 +119,7 @@ public class NewsActivity extends Activity {
     // variables accordingly.
     private void updateConnectedFlags() {
         ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
         if (activeInfo != null && activeInfo.isConnected()) {
@@ -153,9 +157,8 @@ public class NewsActivity extends Activity {
     }
 
     // Populates the activity's options menu.
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        //MenuInflater inflater = getMenuInflater();
        
         return true;
     }
@@ -202,12 +205,11 @@ public class NewsActivity extends Activity {
         	bundle.putSerializable("feed", feed);
         	 
         	// launch List activity
-        	Intent intent = new Intent(NewsActivity.this, ListActivity.class);
+        	Intent intent = new Intent(NewsFragment.this.getActivity(), ListActivity.class);
         	intent.putExtras(bundle);
         	startActivity(intent);
         	 
         	// kill this activity
-        	finish();
          }
     }
 
@@ -225,7 +227,7 @@ public class NewsActivity extends Activity {
         DateFormat formatter = new SimpleDateFormat("MMM dd h:mmaa");
 
         // Checks whether the user set the preference to include summary text
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         boolean pref = sharedPrefs.getBoolean("summaryPref", false);
 
                 try {
