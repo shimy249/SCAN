@@ -1,6 +1,7 @@
 package com.ellume.SCAN;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -102,9 +103,10 @@ public class LocalEventList {
 	}
 
 	private void open(){
-		new AsyncTask<Void, Void, Void>(){
-			public Void doInBackground(Void... v){
+		new AsyncTask<Void, Void, ArrayList<Event>>(){
+			public ArrayList<Event> doInBackground(Void... v){
 				JSONParser parser = new JSONParser();
+				ArrayList<Event> eventsm = new ArrayList<Event>();
 				Object o;
 				try {
 					
@@ -140,7 +142,7 @@ public class LocalEventList {
 
 						while(i.hasNext()){
 							JSONObject event = (JSONObject) i.next();
-							events.add(new Event(
+							eventsm.add(new Event(
 									(String) event.get("name"),
 									(String) event.get("summary"),
 									(String) event.get("startDate"),
@@ -151,10 +153,12 @@ public class LocalEventList {
 									(String) event.get("colorNumber")
 									));
 						}
+						return eventsm;
 					}
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					return null;
+					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -163,6 +167,10 @@ public class LocalEventList {
 					e.printStackTrace();
 				}
 				return null;	
+			}
+			public void onPostExecute(ArrayList<Event> em){
+				if(em != null)
+				events.addAll(em);
 			}
 		}.execute();
 	}
@@ -198,10 +206,11 @@ public class LocalEventList {
 			jobj.put("events", events);
 
 			try{
-				FileWriter jsonFileWriter = new FileWriter(FILENAME);
-				jsonFileWriter.write(jobj.toJSONString());
-				jsonFileWriter.flush();
-				jsonFileWriter.close();
+				FileOutputStream fos = context.openFileOutput(FILENAME,Context.MODE_PRIVATE);
+				String j =jobj.toJSONString();
+				fos.write(j.getBytes());
+				fos.close();
+				
 
 
 			} catch(IOException e){

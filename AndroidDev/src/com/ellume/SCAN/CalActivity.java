@@ -180,7 +180,14 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 				ArrayList<Event> es = new ArrayList<Event>();
 				for(int i = 0; i < params.length; i++){
 					try {
-						com.google.api.services.calendar.model.Events feed = client.events().list(params[i]).setUpdatedMin(DateTime.parseRfc3339(new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ssXXX").format(Calendar.getInstance()))).execute();
+						SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+						fmt.setCalendar(Calendar.getInstance());
+						String dateFormated = fmt.format(Calendar.getInstance().getTime());
+						com.google.api.services.calendar.model.Events feed;
+						if(eventList.getAllEvents().size() ==0)
+							feed = client.events().list(params[i]).setUpdatedMin(DateTime.parseRfc3339(dateFormated)).execute();
+						else
+							feed = client.events().list(params[i]).execute();
 						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
 						//Log.v("current", events.toString());
 
@@ -193,7 +200,7 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 							
 						}
 						
-						eventList.addEvents(es);
+						eventList.addEvents(es); 
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 						mEventFlag=!mEventFlag;
@@ -246,10 +253,10 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 		}
 
 	}
-	public void addEvent(Event e)
-	{
-		calendarView.addEvents(e);
-	}
+	//public void addEvent(Event e)
+	//{
+	//	calendarView.addEvents(e);
+	//}
 
 	protected void onResume(){
 		super.onResume();

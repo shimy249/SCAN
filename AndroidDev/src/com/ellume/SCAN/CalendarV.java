@@ -281,7 +281,9 @@ public class CalendarV extends View{
 	 */
 	private void addEventsToDays(int index, int end)
 	{
-
+		if(mEvents==null){
+			mEvents = new ArrayList<Event>();
+		}
 		int m=0;
 		int j=0;
 		for(int i=index; i<end; i++)
