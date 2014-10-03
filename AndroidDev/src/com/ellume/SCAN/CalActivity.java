@@ -1,12 +1,19 @@
 package com.ellume.SCAN;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
+
+import org.json.*;
 
 import android.accounts.AccountManager;
 import android.app.ActionBar;
@@ -23,6 +30,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -39,10 +47,10 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.CalendarScopes;
 
-public class CalActivity extends ActionBarActivity implements CalendarChangeListener {
+public class CalActivity extends ActionBarActivity {
 	CalendarFragmentAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	private String[] calendarNames={"ajives8208@gmail.com","kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net"};
+	private String[] calendarNames={"kq06vhhr2lhjq1sc2nm0il0qtk@group.calendar.google.com","ko6l12v8i57e446gfh32ppf7cg@group.calendar.google.com", "lhandler@eduhsd.net"};
 	//calendar ASync stuff
 
 	private com.google.api.services.calendar.Calendar client;
@@ -61,13 +69,21 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 	boolean isAuthorized;
 	public static CalendarV calendarView;
 	private static boolean mEventFlag=false;
-	
+	private Calendar lastUpdated;
 	public LocalEventList eventList;
 	
+	private String lastUpdatedx = null;
+	private ArrayList<Event> events;
+
+	public static final String FILENAME = "events.json";
+	private static final int NEED_VERSION = 1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.calendar);
+
+		events = new ArrayList<Event>();
 		SharedPreferences calPrefs=PreferenceManager.getDefaultSharedPreferences(this);
 		File file=new File(this.getFilesDir(),"Styles");
 		current_calendar_color_scheme=new File(file,calPrefs.getString(getResources().getString(R.string.Currently_Selected_Theme), "The Blues"));
@@ -89,12 +105,104 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 		credential.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));	
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential).setApplicationName("SCAN/1.0").build();
 		calendarView=((CalendarV)findViewById(R.id.mainCalendar));
-		
-		eventList = LocalEventList.getInstance(this,this);
+
+		new AsyncTask<Void,Event,ArrayList<Event>>(){
+
+
+
+			@Override
+			protected ArrayList<Event> doInBackground(Void... arg0) {
+				Scanner scan = null;
+				try {
+					scan = new Scanner(openFileInput(FILENAME));
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				String jsonString = "";
+				while(scan.hasNext()){
+					jsonString+=scan.next();
+				}
+				JSONTokener parser = new JSONTokener(jsonString);
+
+
+				try {
+					ArrayList<Event> eventsm = new ArrayList<Event>();
+
+					JSONObject jobject = new JSONObject(parser);
+
+					int version = Integer.parseInt( jobject.getString("version"));
+					if(version != NEED_VERSION){
+						Log.e("localeventlist", "wrong calendar file version IGNORING");
+					}
+					else{
+						String date = jobject.getString("dateLastMod");
+						lastUpdatedx = date;
+
+
+
+						JSONArray eventA = jobject.getJSONArray("events");
+
+						int i = 0;
+						while(!eventA.isNull(i)){
+							JSONObject event = eventA.optJSONObject(i);
+							Event c = new Event(
+									event.getString("name"),
+									event.getString("summary"),
+									event.getString("startDate"),
+									event.getString("endDate"),
+									event.getString("id"),
+									event.getString("calendarName"),
+									event.getString("calId"),
+									event.getString("colorNumber")
+									);
+							if(eventsm.size()>0&&eventsm.get(eventsm.size()-1).getCalId().equals(c.getCalId())){
+								
+							}
+							else
+								eventsm.add(c);
+								publishProgress(c);
+								
+							i++;
+						}
+						
+						scan.close();
+						return eventsm;
+
+					}
+				} catch (NullPointerException e){
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					lastUpdatedx = null;
+					if(checkGooglePlayServicesAvailable()){
+						haveGooglePlayServices();
+
+					}
+				}
+				return null;
+			}
+			protected void onProgressUpdated(Event e){
+				calendarView.addEvents(e);
+				calendarView.reDrawEvents();
+				calendarView.invalidate();
+			}
+			protected void onPostExecute(ArrayList<Event> e){
+				if(e!= null){
+					
+					events.addAll(e);
+					if(checkGooglePlayServicesAvailable()){
+						haveGooglePlayServices();
+
+					}
+				}
+			}
+		}.execute();
 	}
-	
+
 	@Override
-	
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
@@ -161,22 +269,16 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 		});
 
 	}
-	
-	@Override
-	public void onCalendarChange(){
-		calendarView.addEvents(eventList.getAllEvents());
-		calendarView.reDrawEvents();
-		calendarView.invalidate();
-	}
+
 
 	public void getEvents(){
-		
-		
-		AsyncTask<String, Void, Void> task=new AsyncTask<String, Void, Void>(){
-			
+
+
+		AsyncTask<String, Void, ArrayList<Event>> task=new AsyncTask<String, Void, ArrayList<Event>>(){
+
 			@Override
-			protected Void doInBackground(String... params) {
-				ArrayList<Integer> colors=CalendarStyles.readCalendarColors(current_calendar_color_scheme);
+			protected ArrayList<Event> doInBackground(String... params) {
+				//ArrayList<Integer> colors=CalendarStyles.readCalendarColors(current_calendar_color_scheme);
 				ArrayList<Event> es = new ArrayList<Event>();
 				for(int i = 0; i < params.length; i++){
 					try {
@@ -184,12 +286,12 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 						fmt.setCalendar(Calendar.getInstance());
 						String dateFormated = fmt.format(Calendar.getInstance().getTime());
 						com.google.api.services.calendar.model.Events feed;
-						if(eventList.getAllEvents().size() ==0)
-							feed = client.events().list(params[i]).setUpdatedMin(DateTime.parseRfc3339(dateFormated)).execute();
+						if(lastUpdatedx!=null) 
+							feed = client.events().list(params[i]).setUpdatedMin(DateTime.parseRfc3339(lastUpdatedx)).execute();
 						else
 							feed = client.events().list(params[i]).execute();
 						List<com.google.api.services.calendar.model.Event> events =  feed.getItems();
-						//Log.v("current", events.toString());
+						Log.v("current", events.toString());
 
 						for(int j = 0; j < events.size(); j++){
 							com.google.api.services.calendar.model.Event current = events.get(j);
@@ -197,10 +299,10 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 							Event event = new Event(current,i);
 							MergeSort.sortEvents(MainActivity.EVENTS);
 							es.add(event);
-							
+
 						}
-						
-						eventList.addEvents(es); 
+
+
 
 					} catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 						mEventFlag=!mEventFlag;
@@ -219,7 +321,9 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 						break;
 					}
 				}
-				return null;		
+				return es;	
+
+
 
 			}
 			protected void onProgressUpdate(Void... e)
@@ -227,13 +331,78 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 
 
 			}
-			protected void onPostExecute(Void e)
+			protected void onPostExecute(ArrayList<Event> e)
 			{
 				
+				events.addAll(e);
+				calendarView.addEvents(events);
+				calendarView.reDrawEvents();
+				calendarView.invalidate();
+				new BackupIo().execute();
 			}
 		};
 		task.execute(calendarNames);
 
+
+	}
+
+	class BackupIo extends AsyncTask<Void, Void, Void>{
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			ArrayList<Event> eventA = new ArrayList<Event>();
+			JSONObject jobj = new JSONObject();
+			try {
+				eventA.addAll(events);
+				MergeSort.sortEvents(eventA);
+				jobj.put("version", (new Integer(NEED_VERSION)).toString());
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				fmt.setCalendar(Calendar.getInstance());
+				jobj.put("dateLastMod", fmt.format(Calendar.getInstance().getTime()).toString());
+				JSONArray events = new JSONArray();
+
+				for (int i =0; i < eventA.size(); i++){
+
+					Event eventO = eventA.get(i);
+					JSONObject event = new JSONObject();
+
+					event.put("name", eventO.getTitle());
+					if (eventO.getSummary()==null)
+						event.put("summary", "");
+					else
+						event.put("summary", eventO.getSummary());
+					event.put("startDate", fmt.format(eventO.getStartDate().getTime()));
+					event.put("endDate", fmt.format(eventO.getEndDate().getTime()));
+					event.put("id", eventO.getId());
+					event.put("calendarName", eventO.getCalendarName());
+					event.put("calId", eventO.getCalId());
+					event.put("colorNumber", (new Integer(eventO.getColorNumber())).toString());
+
+
+					jobj.accumulate("events", event);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
+
+			try{
+				FileOutputStream fos = openFileOutput(FILENAME,Context.MODE_PRIVATE);
+				String j =jobj.toString();
+				fos.write(j.getBytes());
+				fos.close();
+
+
+
+			} catch(IOException e){
+				e.printStackTrace();
+
+			}
+
+			return null; 
+		}
 
 	}
 
@@ -261,13 +430,10 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 	protected void onResume(){
 		super.onResume();
 		//debugEvents();
-		if(checkGooglePlayServicesAvailable()){
-			haveGooglePlayServices();
-
-		}
+		
 
 	}
-	private void debugEvents()
+	/*private void debugEvents()
 	{
 		for(int i=0; i<100; i++)
 		{
@@ -277,7 +443,7 @@ public class CalActivity extends ActionBarActivity implements CalendarChangeList
 			MainActivity.EVENTS.add(e);
 		}
 		MergeSort.sortEvents(MainActivity.EVENTS);
-	}
+	}*/
 
 
 

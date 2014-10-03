@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
 	public static String rightSigned="RIGHTS_AGREE_BOOLEAN";
 	public static int REQUEST_AGREEMENT = 250;
 	private int smiley;
-	public LocalEventList list;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 		File file=new File(this.getFilesDir(),"Styles");
 		if(!file.isDirectory())
 			file.mkdir();
-		list = LocalEventList.getInstance(null, this);
+		
 	}
 	protected void onResume(){
 		super.onResume();

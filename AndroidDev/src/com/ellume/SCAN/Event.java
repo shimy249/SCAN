@@ -99,8 +99,10 @@ public Event(com.google.api.services.calendar.model.Event current, int $colorNum
 
 public Event(String n, String s, String start, String end, String i, String cn, String ci, String cN){
 	name = n;
+	if(s!=null)
 	summary = s;
-	
+	else
+		summary = "";
 	Calendar calS = Calendar.getInstance();
 	Calendar calE = Calendar.getInstance();
 	String date = start;
@@ -108,9 +110,10 @@ public Event(String n, String s, String start, String end, String i, String cn, 
 	int dateCutoff = date.indexOf("T");
 	int timeCutoff = date.indexOf("."); //to remove nanoseconds
 	if(timeCutoff == -1)  //if nanoseconds not set remove timezone shift
-		timeCutoff = date.indexOf("-");
-	if(timeCutoff == -1) //if timezone shift not set isolate time only
 		timeCutoff= date.indexOf("Z");
+		
+	if(timeCutoff == -1) //if timezone shift not set isolate time only
+		timeCutoff = date.indexOf("-");
 	
 	String time = date.substring(dateCutoff+1, timeCutoff);
 	String[] timeC = time.split(":");
@@ -127,13 +130,12 @@ public Event(String n, String s, String start, String end, String i, String cn, 
 	
 	
 	 //to remove nanoseconds
-	if(timeCutoff == -1)  //if nanoseconds not set remove timezone shift
-		timeCutoff = date.indexOf("-");
+
 	if(timeCutoff == -1) //if timezone shift not set isolate time only
 		timeCutoff= date.indexOf("Z");
 	
 	time = date.substring(dateCutoff+1, timeCutoff);
-	String[] timeE = time.split(":");
+	String[] timeE = time.split(":"); 
 	
 	date = date.substring(0, dateCutoff);
 	dateC = date.split("-");
@@ -163,6 +165,8 @@ public String getTitle()
 }
 public String getSummary()
 {
+	if(summary == null)
+		return "";
 	return summary;
 }
 
